@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_amanisdk_v2/amani_sdk.dart';
+import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
+import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
+
+class IdCaptureScreen extends StatefulWidget {
+  const IdCaptureScreen({Key? key}) : super(key: key);
+
+  @override
+  State<IdCaptureScreen> createState() => _IdCaptureScreenState();
+}
+
+class _IdCaptureScreenState extends State<IdCaptureScreen> {
+  final IdCapture _idCaptureModule = AmaniSDK().getIDCapture();
+
+  Future<void> initSDK() async {
+    await _idCaptureModule.setType("TUR_ID_1");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initSDK();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.purple,
+        title: const Text('ID Capture Screen'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton(
+                onPressed: () {
+                  _idCaptureModule.start(IdSide.front).then((imageData) {
+                    Navigator.pushNamed(context, ConfirmScreen.routeName,
+                        arguments: ConfirmArguments(
+                            source: "idCapture",
+                            imageData: imageData,
+                            idCaptureBothSidesTaken: false,
+                            idCaptureNFCCompleted: false));
+                  }).catchError((err) {});
+                },
+                child: const Text("Start")),
+          ],
+        ),
+      ),
+    );
+  }
+}

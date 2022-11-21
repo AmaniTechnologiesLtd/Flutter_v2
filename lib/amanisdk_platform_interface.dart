@@ -1,0 +1,141 @@
+import 'dart:typed_data';
+
+import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk_v2/common/models/ios/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk_v2/common/models/ios/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk_v2/common/models/nvi_data.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'flutter_amanisdk_v2_method_channel.dart';
+
+abstract class AmaniSDKPlatform extends PlatformInterface {
+  /// Constructs a [AmaniSDKPlatform]
+  AmaniSDKPlatform() : super(token: _token);
+
+  static final Object _token = Object();
+
+  static AmaniSDKPlatform _instance = MethodChannelAmaniSDK();
+
+  /// The default instance of [AmaniSDKPlatform] to use.
+  ///
+  /// Defaults to [MethodChannelAmaniSDK].
+  static AmaniSDKPlatform get instance => _instance;
+
+  /// Platform-specific implementations should set this with their own
+  /// platform-specific class that extends [AmaniSDKPlatform] when
+  /// they register themselves.
+  static set instance(AmaniSDKPlatform instance) {
+    PlatformInterface.verifyToken(instance, _token);
+    _instance = instance;
+  }
+
+  Future<bool> initAmani({
+    /// server url
+    required String server,
+
+    /// customer token acquired from our rest api
+    required String customerToken,
+
+    /// customers id card number or any random string, must match with
+    /// the id supplied while creating the [customerToken] field
+    required String customerIdCardNumber,
+
+    /// Sets if location info must be supplied while uploading the document
+    required bool useLocation,
+
+    /// Language parameters
+    required String lang,
+
+    /// Optional shared secret
+    String? sharedSecret,
+  }) {
+    throw UnimplementedError('initAmani() has not been implemented.');
+  }
+
+  // IDCapture
+  Future<dynamic> startIDCapture(int stepID) {
+    throw UnimplementedError('startIDCapture() has not been implemented.');
+  }
+
+  Future<bool> iOSStartIDCaptureNFC() {
+    throw UnimplementedError(
+        'iOSStartIDCaptureNFC() has not been implemented.');
+  }
+
+  Future<bool> uploadIDCapture() {
+    throw UnimplementedError('uploadIDCapture() has not been implemented.');
+  }
+
+  Future<void> setIDCaptureType(String type) {
+    throw UnimplementedError('setIDCaptureType() has not been implemented.');
+  }
+
+  // Selfie
+  Future<dynamic> startSelfie() {
+    throw UnimplementedError('startSelfie() has not been implemented.');
+  }
+
+  Future<bool> uploadSelfie() {
+    throw UnimplementedError('startSelfie() has not been implemented.');
+  }
+
+  Future<void> setSelfieType(String type) {
+    throw UnimplementedError('setSelfieType() has not been implemented.');
+  }
+
+  // AutoSelfie
+  Future<dynamic> startAutoSelfie({
+    required IOSAutoSelfieSettings iosSettings,
+    required AndroidAutoSelfieSettings androidSettings,
+  }) {
+    throw UnimplementedError('startAutoSelfie() has not been implemented.');
+  }
+
+  Future<bool> uploadAutoSelfie() {
+    throw UnimplementedError('setSelfieType() has not been implemented.');
+  }
+
+  Future<void> setAutoSelfieType({required String type}) {
+    throw UnimplementedError('setAutoSelfieType() has not been implemented.');
+  }
+
+  // PoseEstimation
+  Future<dynamic> startPoseEstimation(
+      {required AndroidPoseEstimationSettings androidPoseEstimationSettings,
+      required IOSPoseEstimationSettings iosPoseEstimationSettings}) {
+    throw UnimplementedError('startPoseEstimation() has not been implemented.');
+  }
+
+  Future<bool> uploadPoseEstimation() {
+    throw UnimplementedError('uploadAutoSelfie() has not been implemented');
+  }
+
+  Future<void> setPoseEstimationType(String type) {
+    throw UnimplementedError(
+        'setPoseEstimationType() has not been implemented');
+  }
+
+  // IOS NFC Capture
+  Future<bool> iOSNFCCaptureWithImageData(Uint8List imageData) {
+    throw UnimplementedError(
+        'iosNFCCaptureWithImageData() has not been implemented.');
+  }
+
+  Future<bool> iOSNFCCaptureWithNviData(NviModel nviModel) {
+    throw UnimplementedError(
+        'iosNFCCaptureWithNviData() has not been implemented.');
+  }
+
+  Future<bool> iosNFCCaptureWithMRZCapture() {
+    throw UnimplementedError(
+        'iosNFCCaptureWithMRZCapture() has not been implemented.');
+  }
+
+  Future<bool> iosUploadNFCCapture() {
+    throw UnimplementedError('iosUploadNFCCapture() has not been implemented.');
+  }
+
+  Future<void> iosSetNFCType(String type) {
+    throw UnimplementedError('iosSetNFCType() has not been implemented.');
+  }
+}

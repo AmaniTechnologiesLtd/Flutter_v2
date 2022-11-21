@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="auto_selfie_text">#000000</color>
+    <color name="auto_selfie_counter_text">#000000</color>
+    <color name="auto_selfie_oval_view">#000000</color>
+    <color name="auto_selfie_success_anim">#000000</color>
+</resources>

@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_amanisdk_v2/amani_sdk.dart';
+import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
+
+class SelfieScreen extends StatefulWidget {
+  const SelfieScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SelfieScreen> createState() => _SelfieScreenState();
+}
+
+class _SelfieScreenState extends State<SelfieScreen> {
+  final _amaniSelfie = AmaniSDK().getSelfie();
+
+  static const routeName = "/selfie";
+
+  Future<void> initSDK() async {
+    await _amaniSelfie.setType("XXX_SE_0");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initSDK();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: const Text("Selfie"),
+      ),
+      body: Center(
+        child: OutlinedButton(
+          onPressed: () async {
+            await _amaniSelfie.start().then((imageData) {
+              Navigator.pushNamed(context, ConfirmScreen.routeName,
+                  arguments:
+                      ConfirmArguments(source: "selfie", imageData: imageData));
+            }).catchError((err) {
+              throw Exception(err);
+            });
+          },
+          child: const Text('Start Selfie'),
+        ),
+      ),
+    );
+  }
+}

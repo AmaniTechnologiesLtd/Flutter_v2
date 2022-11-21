@@ -1,0 +1,19 @@
+rootProject.name = 'flutter_amanisdk_v2'
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = "https://jfrog.amani.ai/artifactory/amani-sdk"
+        }
+    }
+}
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
