@@ -13,4 +13,10 @@
     <color name="pose_estimation_alert_try_again">#000000</color>
     <color name="pose_estimation_alert_background">#000000</color>
     <color name="pose_estimation_font">#000000</color>
+
+    <color name="biologin_manual_selfie_font">#000000</color>
+    <color name="biologin_manual_selfie_button">#000000</color>
+    <color name="biologin_manual_selfie_oval_view">#000000</color>
+    <color name="biologin_manual_selfie_background">#000000</color>
+
 </resources>

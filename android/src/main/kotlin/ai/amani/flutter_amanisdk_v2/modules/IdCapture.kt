@@ -26,45 +26,49 @@ class IdCapture : Module {
             return
         }
 
-        var side: Boolean = stepID == 0
+        val side: Boolean = stepID == 0
 
         (activity as FragmentActivity)
-        var id = 0x123456
-        var context = activity.applicationContext
-        var viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        var container = FrameLayout(context)
+        val id = 0x123456
+        val context = activity.applicationContext
+        val viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val container = FrameLayout(context)
         container.id = id
         activity.addContentView(container, viewParams)
 
-        frag = idCaptureModule.start(activity, container, docType!!, side) { bitmap, b, file ->
-            if (file != null) {
-                Log.d("AmaniSDK-FILE", "file found")
-                var fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                var allocate: ByteBuffer = ByteBuffer.allocate(fileBitmap.byteCount)
-                fileBitmap.copyPixelsToBuffer(allocate)
-                val array: ByteArray = allocate.array()
-                result.success(array)
-            } else if (bitmap != null) {
-                Log.d("AmaniSDK-FILE", "byte[] found")
-                val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-                bitmap.copyPixelsToBuffer(allocate)
-                val array: ByteArray = allocate.array()
-                result.success(array)
-            } else {
-                result.error("1006", "Nothing returned from idCapture.start", null)
+        frag = idCaptureModule.start(activity, container, docType!!, side) { bitmap, _, file ->
+            when {
+                file != null -> {
+                    Log.d("AmaniSDK-FILE", "file found")
+                    val fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    val allocate: ByteBuffer = ByteBuffer.allocate(fileBitmap.byteCount)
+                    fileBitmap.copyPixelsToBuffer(allocate)
+                    val array: ByteArray = allocate.array()
+                    result.success(array)
+                }
+                bitmap != null -> {
+                    Log.d("AmaniSDK-FILE", "byte[] found")
+                    val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
+                    bitmap.copyPixelsToBuffer(allocate)
+                    val array: ByteArray = allocate.array()
+                    result.success(array)
+                }
+                else -> {
+                    result.error("1006", "Nothing returned from idCapture.start", null)
+                }
             }
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
         }
 
-        var fragmentManager = activity.supportFragmentManager
+        val fragmentManager = activity.supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(id, frag!!)
                 .commitAllowingStateLoss()
     }
 
-    override fun upload(useLocation: Boolean, activity: Activity, result : Result) {
-        idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, s, _ ->
-            if (isSuccess != null) {
+    override fun upload(activity: Activity, result : Result) {
+        idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, s, errors ->
+            if (errors == null) {
                 result.success(isSuccess)
             } else {
                 result.error("1006", "Upload failure", s)

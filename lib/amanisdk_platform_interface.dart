@@ -138,4 +138,63 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   Future<void> iosSetNFCType(String type) {
     throw UnimplementedError('iosSetNFCType() has not been implemented.');
   }
+
+  // Android NFC Capture
+  Future<void> androidStartNFCListener(
+      {required String birthDate,
+      required String expireDate,
+      required String documentNo}) {
+    throw UnimplementedError(
+        'androidStartNFCListener() has not been implemented.');
+  }
+
+  Future<void> androidDisableNFCListener() {
+    throw UnimplementedError(
+        'androidDisableNFCListener() has not been implemented.');
+  }
+
+  Future<void> androidSetNFCType(String type) {
+    throw UnimplementedError('androidSetNFCType() has not been implemented.');
+  }
+
+  Future<bool> androidUploadNFC() {
+    throw UnimplementedError('androidUploadNFC() has not been implemented.');
+  }
+
+  // BioLogin
+  Future<void> initBioLogin(
+      {required String server,
+      required String token,
+      required String customerId,
+      required String attemptId,
+      int? source,
+      int? comparisonAdapter,
+      String? sharedSecret}) {
+    throw UnimplementedError('initBioLogin() has not been implemented.');
+  }
+
+  Future<dynamic> startBioLoginWithAutoSelfie(
+      {required IOSAutoSelfieSettings iosSettings,
+      required AndroidAutoSelfieSettings androidSettings}) {
+    throw UnimplementedError(
+        'startBioLoginWithAutoSelfie() has not been implemented.');
+  }
+
+  Future<dynamic> startBioLoginWithPoseEstimation({
+    required IOSPoseEstimationSettings iosSettings,
+    required AndroidPoseEstimationSettings androidSettings,
+  }) {
+    throw UnimplementedError(
+        'startBioLoginWithPoseEstimation() has not been implemented.');
+  }
+
+  Future<dynamic> startBioLoginWithManualSelfie(
+      {required String androidSelfieDescriptionText}) {
+    throw UnimplementedError(
+        'startBioLoginWithManualSelfie() has not been implemented.');
+  }
+
+  Future<bool> uploadBioLogin() {
+    throw UnimplementedError('uploadBioLogin() has not been implemented.');
+  }
 }

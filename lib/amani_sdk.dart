@@ -1,6 +1,8 @@
 import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
 import 'package:flutter_amanisdk_v2/modules/auto_selfie.dart';
+import 'package:flutter_amanisdk_v2/modules/bio_login.dart';
 import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
+import 'package:flutter_amanisdk_v2/modules/nfc_capture_android.dart';
 import 'package:flutter_amanisdk_v2/modules/nfc_capture_ios.dart';
 import 'package:flutter_amanisdk_v2/modules/pose_estimation.dart';
 import 'package:flutter_amanisdk_v2/modules/selfie.dart';
@@ -28,8 +30,19 @@ class AmaniSDK {
     return PoseEstimation(_methodChannel);
   }
 
+  /// Returns [IOSNFCCapture] module
   IOSNFCCapture getIOSNFCCapture() {
     return IOSNFCCapture(_methodChannel);
+  }
+
+  /// Returns [AndroidNFCCapture] module
+  AndroidNFCCapture getAndroidNFCCapture() {
+    return AndroidNFCCapture(_methodChannel);
+  }
+
+  /// Returns [BioLogin] module
+  BioLogin getBioLogin() {
+    return BioLogin(_methodChannel);
   }
 
   /// Initializes the SDK

@@ -5,10 +5,9 @@ import ai.amani.flutter_amanisdk_v2.modules.config_models.AutoSelfieSettings
 import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
 import android.app.Activity
-import android.content.Intent
 import androidx.annotation.NonNull
 import io.flutter.Log
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -17,8 +16,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.JSONUtil
-import io.flutter.plugin.common.PluginRegistry
 
 /** FlutterAmanisdkV2Plugin */
 class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -27,28 +24,28 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel: MethodChannel
-
   // Give this reference to other modules e.g IdCapture when init.
   private var activity: Activity? = null
-
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_method_channel")
     channel.setMethodCallHandler(this)
+    // When the NFC reading is done, this plugin runs the callback over from the method channel.
+    // Yes. MethodChannel is bi-directional.
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
 
     when (call.method) {
       "initAmani" -> {
-        val server = call.argument<String>("server")
-        val customerIdCardNumber = call.argument<String>("customerIdCardNumber");
-        val customerToken = call.argument<String>("customerToken")
-        val lang = call.argument<String>("lang")
-        val useLocation = call.argument<Boolean>("useLocation")
-        val sharedSecret = call.argument<String?>("sharedSecret")
+        val server = call.argument<String>("server")!!
+        val customerIdCardNumber = call.argument<String>("customerIdCardNumber")!!
+        val customerToken = call.argument<String>("customerToken")!!
+        val lang = call.argument<String>("lang")!!
+        val useLocation = call.argument<Boolean>("useLocation")!!
+        val sharedSecret = call.argument<String>("sharedSecret")
 
-        initAmani(server!!, customerToken!!, customerIdCardNumber!!, lang!!, useLocation!!, sharedSecret, result)
+        initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, result)
       }
       // IdCapture
       "setIDCaptureType" -> {
@@ -64,8 +61,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         }
       }
       "uploadIDCapture" -> {
-        val useLocation = call.argument<Boolean>("useLocation")
-        IdCapture.instance.upload(useLocation!!, activity!!, result)
+        IdCapture.instance.upload(activity!!, result)
       }
       // Selfie
       "setSelfieType" -> {
@@ -76,8 +72,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         Selfie.instance.start(0, activity!!, result)
       }
       "uploadSelfie" -> {
-        val useLocation = call.argument<Boolean>("useLocation")
-        Selfie.instance.upload(useLocation!!, activity!!, result)
+        Selfie.instance.upload( activity!!, result)
       }
       // AutoSelfie
       "startAutoSelfie" -> {
@@ -93,8 +88,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         AutoSelfie.instance.setType(type, result)
       }
       "uploadAutoSelfie" -> {
-        val useLocation = call.argument<Boolean>("useLocation")
-        Selfie.instance.upload(useLocation!!, activity!!, result)
+       AutoSelfie.instance.upload(activity!!, result)
       }
       // Pose Estimation
       "startPoseEstimation" -> {
@@ -110,11 +104,66 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         PoseEstimation.instance.setType(type, result)
       }
       "uploadPoseEstimation" -> {
-        val useLocation = call.argument<Boolean>("useLocation")
-        PoseEstimation.instance.upload(useLocation!!, activity!!, result)
+        PoseEstimation.instance.upload(activity!!, result)
+      }
+      "androidStartNFC" -> {
+        val birthDate = call.argument<String>("birthDate")
+        val expireDate = call.argument<String>("expireDate")
+        val documentNo = call.argument<String>("documentNo")
+
+        if (birthDate == null || expireDate == null || documentNo == null) {
+          result.error("Missing Params", "You must give all the parameters", null)
+          return
+        }
+
+
+        NFC.instance.start(birthDate, expireDate, documentNo, activity!!, channel, result)
+      }
+      "androidDisableNFC" -> {
+        NFC.instance.disableNFC(activity as FlutterFragmentActivity)
+        result.success(null)
+      }
+      "androidSetNFCType" -> {
+        val type = call.argument<String>("type")
+        if (type != null) {
+          NFC.instance.setType(type, result)
+        }
+      }
+      "androidUploadNFC" -> {
+        NFC.instance.upload(result)
+      }
+      "initBioLogin" -> {
+        val server = call.argument<String>("server")!!
+        val sharedSecret = call.argument<String>("sharedSecret")
+        val token = call.argument<String>("token")!!
+        val customerId = call.argument<String>("customerId")
+
+        BioLogin.instance.initBioLogin(server, sharedSecret, token, customerId!!.toInt(), activity!!, result)
+      }
+      "startBioLoginWithAutoSelfie" -> {
+        val androidSettings = call.argument<String>("androidSettings")
+        if (androidSettings != null) {
+          val model = androidSettings.toObject<AutoSelfieSettings>()
+          BioLogin.instance.startWithAutoSelfie(model, activity!!, result)
+        } else result.error("Missing Settings", "You must give all the parameters", null)
+      }
+      "startBioLoginWithPoseEstimation" -> {
+        val androidSettings = call.argument<String>("androidSettings")
+        if(androidSettings != null) {
+          val model = androidSettings.toObject<PoseEstimationSettings>()
+          BioLogin.instance.startWithPoseEstimation(model, activity!!, result)
+        } else result.error("Missing Settings", "You must give all the parameters", null)
+      }
+      "startBioLoginWithManualSelfie" -> {
+        val selfieDescriptionText = call.argument<String>("androidSelfieDescriptionText")!!
+        BioLogin.instance.startWithManualSelfie(selfieDescriptionText, activity!!, result)
+      }
+      "uploadBioLogin" -> {
+        BioLogin.instance.upload(result)
       }
       else -> result.notImplemented()
     }
+
 
   }
 
@@ -126,10 +175,6 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
-    if(NFC.instance.canStart()) {
-      NFC.instance.bind(binding.activity as FlutterActivity)
-      NFC.instance.enableNFCAdaptor(binding.activity as FlutterActivity)
-    }
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
@@ -138,23 +183,13 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
     activity = binding.activity
-
-    // start the nfc adapter if can start NFC is true
-    // FIXME: This won't work. Start a new activity.
-    NFC.instance.enableNFCAdaptor(binding.activity as FlutterActivity)
-
-    binding.addOnNewIntentListener { intent ->
-      NFC.instance.onNewIntentHandler(intent)
-      true
-    }
-
   }
 
   override fun onDetachedFromActivity() {
     activity = null
   }
 
-  fun initAmani(server: String,
+  private fun initAmani(server: String,
                 customerToken: String,
                 customerIdCardNumber: String,
                 lang: String,

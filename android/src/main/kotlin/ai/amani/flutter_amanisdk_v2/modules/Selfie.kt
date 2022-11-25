@@ -60,7 +60,7 @@ class Selfie: Module {
 
     }
 
-    override fun upload(useLocation: Boolean, activity: Activity, result: MethodChannel.Result) {
+    override fun upload(activity: Activity, result: MethodChannel.Result) {
         selfieModule.upload((activity as FragmentActivity), docType) { isSuccess, s, _ ->
             if(isSuccess != null) {
                 result.success(isSuccess)

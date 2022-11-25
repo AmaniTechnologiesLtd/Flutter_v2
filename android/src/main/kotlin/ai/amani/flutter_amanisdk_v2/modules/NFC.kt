@@ -9,19 +9,22 @@ import android.graphics.Bitmap
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Build
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.plugin.common.MethodCall
+import android.util.Log
+import androidx.fragment.app.FragmentActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodChannel
+import kotlin.math.exp
 
+// TODO: Refactor this whole class after you check it's working or not.
 class NFC {
     private val NFCModule = Amani.sharedInstance().ScanNFC()
-    private val docType: String = "XXX_NF_0"
+    private var docType: String = "XXX_NF_0"
     private var currentResult: MethodChannel.Result? = null
     private var nfcAdapter: NfcAdapter? = null
-    private val FLAG_MUTABLE = 1 shl 25
-    private val VERSION_CODES_S = 31
+//    private val FLAG_MUTABLE = 1 shl 25
+//    private val VERSION_CODES_S = 31
 
-    private var activityRef: FlutterActivity? = null
+    private var activityRef: Activity? = null
 
     private var birthDate: String? = null
     private var expireDate: String? = null
@@ -31,54 +34,54 @@ class NFC {
         val instance = NFC()
     }
 
-    fun canStart(): Boolean {
-        return birthDate != null && expireDate != null && documentNo != null && currentResult != null
-    }
+//    fun canStart(): Boolean {
+//        return birthDate != null && expireDate != null && documentNo != null && currentResult != null
+//    }
 
-    fun start(birthDate: String, expireDate: String, documentNo: String, result: MethodChannel.Result) {
+    @SuppressLint("WrongConstant")
+    fun start(birthDate: String, expireDate: String, documentNo: String, activity: Activity, channel: MethodChannel, result: MethodChannel.Result) {
         this.birthDate = birthDate
         this.expireDate = expireDate
         this.documentNo = documentNo
-        currentResult = result
-    }
+        this.activityRef = activity
 
-    fun bind(activity: FlutterActivity) {
-        activityRef = activity
-    }
-
-    fun onNewIntentHandler(intent: Intent) {
-        if (!canStart()) { return }
-        val tag = intent.extras!!.getParcelable<Tag>(NfcAdapter.EXTRA_TAG)
-        Amani.sharedInstance().ScanNFC().start(tag, activityRef!!.applicationContext,
-                birthDate!!,
-                expireDate!!,
-                documentNo!!) { _: Bitmap, isSuccess: Boolean, exception: String? ->
-                if (isSuccess) {
-                    currentResult!!.success(true)
-                } else if (exception != null) {
-                    currentResult!!.error("NFCReadError", exception, null)
-                }
-        }
-    }
-
-    @SuppressLint("WrongConstant")
-    fun enableNFCAdaptor(activity: FlutterActivity) {
-        if (nfcAdapter != null) { return }
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
         if (nfcAdapter != null) {
-
-            val pendingIntent = if (Build.VERSION.SDK_INT >= VERSION_CODES_S) {
-                PendingIntent.getActivity(activity, 0, Intent(activity, javaClass)
-                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), FLAG_MUTABLE)
-            } else{
-                PendingIntent.getActivity(activity, 0, Intent(activity, javaClass)
-                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
-            }
-
+            val intent = Intent(activity.applicationContext, this.javaClass)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             val filter = arrayOf(arrayOf("android.nfc.tech.IsoDep"))
             nfcAdapter!!.enableForegroundDispatch(activity, pendingIntent, null, filter)
+            nfcAdapter!!.enableReaderMode(activity, {
+                NFCModule.start(it, activity.applicationContext, birthDate, expireDate, documentNo) { _: Bitmap?, isSuccess: Boolean, exception: String? ->
+                    if(isSuccess && exception == null) {
+                        channel.invokeMethod("onNFCCompleted", mapOf("isSuccess" to isSuccess))
+                    } else {
+                        channel.invokeMethod("onError", mapOf("message" to exception!!))
+                    }
+                }
+            }, NfcAdapter.FLAG_READER_NFC_A, null)
         }
+        result.success(null)
+    }
 
+    fun disableNFC(activity: FlutterFragmentActivity) {
+        nfcAdapter!!.disableReaderMode(activity)
+    }
+
+    fun setType(type: String, result: MethodChannel.Result) {
+        docType = type
+        result.success(null)
+    }
+
+    fun upload(result: MethodChannel.Result) {
+        Amani.sharedInstance().ScanNFC().upload(activityRef as FragmentActivity, docType) { isSuccess, _, _ ->
+            if (isSuccess != null) {
+                result.success(isSuccess)
+            } else {
+                result.error("Upload Failure", "Upload failure", null)
+            }
+        }
     }
 
 }

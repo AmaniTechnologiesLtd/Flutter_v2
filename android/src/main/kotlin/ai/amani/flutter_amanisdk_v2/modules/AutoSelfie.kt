@@ -81,8 +81,8 @@ class AutoSelfie: Module {
                 .commitAllowingStateLoss()
     }
 
-    override fun upload(useLocation: Boolean, activity: Activity, result: MethodChannel.Result) {
-        autoSelfieModule.upload((activity as FragmentActivity), docType!!) { isSuccess, s, _ ->
+    override fun upload(activity: Activity, result: MethodChannel.Result) {
+        autoSelfieModule.upload((activity as FragmentActivity), docType) { isSuccess, s, _ ->
             if(isSuccess != null) {
                 result.success(isSuccess)
             } else {

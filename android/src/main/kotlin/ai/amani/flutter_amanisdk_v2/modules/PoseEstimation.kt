@@ -69,14 +69,14 @@ class PoseEstimation: Module {
                 settings!!.alertDescription,
                 settings!!.alertTryAgain
         ).userInterfaceColors(
-                R.color.pose_estimation_oval_view_start,
-                R.color.pose_estimation_oval_view_success,
-                R.color.pose_estimation_oval_view_error,
-                R.color.pose_estimation_alert_title,
-                R.color.pose_estimation_alert_description,
-                R.color.pose_estimation_alert_try_again,
-                R.color.pose_estimation_alert_background,
-                R.color.pose_estimation_font,
+                ovalViewStartColor = R.color.pose_estimation_oval_view_start,
+                ovalViewSuccessColor = R.color.pose_estimation_oval_view_success,
+                ovalViewErrorColor =  R.color.pose_estimation_oval_view_error,
+                alertTitleFontColor = R.color.pose_estimation_alert_title,
+                alertDescriptionFontColor = R.color.pose_estimation_alert_description,
+                alertTryAgainFontColor = R.color.pose_estimation_alert_try_again,
+                alertBackgroundFontColor = R.color.pose_estimation_alert_background,
+                appFontColor =  R.color.pose_estimation_font,
         ).observe(observer).build(activity)
 
         (activity as FragmentActivity)
@@ -92,12 +92,12 @@ class PoseEstimation: Module {
                 .commitAllowingStateLoss()
     }
 
-    override fun upload(useLocation: Boolean, activity: Activity, result: MethodChannel.Result) {
-        poseEstimationModule.upload(activity!!, docType) { isSuccess, s, _ ->
-            if (isSuccess != null) {
+    override fun upload(activity: Activity, result: MethodChannel.Result) {
+        poseEstimationModule.upload(activity, docType) { isSuccess, _, errors ->
+            if (errors == null) {
                 result.success(isSuccess)
             } else {
-                result.error("1006", "Upload failure", null)
+                result.error("Upload Failure", "Upload failure", null)
             }
         }
     }

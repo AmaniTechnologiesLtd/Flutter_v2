@@ -2,6 +2,7 @@ import AmaniSDK
 import Flutter
 
 public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
+    
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "amanisdk_method_channel", binaryMessenger: registrar.messenger())
     let instance = SwiftFlutterAmanisdkV2Plugin()
@@ -129,6 +130,33 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       } else {
         result(FlutterError(code: "NotAvailable", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
       }
+    case "initBioLogin":
+        let bioLogin = BioLogin.shared
+        bioLogin.initBioLogin(server: arguments!["server"] as! String,
+                              token: arguments!["token"] as! String,
+                              customerId: arguments!["customerId"] as! String,
+                              attemptId: arguments!["attemptId"] as! String,
+                              source: arguments!["source"] as? Int,
+                              comparisonAdapter: arguments!["comparisonAdapter"] as? Int,
+                              result: result)
+    case "startBioLoginWithAutoSelfie":
+        let bioLogin = BioLogin.shared
+        let decoder = JSONDecoder()
+        let iosArgs = arguments?["iosSettings"] as! String
+        let autoSelfieSettings = try! decoder.decode(AutoSelfieSettings.self, from: Data(iosArgs.utf8))
+        bioLogin.startWithAutoSelfie(settings: autoSelfieSettings, result: result)
+    case "startBioLoginWithPoseEstimation":
+        let bioLogin = BioLogin.shared
+        let decoder = JSONDecoder()
+        let iosArgs = arguments!["iosSettings"] as! String
+        let poseEstimationSettings = try! decoder.decode(PoseEstimationSettings.self, from: Data(iosArgs.utf8))
+        bioLogin.startWithPoseEstimation(settings: poseEstimationSettings, result: result)
+    case "startBioLoginWithManualSelfie":
+        let bioLogin = BioLogin.shared
+        bioLogin.startWithManualSelfie(result: result)
+    case "uploadBioLogin":
+        let bioLogin = BioLogin.shared
+        bioLogin.upload(result: result)
     default:
       result(FlutterMethodNotImplemented)
     }

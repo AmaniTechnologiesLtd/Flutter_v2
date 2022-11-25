@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_amanisdk_v2/amani_sdk.dart';
 import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
 

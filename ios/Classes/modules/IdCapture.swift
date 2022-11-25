@@ -49,7 +49,6 @@ class IdCapture {
   
   public func upload(result: @escaping FlutterResult) {
     module.upload { (isSuccess, error) in
-      print("IDCapture Upload", isSuccess, error)
       if let error = error {
         result(FlutterError(code: "UploadError", message: error.first?.error_message, details: nil))
       } else {

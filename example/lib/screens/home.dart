@@ -10,14 +10,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
-    await AmaniSDK()
+    AmaniSDK()
         .initAmani(
-            server: "https://demo.amani.ai",
-            customerToken:
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMCwiZXhwIjoxNjY5NjI2MTQ2LCJ1c2VybmFtZSI6Im1vYmlsZV90ZWFtQGFtYW5pLmFpIn0.xeHw-iJ6dPfpHy_2J0EPdbGvmSdoT2mu0epPENz_TsA",
-            customerIdCardNumber: "1234678",
-            useLocation: true,
-            lang: "tr")
+            server: "server_url",
+            customerToken: "customer_token from the back end",
+            customerIdCardNumber: "",
+            useLocation: true, // Use location when uploading customer data
+            lang: "tr" // two letter language code
+            )
         .then((value) => print(value))
         .catchError((err) {
       throw Exception(err);
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const Text('Pose Estimation')),
                 OutlinedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/nfc-ios');
+                      Navigator.pushNamed(context, '/nfc');
                     },
                     child: const Text('NFC'))
               ]),

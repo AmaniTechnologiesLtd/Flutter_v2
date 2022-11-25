@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
 import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
@@ -14,7 +13,6 @@ import 'common/models/nvi_data.dart';
 /// An implementation of [AmaniSDKPlatform] that uses method channels.
 class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   /// The method channel used to interact with the native platform.
-  @visibleForTesting
   final methodChannel = const MethodChannel('amanisdk_method_channel');
 
   @override
@@ -214,5 +212,90 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   @override
   Future<void> iosSetNFCType(String type) async {
     await methodChannel.invokeMethod('iOSsetNFCType', {"type": type});
+  }
+
+  // NFC Capture For Android
+  @override
+  Future<void> androidStartNFCListener(
+      {required String birthDate,
+      required String expireDate,
+      required String documentNo}) async {
+    await methodChannel.invokeMethod('androidStartNFC', {
+      "birthDate": birthDate,
+      "expireDate": expireDate,
+      "documentNo": documentNo
+    });
+  }
+
+  @override
+  Future<void> androidDisableNFCListener() async {
+    await methodChannel.invokeMethod('androidDisableNFC');
+  }
+
+  @override
+  Future<void> androidSetNFCType(String type) async {
+    await methodChannel.invokeMethod('androidSetNFCType', {"type": type});
+  }
+
+  @override
+  Future<bool> androidUploadNFC() async {
+    final bool isDone =
+        await methodChannel.invokeMethod('androidUploadNFC').catchError((err) {
+      throw Exception(err);
+    });
+    return isDone;
+  }
+
+  // BioLogin
+  @override
+  Future<void> initBioLogin(
+      {required String server,
+      required String token,
+      required String customerId,
+      required String attemptId,
+      int? source,
+      int? comparisonAdapter,
+      String? sharedSecret}) {
+    return methodChannel.invokeMethod("initBioLogin", {
+      "server": server,
+      "token": token,
+      "customerId": customerId,
+      "attemptId": attemptId,
+      "source": source,
+      "comparisonAdapter": comparisonAdapter,
+      "sharedSecret": sharedSecret,
+    });
+  }
+
+  @override
+  Future<dynamic> startBioLoginWithAutoSelfie(
+      {required IOSAutoSelfieSettings iosSettings,
+      required AndroidAutoSelfieSettings androidSettings}) {
+    return methodChannel.invokeMethod("startBioLoginWithAutoSelfie", {
+      "iosSettings": jsonEncode(iosSettings),
+      "androidSettings": jsonEncode(androidSettings)
+    });
+  }
+
+  @override
+  Future<dynamic> startBioLoginWithPoseEstimation(
+      {required IOSPoseEstimationSettings iosSettings,
+      required AndroidPoseEstimationSettings androidSettings}) {
+    return methodChannel.invokeMethod("startBioLoginWithPoseEstimation", {
+      "iosSettings": jsonEncode(iosSettings),
+      "androidSettings": jsonEncode(androidSettings)
+    });
+  }
+
+  @override
+  Future<dynamic> startBioLoginWithManualSelfie(
+      {required String androidSelfieDescriptionText}) {
+    return methodChannel.invokeMethod("startBioLoginWithManualSelfie",
+        {"androidSelfieDescriptionText": androidSelfieDescriptionText});
+  }
+
+  @override
+  Future<bool> uploadBioLogin() {
+    return methodChannel.invokeMethod("uploadBioLogin") as Future<bool>;
   }
 }
