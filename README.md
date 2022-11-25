@@ -1,7 +1,7 @@
 # Amani low level SDK bindings for flutter
 This repository contains flutter bindings for our [Android](https://github.com/AmaniTechnologiesLtd/Android_SDK_V2_Public) and [iOS](https://github.com/AmaniTechnologiesLtd/IOS_SDK_V2_Public) SDK's.
 
-On the [example folder](#link-here) you can find a close to real world solution on how to use this SDK.
+On the [example folder](https://github.com/AmaniTechnologiesLtd/Flutter_v2/tree/main/example) you can find a close to real world solution on how to use this SDK.
 
 ### Requirements
 - iOS 11 or later (13 for NFC Capture)
@@ -23,6 +23,7 @@ On the [example folder](#link-here) you can find a close to real world solution 
         - [NFC Capture on Android](#nfc-capture-on-android)
         - [NFC Capture on iOS](#nfc-capture-on-ios)
     - [Bio login](#bio-login)
+ - [F.A.Q](#faq)
 ## Installation
 Before installing this SDK we must meet some requirements for your app to build with our native SDK's.
 
@@ -43,7 +44,7 @@ rootProject.allprojects {
 On the same file add our SDK to dependencies
 ```groovy
 dependencies {
-    implementation 'ai.amani.android:AmaniAi:2.1.50' // add this line
+    implementation 'ai.amani.android:AmaniAi:2.1.51' // add this line
 }
 ```
 
@@ -154,10 +155,9 @@ CryptoTokenKit.framework
 ### Adding the flutter plugin 
 To add this flutter plugin you must add the lines below to your `pubspec.yaml` file.
 
-// MARK: Edit THIS after you got repo information
 ```yaml
 amanisdk:
-    git: https://github.com/AmaniTechnologiesLtd/Flutter_SDK_v2_Public
+    git: https://github.com/AmaniTechnologiesLtd/Flutter_v2
 ```
 
 ## Usage
@@ -667,4 +667,25 @@ Image.memory(
             width: double.infinity,
             height: 450,
           ),
+```
+
+#### How to acquire customer token for using this SDK
+1- On the server side, you need to log in with your credentials and get a token for the next steps. This token should be used only on server-side requests not used on Web SDK links.
+```bash
+curl --location --request POST 'https://demo.amani.ai/api/v1/user/login/' \
+
+- -form 'email="user@account.com"' \
+- -form 'password="password"'
+```
+2- Get or Create a customer using the request below. If there is no customer new one is created if there is a customer already created with this ID Card Number it will be returned.
+
+This request will return a customer token that has a short life span and is valid only for this customer. Use this token to initialize Web SDK.
+```
+curl --location --request POST 'https://demo.amani.ai/api/v1/customer' \
+
+- -header 'Authorization: TOKEN use_your_admin_token_here' \
+- -form 'id_card_number="Customer_ID_Card_Number"'\ (Required)
+- -form 'name="Customer Name"' \ (Optional)
+- -form 'email="Customer Email"' \ (Optional)
+- -form 'phone="Customer Phone"' (Optional)
 ```
