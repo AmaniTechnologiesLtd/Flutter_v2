@@ -447,6 +447,71 @@ Due to differences in Android and iOS SDK's we had to seperate the NFC capture m
 #### NFC capture on Android
 Android has single method for starting NFC Capture while there are multiple options to start the NFC Capture on iOS.
 
+This process requires some parameters from the id itself. All date formats must be in `YYMMDD`. 
+For example, `September 1st 1999` becomes `990901`.
+
+Also you must stop the NFC listener on the `dispose()` method of your widget. You can also achive this on the `onFinishedCallback` parameter of `startNFCListener` method of `AndroidNFCCapture` class if you're calling this method from a stateless widget.
+
+The example below uses statefull widget.
+```dart
+  Future<void> stopNFCListener() async {
+    _nfcCapture.stopNFCListener();
+  }
+
+  Future<void> setNFCType() async {
+    _nfcCapture.setType("XXX_NF_0");
+  }
+
+  @override
+  void initState() {
+    setNFCType();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    stopNFCListener();
+    super.dispose();
+  }
+```
+
+Starting the capture
+```dart
+OutlinedButton(
+    onPressed: () {
+      if (_dateOfBirth != "" &&
+          _expireDate != "" &&
+          _documentNo != "") {
+        _nfcCapture.startNFCListener(
+            birthDate: _dateOfBirth,
+            expireDate: _expireDate,
+            documentNo: _documentNo,
+            onFinishedCallback: (isCaptureCompleted) {
+              setState(() {
+                _isCompleted = isCaptureCompleted;
+              });
+            });
+      }
+    },
+    child:
+        const Text("NVI Data Start (fields must be filled)"))
+```
+
+
+To upload you can call the upload method like this
+
+```dart
+OutlinedButton(
+    onPressed: () {
+      if (_isCompleted == false) {
+        return;
+      } else {
+        _nfcCapture.upload();
+      }
+    },
+    child: const Text("Upload (last step)"))
+```
+
 
 #### NFC capture on iOS
 Native iOS SDK has different ways to start NFC Capture, but on the native Android you can only start with some fields that can found on the MRZ of the ID. 
@@ -473,9 +538,9 @@ OutlinedButton(
     },
     child: const Text("Image Data Start")
 )
+
 ```
-// MARK: Correctness.
-If you want to use the NFC data as NFC Document. Call the `setType` method with `XXX_NF_0` and run the methods from this module. 
+If you want to use the NFC data as NFC Document, use this module. If you want to 
 **Anything related to IDCapture, including the NFC data must be called from the id capture.**
 
 ```dart
@@ -493,6 +558,7 @@ OutlinedButton(
 ```
 
 You can also start this module with some data on the id itself.
+
 ```dart
 OutlinedButton(
     onPressed: () {
@@ -532,4 +598,73 @@ void iosStartNFCCapture() {
 ```
 
 ### Bio login
-This SDK also contains methods for biologin. You don't need to call `initAmani` method from the `AmaniSDK` class for running this.
+This SDK also contains methods for biologin. You don't need to call `initAmani` method from the `AmaniSDK` class for running this **as the Biologin is hosted on a different server.**
+
+#### Initializing the bio login module
+
+```dart
+// Since the platform modules are async call on initState() 
+Future<void> initBioLogin() async {
+    await _bioLogin.init(
+        server: "server",
+        token: "bio login token to be used on bio login",
+        customerId: "amani id of the customer",
+        attemptId: "id of the current attempt");
+  }
+
+  @override
+  void initState() {
+    initBioLogin();
+    super.initState();
+  }
+```
+
+After the initialization, you can call the one of the methods below to start bio login process
+#### Starting with AutoSelfie
+For the parameters check out [usage section on auto selfie.](#auto-selfie-usage).
+
+```dart
+OutlinedButton(
+    onPressed: () {
+      _bioLogin.startWithAutoSelfie(
+          iosAutoSelfieSettings: _iOSAutoSelfieSettings,
+          androidAutoSelfieSettings: _androidAutoSelfieSettings);
+    },
+    child: const Text("Start AutoSelfie BioLogin"))
+```
+#### Starting with Pose Estimation 
+
+For the parameters check out [usage section on pose estimation.](#pose-estimation-usage).
+```dart
+OutlinedButton(
+    onPressed: () {
+      _bioLogin.startWithPoseEstimation(
+          iosPoseEstimationSettings: _iosPoseEstimationSettings,
+          androidPoseEstimationSettings:
+              _androidPoseEstimationSettings);
+    },
+    child: const Text("Start PoseEstimation BioLogin")),
+```
+
+#### Starting with Manual Selfie
+```dart
+OutlinedButton(
+    onPressed: () {
+      _bioLogin.startWithManualSelfie(
+          androidSelfieDescriptionText: "Take a selfie to log in");
+    },
+    child: const Text("Start Manual Selfie BioLogin")),
+```
+### F.A.Q.
+#### How to use Uint8List image data to render images.
+
+Just use the `Image.memory(data)` to render image and set width, height and other properties that you can give to `Image` widget with it. For example:
+
+```dart
+Image.memory(
+            imageData,
+            fit: BoxFit.contain,
+            width: double.infinity,
+            height: 450,
+          ),
+```
