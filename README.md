@@ -222,6 +222,7 @@ onPressed: () async {
 
 After getting the image data from the SDK, you can use it with `Image.memory()`.
 
+If you want to use NFC Capture after the ID capture on iOS check out [this section](#small-note-for-id-capture-on-ios)
 ### Selfie Module
 Get the selfie module from the main `AmaniSDK` [instance which you have previously initialized.](#usage)
 
