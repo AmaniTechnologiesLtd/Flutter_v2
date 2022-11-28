@@ -156,8 +156,9 @@ CryptoTokenKit.framework
 To add this flutter plugin you must add the lines below to your `pubspec.yaml` file.
 
 ```yaml
-amanisdk:
-    git: https://github.com/AmaniTechnologiesLtd/Flutter_v2
+flutter_amanisdk_v2:
+  git:
+    url: https://github.com/AmaniTechnologiesLtd/Flutter_v2
 ```
 
 ## Usage
