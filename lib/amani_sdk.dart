@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
 import 'package:flutter_amanisdk_v2/modules/auto_selfie.dart';
 import 'package:flutter_amanisdk_v2/modules/bio_login.dart';
@@ -66,9 +68,21 @@ class AmaniSDK {
     /// Optional shared secret
     String? sharedSecret,
   }) async {
+    String serverURL = "";
+    if (server.endsWith("/") == false) {
+      throw Exception("Server url shouldn't end without trailing slash.");
+    }
+    if (server.endsWith("/api/v1/") && Platform.isAndroid) {
+      serverURL = server;
+    } else if (server.endsWith("/api/v1/") && Platform.isIOS) {
+      serverURL = server.replaceAll("/api/v1/", server);
+    }
+    if (!server.endsWith("/api/v1/") && Platform.isAndroid) {
+      serverURL = "$server/api/v1/";
+    }
     try {
       var login = await _methodChannel.initAmani(
-          server: server,
+          server: serverURL,
           customerToken: customerToken,
           customerIdCardNumber: customerIdCardNumber,
           lang: lang,
