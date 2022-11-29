@@ -69,7 +69,7 @@ class AmaniSDK {
     String? sharedSecret,
   }) async {
     String serverURL = "";
-    if (server.endsWith("/") == false) {
+    if (server.endsWith("/")) {
       throw Exception("Server url shouldn't end without trailing slash.");
     }
     if (server.endsWith("/api/v1/") && Platform.isAndroid) {
