@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 class PoseEstimation: Module {
@@ -47,10 +48,9 @@ class PoseEstimation: Module {
                 (activity as FragmentActivity).supportFragmentManager.
                 beginTransaction().remove(frag!!).commitAllowingStateLoss()
                 if (bitmap != null) {
-                    val buffer = ByteBuffer.allocate(bitmap.byteCount)
-                    bitmap.copyPixelsToBuffer(buffer)
-                    val array: ByteArray = buffer.array()
-                    result.success(array)
+                   val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    result.success(stream.toByteArray())
                 } else {
                     result.error("1006", "Nothing returned from poseEstimation.start", null)
                 }

@@ -2,6 +2,7 @@ package ai.amani.flutter_amanisdk_v2.modules
 
 import ai.amani.sdk.Amani
 import android.app.Activity
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel.Result
+import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 
@@ -37,21 +39,27 @@ class IdCapture : Module {
         activity.addContentView(container, viewParams)
 
         frag = idCaptureModule.start(activity, container, docType!!, side) { bitmap, _, file ->
+            if (bitmap != null) {
+                Log.d("AmaniSDK-IDCapture", "Bitmap found")
+            }
+
+            if (file != null) {
+                Log.d("AmaniSDK-IDCapture", "file found")
+            }
+
             when {
                 file != null -> {
                     Log.d("AmaniSDK-FILE", "file found")
                     val fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    val allocate: ByteBuffer = ByteBuffer.allocate(fileBitmap.byteCount)
-                    fileBitmap.copyPixelsToBuffer(allocate)
-                    val array: ByteArray = allocate.array()
-                    result.success(array)
+                    val stream = ByteArrayOutputStream()
+                    fileBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    result.success(stream.toByteArray())
                 }
                 bitmap != null -> {
                     Log.d("AmaniSDK-FILE", "byte[] found")
-                    val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-                    bitmap.copyPixelsToBuffer(allocate)
-                    val array: ByteArray = allocate.array()
-                    result.success(array)
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    result.success(stream.toByteArray())
                 }
                 else -> {
                     result.error("1006", "Nothing returned from idCapture.start", null)

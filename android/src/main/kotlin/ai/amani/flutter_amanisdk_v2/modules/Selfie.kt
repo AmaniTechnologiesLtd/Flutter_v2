@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.ByteBuffer
 
@@ -37,22 +38,22 @@ class Selfie: Module {
         container.id = id
         activity.addContentView(container, viewParams)
 
-        frag = selfieModule.start(docType) { bitmap, isDestroyed, file ->
-            if (file != null) {
-                Log.d("AmaniSDK-FILE", "file found")
-                var fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                var allocate: ByteBuffer = ByteBuffer.allocate(fileBitmap.byteCount)
-                fileBitmap.copyPixelsToBuffer(allocate)
-                val array: ByteArray = allocate.array()
-                result.success(array)
-            } else if (bitmap != null) {
-                Log.d("AmaniSDK-FILE", "byte[] found")
-                val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-                bitmap.copyPixelsToBuffer(allocate)
-                val array: ByteArray = allocate.array()
-                result.success(array)
-            } else {
-                result.error("1006", "Nothing returned from selfie.start", null)
+        frag = selfieModule.start(docType) { bitmap, _, file ->
+            when {
+                file != null -> {
+                    var fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    val stream = ByteArrayOutputStream()
+                    fileBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    result.success(stream.toByteArray())
+                }
+                bitmap != null -> {
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    result.success(stream.toByteArray())
+                }
+                else -> {
+                    result.error("1006", "Nothing returned from selfie.start", null)
+                }
             }
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
         }

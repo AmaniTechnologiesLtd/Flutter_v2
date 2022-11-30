@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import datamanager.model.customer.Errors
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 class BioLogin {
@@ -119,9 +120,9 @@ class BioLogin {
 
                     override fun onSuccess(bitmap: Bitmap?) {
                         if(bitmap != null) {
-                            val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-                            bitmap.copyPixelsToBuffer(allocate)
-                            result.success(allocate.array())
+                            val stream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            result.success(stream.toByteArray())
                         } else {
                             result.error("No bitmap", "No bitmap returned from the call", null)
                         }
