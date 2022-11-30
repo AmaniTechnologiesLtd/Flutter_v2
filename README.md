@@ -44,7 +44,14 @@ rootProject.allprojects {
 On the same file add our SDK to dependencies
 ```groovy
 dependencies {
-    implementation 'ai.amani.android:AmaniAi:2.1.51' // add this line
+    implementation 'ai.amani.android:AmaniAi:2.1.53' // add this line
+}
+```
+
+Add this block to `android` section on your `build.gradle`.
+```groovy 
+  aaptOptions {
+    noCompress "tflite"
 }
 ```
 
