@@ -17,6 +17,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.lang.reflect.Method
 
 
 /** FlutterAmanisdkV2Plugin */
@@ -26,14 +27,19 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel: MethodChannel
+  private lateinit var nfcChannel: MethodChannel
+  private lateinit var bioLoginChannel: MethodChannel
   // Give this reference to other modules e.g IdCapture when init.
   private var activity: Activity? = null
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_method_channel")
     channel.setMethodCallHandler(this)
-    // When the NFC reading is done, this plugin runs the callback over from the method channel.
-    // Yes. MethodChannel is bi-directional.
+
+    // Channels below is created due to usage of the different call handlers of different classes on
+    // dart side
+    nfcChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_nfc_channel")
+    bioLoginChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_biologin_channel")
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -117,7 +123,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           result.error("Missing Params", "You must give all the parameters", null)
           return
         }
-        NFC.instance.start(birthDate, expireDate, documentNo, activity!!, channel, result)
+        NFC.instance.start(birthDate, expireDate, documentNo, activity!!, nfcChannel, result)
       }
       "androidDisableNFC" -> {
         NFC.instance.disableNFC(activity as FlutterFragmentActivity)
@@ -151,7 +157,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val androidSettings = call.argument<String>("androidSettings")
         if(androidSettings != null) {
           val model = androidSettings.toObject<PoseEstimationSettings>()
-          BioLogin.instance.startWithPoseEstimation(model, activity!!, result)
+          BioLogin.instance.startWithPoseEstimation(model, activity!!, result, bioLoginChannel)
         } else result.error("Missing Settings", "You must give all the parameters", null)
       }
       "startBioLoginWithManualSelfie" -> {
@@ -220,7 +226,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           result.error("CustomerInfo-Fetch", throwable.message, null)
         } else if (customerDetail != null) {
 
-          var rules = customerDetail.rules.map {
+          val rules = customerDetail.rules.map {
             mapOf<String, Any>(
                     "id" to it.id,
                     "title" to it.title,
@@ -229,7 +235,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
             );
           }
 
-          var missingRules = customerDetail.missingRules.map {
+          val missingRules = customerDetail.missingRules.map {
             mapOf<String, Any>(
                     "id" to it.id,
                     "title" to it.title,

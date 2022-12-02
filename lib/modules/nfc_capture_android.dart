@@ -3,6 +3,7 @@ import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
 
 class AndroidNFCCapture {
   final MethodChannelAmaniSDK _methodChannel;
+  final nfcChannel = const MethodChannel('amanisdk_nfc_channel');
   Function(bool)? _onFinishedCallback;
 
   AndroidNFCCapture(this._methodChannel);
@@ -20,7 +21,7 @@ class AndroidNFCCapture {
             expireDate: expireDate,
             documentNo: documentNo)
         .then((_) {
-      _methodChannel.methodChannel.setMethodCallHandler(_handleInverseChannel);
+      nfcChannel.setMethodCallHandler(_handleInverseChannel);
     });
   }
 

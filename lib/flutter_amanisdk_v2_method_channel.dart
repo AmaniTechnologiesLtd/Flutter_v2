@@ -279,13 +279,18 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<Uint8List?> startBioLoginWithPoseEstimation(
-      {required IOSPoseEstimationSettings iosSettings,
-      required AndroidPoseEstimationSettings androidSettings}) {
-    return methodChannel.invokeMethod("startBioLoginWithPoseEstimation", {
-      "iosSettings": jsonEncode(iosSettings),
-      "androidSettings": jsonEncode(androidSettings)
+  Future<Uint8List?> iOSStartBioLoginWithPoseEstimation(
+      {required IOSPoseEstimationSettings settings}) {
+    return methodChannel.invokeMethod("iOSStartBioLoginWithPoseEstimation", {
+      "iosSettings": jsonEncode(settings),
     });
+  }
+
+  @override
+  Future androidStartBioLoginWithPoseEstimation(
+      {required AndroidPoseEstimationSettings settings}) {
+    return methodChannel.invokeMethod("androidStartBioLoginWithPoseEstimation",
+        {"androidSettings": jsonEncode(settings)});
   }
 
   @override

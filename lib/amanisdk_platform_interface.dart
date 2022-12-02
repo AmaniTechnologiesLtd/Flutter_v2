@@ -180,12 +180,16 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
         'startBioLoginWithAutoSelfie() has not been implemented.');
   }
 
-  Future<dynamic> startBioLoginWithPoseEstimation({
-    required IOSPoseEstimationSettings iosSettings,
-    required AndroidPoseEstimationSettings androidSettings,
-  }) {
+  Future<dynamic> iOSStartBioLoginWithPoseEstimation(
+      {required IOSPoseEstimationSettings settings}) {
     throw UnimplementedError(
-        'startBioLoginWithPoseEstimation() has not been implemented.');
+        'iOSStartBioLoginWithPoseEstimation() has not been implemented.');
+  }
+
+  Future<dynamic> androidStartBioLoginWithPoseEstimation(
+      {required AndroidPoseEstimationSettings settings}) {
+    throw UnimplementedError(
+        "androidStartBioLoginWithPoseEstimation() has not been implemented.");
   }
 
   Future<dynamic> startBioLoginWithManualSelfie(

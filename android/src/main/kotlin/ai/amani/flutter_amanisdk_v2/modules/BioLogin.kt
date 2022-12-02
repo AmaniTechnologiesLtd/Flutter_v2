@@ -113,14 +113,14 @@ class BioLogin {
                     }
 
                     override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                        channel.invokeMethod("androidBioLoginPoseEstimation#onFailure", mapOf("failureReason" to reason.name, "currentAttempt" to currentAttempt))
+                        channel.invokeMethod("androidBioLoginPoseEstimation#onFailure", mapOf("reason" to reason.name, "currentAttempt" to currentAttempt))
                     }
 
                     override fun onSuccess(bitmap: Bitmap?) {
                         if(bitmap != null) {
                             val stream = ByteArrayOutputStream()
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                            channel.invokeMethod("androidBioLoginPoseEstimation#onSuccess", stream.toByteArray())
+                            channel.invokeMethod("androidBioLoginPoseEstimation#onSuccess", mapOf("image" to stream.toByteArray()))
                         } else {
                             channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to "No bitmap returned from pose estimation"))
                         }
