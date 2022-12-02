@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 class BioLogin {
-    private val bioLogin = Amani.sharedInstance().BioLogin()
     private var docType: String = "XXX_SE_0"
     private var frag: Fragment? = null
     private var token: String? = null
@@ -49,8 +48,7 @@ class BioLogin {
         val container = FrameLayout(context)
         container.id = id
         activity.addContentView(container, viewParams)
-
-        frag = bioLogin.AutoSelfieCapture()
+        frag = Amani.sharedInstance().BioLogin().AutoSelfieCapture()
                 .timeOutManualButton(settings.manualCaptureTimeout)
                 .userInterfaceColors(
                         ovalViewStartColor = R.color.auto_selfie_oval_view,
@@ -77,7 +75,7 @@ class BioLogin {
                 .commitAllowingStateLoss()
     }
 
-    fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result) {
+    fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
         if (customerId == null) {
             result.error("BioLogin", "You must call initBioLogin before you use this function", null)
         }
@@ -89,7 +87,7 @@ class BioLogin {
         container.id = id
         activity.addContentView(container, viewParams)
         
-        frag = bioLogin.PoseEstimation()
+        frag = Amani.sharedInstance().BioLogin().PoseEstimation()
                 .requestedPoseNumber(settings.poseCount)
                 .ovalViewAnimationDurationMilSec(settings.animationDuration)
                 .userInterfaceColors(
@@ -111,20 +109,20 @@ class BioLogin {
                         keepStraightText = settings.keepStraight,
                 ).observer(object: PoseEstimationObserver {
                     override fun onError(error: Error) {
-                        result.error("BioLogin-PoseEstimation", error.message, null)
+                        channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to error.message))
                     }
 
                     override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                        result.error("BioLogin-PoseEstimation", reason.name, currentAttempt.toString())
+                        channel.invokeMethod("androidBioLoginPoseEstimation#onFailure", mapOf("failureReason" to reason.name, "currentAttempt" to currentAttempt))
                     }
 
                     override fun onSuccess(bitmap: Bitmap?) {
                         if(bitmap != null) {
                             val stream = ByteArrayOutputStream()
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                            result.success(stream.toByteArray())
+                            channel.invokeMethod("androidBioLoginPoseEstimation#onSuccess", stream.toByteArray())
                         } else {
-                            result.error("No bitmap", "No bitmap returned from the call", null)
+                            channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to "No bitmap returned from pose estimation"))
                         }
                         activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
                     }
@@ -148,7 +146,7 @@ class BioLogin {
         container.id = id
         activity.addContentView(container, viewParams)
 
-        frag = bioLogin.ManualSelfieCapture()
+        frag = Amani.sharedInstance().BioLogin().ManualSelfieCapture()
                 .userInterfaceColors(
                    appFontColor = R.color.biologin_manual_selfie_font,
                    manualButtonColor = R.color.biologin_manual_selfie_button,
@@ -179,7 +177,7 @@ class BioLogin {
         if (customerId == null) {
             completion.error("BioLogin", "You must call initBioLogin before you do this operation", null)
         }
-        bioLogin.upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
+        Amani.sharedInstance().BioLogin().upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
             override fun cb(result: Boolean?, errors: Errors?) {
                 if (result != null) {
                     completion.success(result)

@@ -157,6 +157,8 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
     case "uploadBioLogin":
         let bioLogin = BioLogin.shared
         bioLogin.upload(result: result)
+    case "getCustomerInfo":
+        getCustomerInfo(result: result)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -169,6 +171,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
                          lang: String,
                          sharedSecret: String?,
                          result: @escaping FlutterResult) {
+      print("AMANISDK-SERVER", server)
     let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: customerIdCardNumber)
     Amani.sharedInstance.initAmani(server: server, token: customerToken, customer: customer, useGeoLocation: useLocation, language: lang) { customerRes, err in
       if customerRes != nil {
@@ -178,4 +181,40 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       }
     }
   }
+    
+    private func getCustomerInfo(result: @escaping FlutterResult) {
+        let customerInfo = Amani.sharedInstance.customerInfo().getCustomer();
+        
+        var rulesArray: [[String: Any]] = []
+        if let rules = customerInfo.rules {
+            for rule in rules {
+                rulesArray.append(["id": rule.id as Any, "title": rule.title as Any, "documentClasses": rule.documentClasses as Any, "status": rule.status as Any])
+            }
+        }
+        
+        var missingRulesArray: [[String: Any]] = []
+        if let missingRules = customerInfo.missingRules {
+            for rule in missingRules {
+                missingRulesArray.append(["id": rule.id as Any, "title": rule.title as Any, "documentClasses": rule.documentClasses as Any, "status": rule.status as Any])
+            }
+        }
+        
+        let customerInfoDict: [String: Any] = [
+            "id": customerInfo.id as Any,
+            "name": customerInfo.name as Any,
+            "email": customerInfo.email as Any,
+            "phone": customerInfo.phone as Any,
+            "companyID": customerInfo.companyID as Any,
+            "status": customerInfo.status as Any,
+            "occupation": customerInfo.occupation as Any,
+            "city": customerInfo.address?.city as Any,
+            "address": customerInfo.address?.address as Any,
+            "province": customerInfo.address?.province as Any,
+            "rules": rulesArray,
+            "missingRules": missingRulesArray,
+        ]
+        
+        result(customerInfoDict)
+    }
+    
 }

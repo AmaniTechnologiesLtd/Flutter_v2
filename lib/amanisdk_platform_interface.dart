@@ -197,4 +197,8 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   Future<bool> uploadBioLogin() {
     throw UnimplementedError('uploadBioLogin() has not been implemented.');
   }
+
+  Future<dynamic> getCustomerInfo() {
+    throw UnimplementedError("getCustomerInfo() has not been implemented.");
+  }
 }

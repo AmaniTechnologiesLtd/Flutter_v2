@@ -31,25 +31,40 @@ class BioLogin {
 
   Future<Uint8List> startWithAutoSelfie(
       {required IOSAutoSelfieSettings iosAutoSelfieSettings,
-      required AndroidAutoSelfieSettings androidAutoSelfieSettings}) {
-    return _methodChannel.startBioLoginWithAutoSelfie(
+      required AndroidAutoSelfieSettings androidAutoSelfieSettings}) async {
+    final imageData = await _methodChannel.startBioLoginWithAutoSelfie(
         iosSettings: iosAutoSelfieSettings,
-        androidSettings: androidAutoSelfieSettings) as Future<Uint8List>;
+        androidSettings: androidAutoSelfieSettings);
+    if (imageData != null) {
+      return imageData;
+    } else {
+      throw Exception("Nothing returned from BioLogin.startWithAutoSelfie");
+    }
   }
 
   Future<Uint8List> startWithPoseEstimation(
       {required IOSPoseEstimationSettings iosPoseEstimationSettings,
-      required AndroidPoseEstimationSettings androidPoseEstimationSettings}) {
-    return _methodChannel.startBioLoginWithPoseEstimation(
+      required AndroidPoseEstimationSettings
+          androidPoseEstimationSettings}) async {
+    final imageData = await _methodChannel.startBioLoginWithPoseEstimation(
         iosSettings: iosPoseEstimationSettings,
-        androidSettings: androidPoseEstimationSettings) as Future<Uint8List>;
+        androidSettings: androidPoseEstimationSettings);
+    if (imageData != null) {
+      return imageData;
+    } else {
+      throw Exception("Nothing returned from BioLogin.startWithPoseEstimation");
+    }
   }
 
   Future<Uint8List> startWithManualSelfie(
-      {required String androidSelfieDescriptionText}) {
-    return _methodChannel.startBioLoginWithManualSelfie(
-            androidSelfieDescriptionText: androidSelfieDescriptionText)
-        as Future<Uint8List>;
+      {required String androidSelfieDescriptionText}) async {
+    final imageData = await _methodChannel.startBioLoginWithManualSelfie(
+        androidSelfieDescriptionText: androidSelfieDescriptionText);
+    if (imageData != null) {
+      return imageData;
+    } else {
+      throw Exception("Nothing returned from BioLogin.startWithManualSelfie");
+    }
   }
 
   Future<bool> upload() {

@@ -268,17 +268,18 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<dynamic> startBioLoginWithAutoSelfie(
+  Future<Uint8List?> startBioLoginWithAutoSelfie(
       {required IOSAutoSelfieSettings iosSettings,
       required AndroidAutoSelfieSettings androidSettings}) {
-    return methodChannel.invokeMethod("startBioLoginWithAutoSelfie", {
+    return methodChannel
+        .invokeMethod<Uint8List>("startBioLoginWithAutoSelfie", {
       "iosSettings": jsonEncode(iosSettings),
       "androidSettings": jsonEncode(androidSettings)
     });
   }
 
   @override
-  Future<dynamic> startBioLoginWithPoseEstimation(
+  Future<Uint8List?> startBioLoginWithPoseEstimation(
       {required IOSPoseEstimationSettings iosSettings,
       required AndroidPoseEstimationSettings androidSettings}) {
     return methodChannel.invokeMethod("startBioLoginWithPoseEstimation", {
@@ -288,7 +289,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<dynamic> startBioLoginWithManualSelfie(
+  Future<Uint8List?> startBioLoginWithManualSelfie(
       {required String androidSelfieDescriptionText}) {
     return methodChannel.invokeMethod("startBioLoginWithManualSelfie",
         {"androidSelfieDescriptionText": androidSelfieDescriptionText});
@@ -297,5 +298,16 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   @override
   Future<bool> uploadBioLogin() {
     return methodChannel.invokeMethod("uploadBioLogin") as Future<bool>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getCustomerInfo() async {
+    final customerInfo =
+        await methodChannel.invokeMapMethod<String, dynamic>("getCustomerInfo");
+    if (customerInfo != null) {
+      return customerInfo;
+    } else {
+      throw Exception("Failed to fetch customer info");
+    }
   }
 }

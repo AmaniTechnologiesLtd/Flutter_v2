@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_amanisdk_v2/common/models/customer_detail.dart';
 import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
 import 'package:flutter_amanisdk_v2/modules/auto_selfie.dart';
 import 'package:flutter_amanisdk_v2/modules/bio_login.dart';
@@ -69,6 +70,9 @@ class AmaniSDK {
     String? sharedSecret,
   }) async {
     String serverURL = "";
+    if (server == "") {
+      throw Exception("Server can not be empty screen");
+    }
     if (server.endsWith("/")) {
       throw Exception("Server url shouldn't end without trailing slash.");
     }
@@ -80,6 +84,10 @@ class AmaniSDK {
     if (!server.endsWith("/api/v1/") && Platform.isAndroid) {
       serverURL = "$server/api/v1/";
     }
+    if (Platform.isIOS) {
+      serverURL = server;
+    }
+
     try {
       var login = await _methodChannel.initAmani(
           server: serverURL,
@@ -92,5 +100,12 @@ class AmaniSDK {
     } catch (err) {
       throw Exception(err);
     }
+  }
+
+  Future<CustomerInfoModel> getCustomerInfo() async {
+    final customerInfo = await _methodChannel.getCustomerInfo();
+    var model =
+        CustomerInfoModel.fromMap(Map<String, dynamic>.from(customerInfo));
+    return model;
   }
 }

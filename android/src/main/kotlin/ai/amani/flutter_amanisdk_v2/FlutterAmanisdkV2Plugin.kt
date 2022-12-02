@@ -4,18 +4,20 @@ import ai.amani.flutter_amanisdk_v2.modules.*
 import ai.amani.flutter_amanisdk_v2.modules.config_models.AutoSelfieSettings
 import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
+import ai.amani.sdk.modules.customer.detail.CustomerDetailObserver
 import android.app.Activity
 import androidx.annotation.NonNull
+import datamanager.model.customer.ResCustomerDetail
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterFragmentActivity
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+
 
 /** FlutterAmanisdkV2Plugin */
 class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -115,8 +117,6 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           result.error("Missing Params", "You must give all the parameters", null)
           return
         }
-
-
         NFC.instance.start(birthDate, expireDate, documentNo, activity!!, channel, result)
       }
       "androidDisableNFC" -> {
@@ -147,7 +147,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           BioLogin.instance.startWithAutoSelfie(model, activity!!, result)
         } else result.error("Missing Settings", "You must give all the parameters", null)
       }
-      "startBioLoginWithPoseEstimation" -> {
+      "androidStartBioLoginWithPoseEstimation" -> {
         val androidSettings = call.argument<String>("androidSettings")
         if(androidSettings != null) {
           val model = androidSettings.toObject<PoseEstimationSettings>()
@@ -160,6 +160,9 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "uploadBioLogin" -> {
         BioLogin.instance.upload(result)
+      }
+      "getCustomerInfo" -> {
+        getCustomerInfo(result)
       }
       else -> result.notImplemented()
     }
@@ -208,6 +211,52 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
     }
+  }
+
+  private fun getCustomerInfo(result: MethodChannel.Result) {
+    Amani.sharedInstance().CustomerDetail().getCustomerDetail(object : CustomerDetailObserver {
+      override fun result(customerDetail: ResCustomerDetail?, throwable: Throwable?) {
+        if (throwable != null) {
+          result.error("CustomerInfo-Fetch", throwable.message, null)
+        } else if (customerDetail != null) {
+
+          var rules = customerDetail.rules.map {
+            mapOf<String, Any>(
+                    "id" to it.id,
+                    "title" to it.title,
+                    "documentClasses" to it.documentClasses,
+                    "status" to it.status,
+            );
+          }
+
+          var missingRules = customerDetail.missingRules.map {
+            mapOf<String, Any>(
+                    "id" to it.id,
+                    "title" to it.title,
+                    "documentClasses" to it.documentClasses,
+            )
+          }
+
+          val customerInfoDict = mapOf<String, Any?>(
+                  "id" to customerDetail.id,
+                  "name" to customerDetail.name,
+                  "email" to customerDetail.email,
+                  "phone" to customerDetail.phone,
+                  "companyID" to customerDetail.companyId,
+                  "status" to customerDetail.status,
+                  "occupation" to customerDetail.occupation,
+                  "city" to if(customerDetail.address != null) customerDetail.address.city else null,
+                  "address" to if(customerDetail.address != null) customerDetail.address.address else null,
+                  "province" to if(customerDetail.address != null) customerDetail.address.province else null,
+                  "idCardNumber" to customerDetail.idCardNumber,
+                  "rules" to rules,
+                  "missingRules" to missingRules,
+          )
+
+          result.success(customerInfoDict)
+        }
+      }
+    })
   }
 
 }

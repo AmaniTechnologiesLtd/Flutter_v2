@@ -17,17 +17,20 @@ class _BioLoginState extends State<BioLogin> {
   String _customerID = "";
 
   Future<void> initBioLogin() async {
+    print("biologin");
     await _bioLogin.init(
         server: "server",
-        token: "token",
-        customerId: "amani id of the customer",
-        attemptId: "A952054");
+        token:
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY5ODk5OTA1LCJqdGkiOiJlMjlhMjQ2Y2FlMzU0MDMyYTg2MGQxMDkwZTUwZjFmNCIsInVzZXJfaWQiOjEwfQ.WYRdDwDBs1Nc6la2Y-N8nrmQGeDjuFcgxmH52mrh4L8",
+        customerId: "81",
+        attemptId: "A952053");
   }
 
   @override
   void initState() {
-    initBioLogin();
+    print("initState");
     super.initState();
+    initBioLogin();
   }
 
   final AndroidPoseEstimationSettings _androidPoseEstimationSettings =
