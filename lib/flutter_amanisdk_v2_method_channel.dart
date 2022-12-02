@@ -301,8 +301,13 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<bool> uploadBioLogin() {
-    return methodChannel.invokeMethod("uploadBioLogin") as Future<bool>;
+  Future<bool> uploadBioLogin() async {
+    final isSuccess = await methodChannel.invokeMethod<bool>("uploadBioLogin");
+    if (isSuccess != null) {
+      return isSuccess;
+    } else {
+      throw Exception("Upload failure");
+    }
   }
 
   @override

@@ -12,14 +12,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
     AmaniSDK()
         .initAmani(
-            server: "server_url",
-            customerToken: "customer_token from the back end",
-            customerIdCardNumber: "",
+            server: "https://server.example",
+            customerToken: "",
+            customerIdCardNumber: "id card of the customer",
             useLocation: true, // Use location when uploading customer data
-            lang: "tr" // two letter language code
-            )
-        .then((value) => print(value))
-        .catchError((err) {
+            lang: "tr")
+        .then((_) {
+      AmaniSDK().getCustomerInfo().then((value) {
+        // get customer id
+        print(value.id);
+      });
+    }).catchError((err) {
       throw Exception(err);
     });
   }
@@ -65,7 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/nfc');
                     },
-                    child: const Text('NFC'))
+                    child: const Text('NFC')),
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/bio-login');
+                    },
+                    child: const Text("BioLogin"))
               ]),
         ));
   }

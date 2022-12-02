@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk_v2_example/screens/auto_selfie.dart';
+import 'package:flutter_amanisdk_v2_example/screens/biologin.dart';
 import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
 import 'package:flutter_amanisdk_v2_example/screens/home.dart';
 import 'package:flutter_amanisdk_v2_example/screens/id_capture.dart';
@@ -22,6 +23,7 @@ void main() {
       '/nfc': (ctx) => const NFCHome(),
       '/nfc-ios': (ctx) => const IOSNFC(),
       '/nfc-android': (ctx) => const AndroidNFC(),
+      '/bio-login': (ctx) => const BioLogin(),
     },
   ));
 }

@@ -17,18 +17,15 @@ class _BioLoginState extends State<BioLogin> {
   String _customerID = "";
 
   Future<void> initBioLogin() async {
-    print("biologin");
     await _bioLogin.init(
         server: "server",
-        token:
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY5ODk5OTA1LCJqdGkiOiJlMjlhMjQ2Y2FlMzU0MDMyYTg2MGQxMDkwZTUwZjFmNCIsInVzZXJfaWQiOjEwfQ.WYRdDwDBs1Nc6la2Y-N8nrmQGeDjuFcgxmH52mrh4L8",
-        customerId: "81",
-        attemptId: "A952053");
+        token: "bio login token from the biologin server",
+        customerId: _customerID,
+        attemptId: "string of attempt id which you should generate");
   }
 
   @override
   void initState() {
-    print("initState");
     super.initState();
     initBioLogin();
   }
@@ -134,12 +131,27 @@ class _BioLoginState extends State<BioLogin> {
                 child: const Text("Start AutoSelfie BioLogin")),
             OutlinedButton(
                 onPressed: () {
-                  _bioLogin.startWithPoseEstimation(
-                      iosPoseEstimationSettings: _iosPoseEstimationSettings,
-                      androidPoseEstimationSettings:
-                          _androidPoseEstimationSettings);
+                  _bioLogin
+                      .iOSStartWithPoseEstimation(
+                          settings: _iosPoseEstimationSettings)
+                      .then((imageData) {
+                    // do something with imageData
+                  });
                 },
                 child: const Text("Start PoseEstimation BioLogin")),
+            OutlinedButton(
+                onPressed: () {
+                  _bioLogin.androidStartWithPoseEstimation(
+                      settings: _androidPoseEstimationSettings,
+                      onSuccessCallback: (imageData) {
+                        // render the image with Image.memory(imageData)
+                      },
+                      onFailureCallback: (failureParams) {
+                        print(failureParams["reason"] +
+                            failureParams["currentAttempt"]);
+                      });
+                },
+                child: const Text("Start PoseEstimation BioLogin (Android)")),
             OutlinedButton(
                 onPressed: () {
                   _bioLogin.startWithManualSelfie(
