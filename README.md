@@ -24,6 +24,7 @@ On the [example folder](https://github.com/AmaniTechnologiesLtd/Flutter_v2/tree/
         - [NFC Capture on Android](#nfc-capture-on-android)
         - [NFC Capture on iOS](#nfc-capture-on-ios)
     - [Bio login](#bio-login)
+    - [Getting the Customer Info]()
  - [F.A.Q](#faq)
 ## Installation
 Before installing this SDK we must meet some requirements for your app to build with our native SDK's.
@@ -668,19 +669,35 @@ OutlinedButton(
     child: const Text("Start AutoSelfie BioLogin"))
 ```
 #### Starting with Pose Estimation 
-
 For the parameters check out [usage section on pose estimation.](#pose-estimation-usage).
+Due to differences in the native SDK's methods have been seperated. Use the methods below with an API check.
+
+For iOS:
 ```dart
 OutlinedButton(
     onPressed: () {
-      _bioLogin.startWithPoseEstimation(
-          iosPoseEstimationSettings: _iosPoseEstimationSettings,
-          androidPoseEstimationSettings:
-              _androidPoseEstimationSettings);
+      _bioLogin.iOSStartWithPoseEstimation(
+          settings: _iosPoseEstimationSettings,
     },
-    child: const Text("Start PoseEstimation BioLogin")),
+    child: const Text("Start PoseEstimation BioLogin (iOS)")),
 ```
 
+For android:
+```dart
+OutlinedButton(
+    onPressed: () {
+      _bioLogin.androidStartWithPoseEstimation(
+          settings: _androidPoseEstimationSettings,
+          onSuccessCallback: (imageData) {
+            // render the image with Image.memory(imageData)
+          }, 
+          onFailureCallback: (failureParams) {
+            print(failureParams["reason"], failureParams["currentAttempt"])      
+          }
+      );
+    },
+    child: const Text("Start PoseEstimation BioLogin (Android)")),
+```
 #### Starting with Manual Selfie
 ```dart
 OutlinedButton(
@@ -690,6 +707,16 @@ OutlinedButton(
     },
     child: const Text("Start Manual Selfie BioLogin")),
 ```
+
+### Customer Info
+To fetch every data related to the customer you can use this function after [intializing the sdk](#usage)
+
+```dart
+// Use this after using AmaniSDK().initAmani method.
+CustomerInfoModel customerInfo = await AmaniSDK().getCustomerInfo()
+```
+
+
 ### F.A.Q.
 #### How to use Uint8List image data to render images.
 
