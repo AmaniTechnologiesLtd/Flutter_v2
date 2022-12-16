@@ -71,7 +71,7 @@ class AmaniSDK {
   }) async {
     String serverURL = "";
     if (server == "") {
-      throw Exception("Server can not be empty screen");
+      throw Exception("Server can not be empty string");
     }
     if (server.endsWith("/")) {
       throw Exception("Server url shouldn't end without trailing slash.");
