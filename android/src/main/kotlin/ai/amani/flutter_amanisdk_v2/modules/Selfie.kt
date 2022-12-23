@@ -53,7 +53,10 @@ class Selfie: Module {
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
         }
 
-
+        val fragmentManager = activity.supportFragmentManager
+            fragmentManager.beginTransaction()
+                .replace(id, frag!!)
+                .commitAllowingStateLoss()
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
