@@ -16,7 +16,7 @@ import java.nio.ByteBuffer
 
 class Selfie: Module {
     private val selfieModule = Amani.sharedInstance().Selfie()
-    private var docType: String? = null
+    private var docType: String? = "XXX_SE_0"
     private var frag: Fragment? = null
 
     companion object {
@@ -25,11 +25,6 @@ class Selfie: Module {
 
 
     override fun start(stepID: Int, activity: Activity, result: MethodChannel.Result) {
-        if(docType == null) {
-            result.error("1005", "Type not set.", "You have to call setType on idCapture before calling this method.")
-            return
-        }
-
         (activity as FragmentActivity)
         var id = 0x123456
         var context = activity.applicationContext
