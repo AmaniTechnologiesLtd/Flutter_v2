@@ -4,12 +4,12 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_amanisdk_v2'
-  s.version          = '1.0.1'
+  s.version          = '1.0.2'
   s.summary          = 'Amani SDK Flutter bindings for ios and android SDK v2'
   s.description      = <<-DESC
   Amani v2 SDK Flutter bindings for ios and android
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://amani.ai'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
