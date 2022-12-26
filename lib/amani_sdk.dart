@@ -69,23 +69,22 @@ class AmaniSDK {
     /// Optional shared secret
     String? sharedSecret,
   }) async {
+    if (server.isEmpty) {
+      throw Exception("server parameter cannot be empty string");
+    }
+
+    Uri serverURI = Uri.parse(server).normalizePath();
     String serverURL = "";
-    if (server == "") {
-      throw Exception("Server can not be empty string");
-    }
-    if (server.endsWith("/")) {
-      throw Exception("Server url shouldn't end without trailing slash.");
-    }
-    if (server.endsWith("/api/v1/") && Platform.isAndroid) {
-      serverURL = server;
-    } else if (server.endsWith("/api/v1/") && Platform.isIOS) {
-      serverURL = server.replaceAll("/api/v1/", server);
-    }
-    if (!server.endsWith("/api/v1/") && Platform.isAndroid) {
-      serverURL = "$server/api/v1/";
-    }
-    if (Platform.isIOS) {
-      serverURL = server;
+
+    // Parse the server and adjust by path.
+    if (serverURI.path.contains('/api/v1') && Platform.isAndroid) {
+      serverURL = serverURI.toString();
+    } else if (serverURI.path.contains('/api/v1') && Platform.isIOS) {
+      serverURL = serverURI.origin;
+    } else if (serverURI.hasEmptyPath && Platform.isIOS) {
+      serverURL = serverURI.origin;
+    } else if (serverURI.hasEmptyPath && Platform.isAndroid) {
+      serverURL = serverURI.replace(path: "/api/v1/").toString();
     }
 
     try {
