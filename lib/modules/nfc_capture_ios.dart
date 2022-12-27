@@ -9,25 +9,41 @@ class IOSNFCCapture {
   IOSNFCCapture(this._methodChannel);
 
   Future<bool> startWithImageData(Uint8List imageData) async {
-    final bool isSuccess =
-        await _methodChannel.iOSNFCCaptureWithImageData(imageData);
-    return isSuccess;
+    try {
+      final bool isSuccess =
+          await _methodChannel.iOSNFCCaptureWithImageData(imageData);
+      return isSuccess;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<bool> startWithNviModel(NviModel nviModel) async {
-    final bool isSuccess =
-        await _methodChannel.iOSNFCCaptureWithNviData(nviModel);
-    return isSuccess;
+    try {
+      final bool isSuccess =
+          await _methodChannel.iOSNFCCaptureWithNviData(nviModel);
+      return isSuccess;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<bool> startWithMRZCapture() async {
-    final bool isSuccess = await _methodChannel.iosNFCCaptureWithMRZCapture();
-    return isSuccess;
+    try {
+      final bool isSuccess = await _methodChannel.iosNFCCaptureWithMRZCapture();
+      return isSuccess;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<bool> upload() async {
-    final bool isSuccess = await _methodChannel.iosUploadNFCCapture();
-    return isSuccess;
+    try {
+      final bool isDone = await _methodChannel.iosUploadNFCCapture();
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<void> setType(String type) async {

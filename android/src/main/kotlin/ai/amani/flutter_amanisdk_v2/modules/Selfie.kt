@@ -8,11 +8,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.nio.ByteBuffer
 
 class Selfie: Module {
     private val selfieModule = Amani.sharedInstance().Selfie()
@@ -26,17 +23,17 @@ class Selfie: Module {
 
     override fun start(stepID: Int, activity: Activity, result: MethodChannel.Result) {
         (activity as FragmentActivity)
-        var id = 0x123456
-        var context = activity.applicationContext
-        var viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        var container = FrameLayout(context)
+        val id = 0x123456
+        val context = activity.applicationContext
+        val viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val container = FrameLayout(context)
         container.id = id
         activity.addContentView(container, viewParams)
 
         frag = selfieModule.start(docType) { bitmap, _, file ->
             when {
                 file != null -> {
-                    var fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    val fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
                     val stream = ByteArrayOutputStream()
                     fileBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                     result.success(stream.toByteArray())
@@ -60,11 +57,13 @@ class Selfie: Module {
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
-        selfieModule.upload((activity as FragmentActivity), docType) { isSuccess, s, _ ->
-            if(isSuccess != null) {
-                result.success(isSuccess)
-            } else {
-                result.error("1006", "Upload failure", s)
+        selfieModule.upload((activity as FragmentActivity), docType) { isSuccess, uploadRes, errors ->
+            if (isSuccess && uploadRes == "OK") {
+                result.success(true)
+            } else if (isSuccess && uploadRes == "ERROR") {
+                result.error("1007", "Validation Errors", errors)
+            } else if (!isSuccess && uploadRes == null && errors != null) {
+                result.error("1006", "Upload Error", errors)
             }
         }
     }

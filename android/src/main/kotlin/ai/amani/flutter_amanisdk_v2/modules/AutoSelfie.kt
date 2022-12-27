@@ -11,10 +11,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 class AutoSelfie: Module {
     private val autoSelfieModule = Amani.sharedInstance().AutoSelfieCapture()
@@ -84,11 +82,13 @@ class AutoSelfie: Module {
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
-        autoSelfieModule.upload((activity as FragmentActivity), docType) { isSuccess, s, _ ->
-            if(isSuccess != null) {
-                result.success(isSuccess)
-            } else {
-                result.error("1006", "Upload failure", s)
+        autoSelfieModule.upload((activity as FragmentActivity), docType) { isSuccess, uploadRes, errors ->
+            if (isSuccess && uploadRes == "OK") {
+                result.success(true)
+            } else if (isSuccess && uploadRes == "ERROR") {
+                result.error("1007", "Validation Errors", errors)
+            } else if (!isSuccess && uploadRes == null && errors != null) {
+                result.error("1006", "Upload Error", errors)
             }
         }
     }

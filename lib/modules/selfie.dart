@@ -16,7 +16,7 @@ class Selfie {
         throw Exception("[AmaniSDK] no image returned from selfie module");
       }
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -25,7 +25,7 @@ class Selfie {
       final bool isDone = await _methodChannel.uploadSelfie();
       return isDone;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 

@@ -97,7 +97,12 @@ class BioLogin {
     }
   }
 
-  Future<bool> upload() {
-    return _methodChannel.uploadBioLogin();
+  Future<bool> upload() async {
+    try {
+      final bool isDone = await _methodChannel.uploadBioLogin();
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 }

@@ -22,7 +22,7 @@ class PoseEstimation {
             "[AmaniSDK] no image returned from poseEstimation module");
       }
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -31,7 +31,7 @@ class PoseEstimation {
       final bool isDone = await _methodChannel.uploadPoseEstimation();
       return isDone;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 

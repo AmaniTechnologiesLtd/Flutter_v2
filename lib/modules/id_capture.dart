@@ -19,7 +19,7 @@ class IdCapture {
         throw Exception("[AmaniSDK] no image returned from idCapture module");
       }
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -28,7 +28,7 @@ class IdCapture {
       final bool isDone = await _methodChannel.iOSStartIDCaptureNFC();
       return isDone;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -37,7 +37,7 @@ class IdCapture {
       final bool isDone = await _methodChannel.uploadIDCapture();
       return isDone;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 

@@ -23,7 +23,7 @@ class AutoSelfie {
         throw Exception("[AmaniSDK] no image returned from autoSelfieModule");
       }
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -32,7 +32,7 @@ class AutoSelfie {
       final bool isDone = await _methodChannel.uploadAutoSelfie();
       return isDone;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 

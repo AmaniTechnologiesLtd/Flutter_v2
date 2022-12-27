@@ -7,22 +7,15 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.nfc.NfcAdapter
-import android.nfc.Tag
-import android.os.Build
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodChannel
-import kotlin.math.exp
 
-// TODO: Refactor this whole class after you check it's working or not.
 class NFC {
     private val NFCModule = Amani.sharedInstance().ScanNFC()
     private var docType: String = "XXX_NF_0"
     private var currentResult: MethodChannel.Result? = null
     private var nfcAdapter: NfcAdapter? = null
-//    private val FLAG_MUTABLE = 1 shl 25
-//    private val VERSION_CODES_S = 31
 
     private var activityRef: Activity? = null
 
@@ -33,10 +26,6 @@ class NFC {
     companion object {
         val instance = NFC()
     }
-
-//    fun canStart(): Boolean {
-//        return birthDate != null && expireDate != null && documentNo != null && currentResult != null
-//    }
 
     @SuppressLint("WrongConstant")
     fun start(birthDate: String, expireDate: String, documentNo: String, activity: Activity, channel: MethodChannel, result: MethodChannel.Result) {
@@ -75,11 +64,13 @@ class NFC {
     }
 
     fun upload(result: MethodChannel.Result) {
-        Amani.sharedInstance().ScanNFC().upload(activityRef as FragmentActivity, docType) { isSuccess, _, _ ->
-            if (isSuccess != null) {
-                result.success(isSuccess)
-            } else {
-                result.error("Upload Failure", "Upload failure", null)
+        Amani.sharedInstance().ScanNFC().upload(activityRef as FragmentActivity, docType) { isSuccess, uploadRes, errors ->
+            if (isSuccess && uploadRes == "OK") {
+                result.success(true)
+            } else if (isSuccess && uploadRes == "ERROR") {
+                result.error("1007", "Validation Errors", errors)
+            } else if (!isSuccess && uploadRes == null && errors != null) {
+                result.error("1006", "Upload Error", errors)
             }
         }
     }

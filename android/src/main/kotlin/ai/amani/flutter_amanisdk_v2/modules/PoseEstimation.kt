@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 class PoseEstimation: Module {
     private val poseEstimationModule = Amani.sharedInstance().SelfiePoseEstimation()
@@ -93,11 +92,13 @@ class PoseEstimation: Module {
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
-        poseEstimationModule.upload(activity, docType) { isSuccess, _, errors ->
-            if (errors == null) {
-                result.success(isSuccess)
-            } else {
-                result.error("Upload Failure", "Upload failure", null)
+        poseEstimationModule.upload(activity, docType) { isSuccess, uploadRes, errors ->
+            if (isSuccess && uploadRes == "OK") {
+                result.success(true)
+            } else if (isSuccess && uploadRes == "ERROR") {
+                result.error("1007", "Validation Errors", errors)
+            } else if (!isSuccess && uploadRes == null && errors != null) {
+                result.error("1006", "Upload Error", errors)
             }
         }
     }

@@ -43,7 +43,7 @@ class AndroidNFCCapture {
     try {
       await _methodChannel.androidDisableNFCListener();
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -52,7 +52,11 @@ class AndroidNFCCapture {
   }
 
   Future<bool> upload() async {
-    final bool isDone = await _methodChannel.androidUploadNFC();
-    return isDone;
+    try {
+      final bool isDone = await _methodChannel.androidUploadNFC();
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 }

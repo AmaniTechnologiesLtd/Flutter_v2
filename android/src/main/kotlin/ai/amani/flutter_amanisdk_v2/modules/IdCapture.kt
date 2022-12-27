@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentActivity
 import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel.Result
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 
 class IdCapture : Module {
@@ -75,13 +74,14 @@ class IdCapture : Module {
     }
 
     override fun upload(activity: Activity, result : Result) {
-        idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, s, errors ->
-            if (errors == null) {
-                result.success(isSuccess)
-            } else {
-                result.error("1006", "Upload failure", s)
+        idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, uploadRes, errors ->
+            if (isSuccess && uploadRes == "OK") {
+                result.success(true)
+            } else if (isSuccess && uploadRes == "ERROR") {
+                result.error("1007", "Validation Errors", errors)
+            } else if (!isSuccess && uploadRes == null && errors != null) {
+                result.error("1006", "Upload Error", errors)
             }
-
         }
     }
 
