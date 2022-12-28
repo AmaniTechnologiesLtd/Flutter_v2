@@ -50,6 +50,6 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'ai.amani.android:AmaniAi:2.1.53'
+    implementation 'ai.amani.android:AmaniAi:2.1.55'
 
 }

@@ -1,9 +1,8 @@
 class CustomerInfoModel {
-  int? id;
+  String? id;
   String? name;
   String? email;
   String? phone;
-  int? companyID;
   String? status;
   List<KYCRuleModel>? rules;
   List<KYCRuleModel>? missingRules;
@@ -14,11 +13,10 @@ class CustomerInfoModel {
   String? province;
 
   CustomerInfoModel({
-    int? id,
+    String? id,
     String? name,
     String? email,
     String? phone,
-    int? companyID,
     String? status,
     List<KYCRuleModel>? rules,
     List<KYCRuleModel>? missingRules,
@@ -35,7 +33,6 @@ class CustomerInfoModel {
       "name": name,
       "email": email,
       "phone": phone,
-      "companyID": companyID,
       "status": status,
       "rules": rules,
       "missingRules": missingRules,
@@ -69,7 +66,6 @@ class CustomerInfoModel {
     name = map["name"];
     email = map["email"];
     phone = map["phone"];
-    companyID = map["companyID"];
     occupation = map["occupation"];
     city = map["city"];
     address = map["address"];
@@ -80,13 +76,13 @@ class CustomerInfoModel {
 }
 
 class KYCRuleModel {
-  int? id;
+  String? id;
   String? title;
   List<String>? documentClasses;
   String? status;
 
   KYCRuleModel({
-    int? id,
+    String? id,
     String? title,
     List<String>? documentClasses,
     String? status,

@@ -74,22 +74,9 @@ class AmaniSDK {
     }
 
     Uri serverURI = Uri.parse(server).normalizePath();
-    String serverURL = "";
-
-    // Parse the server and adjust by path.
-    if (serverURI.path.contains('/api/v1') && Platform.isAndroid) {
-      serverURL = serverURI.toString();
-    } else if (serverURI.path.contains('/api/v1') && Platform.isIOS) {
-      serverURL = serverURI.origin;
-    } else if (serverURI.hasEmptyPath && Platform.isIOS) {
-      serverURL = serverURI.origin;
-    } else if (serverURI.hasEmptyPath && Platform.isAndroid) {
-      serverURL = serverURI.replace(path: "/api/v1/").toString();
-    }
-
     try {
       var login = await _methodChannel.initAmani(
-          server: serverURL,
+          server: serverURI.origin,
           customerToken: customerToken,
           customerIdCardNumber: customerIdCardNumber,
           lang: lang,
@@ -97,14 +84,18 @@ class AmaniSDK {
           sharedSecret: sharedSecret);
       return login;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
   Future<CustomerInfoModel> getCustomerInfo() async {
     final customerInfo = await _methodChannel.getCustomerInfo();
-    var model =
-        CustomerInfoModel.fromMap(Map<String, dynamic>.from(customerInfo));
-    return model;
+    if (customerInfo != null) {
+      final model =
+          CustomerInfoModel.fromMap(Map<String, dynamic>.from(customerInfo));
+      return model;
+    } else {
+      throw Exception("Failed to get customer info");
+    }
   }
 }

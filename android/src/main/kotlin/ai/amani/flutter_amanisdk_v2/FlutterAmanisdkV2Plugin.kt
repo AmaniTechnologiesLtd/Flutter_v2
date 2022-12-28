@@ -4,10 +4,10 @@ import ai.amani.flutter_amanisdk_v2.modules.*
 import ai.amani.flutter_amanisdk_v2.modules.config_models.AutoSelfieSettings
 import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
+import ai.amani.sdk.model.customer.CustomerDetailResult
 import ai.amani.sdk.modules.customer.detail.CustomerDetailObserver
 import android.app.Activity
 import androidx.annotation.NonNull
-import datamanager.model.customer.ResCustomerDetail
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -221,25 +221,25 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun getCustomerInfo(result: MethodChannel.Result) {
     Amani.sharedInstance().CustomerDetail().getCustomerDetail(object : CustomerDetailObserver {
-      override fun result(customerDetail: ResCustomerDetail?, throwable: Throwable?) {
+      override fun result(customerDetail: CustomerDetailResult?, throwable: Throwable?) {
         if (throwable != null) {
           result.error("CustomerInfo-Fetch", throwable.message, null)
         } else if (customerDetail != null) {
 
-          val rules = customerDetail.rules.map {
-            mapOf<String, Any>(
-                    "id" to it.id,
-                    "title" to it.title,
-                    "documentClasses" to it.documentClasses,
-                    "status" to it.status,
-            );
+          val rules = customerDetail.rules?.map {
+              mapOf<String, Any>(
+                      "id" to (it.id as Any),
+                      "title" to (it.title as Any),
+                      "documentClasses" to (it.documentClasses as Any),
+                      "status" to (it.status as Any),
+              )
           }
 
-          val missingRules = customerDetail.missingRules.map {
+          val missingRules = customerDetail.missingRules?.map {
             mapOf<String, Any>(
-                    "id" to it.id,
-                    "title" to it.title,
-                    "documentClasses" to it.documentClasses,
+                    "id" to (it?.id as Any),
+                    "title" to (it.title as Any),
+                    "documentClasses" to (it.documentClasses as Any),
             )
           }
 
@@ -248,12 +248,15 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                   "name" to customerDetail.name,
                   "email" to customerDetail.email,
                   "phone" to customerDetail.phone,
-                  "companyID" to customerDetail.companyId,
                   "status" to customerDetail.status,
                   "occupation" to customerDetail.occupation,
-                  "city" to if(customerDetail.address != null) customerDetail.address.city else null,
-                  "address" to if(customerDetail.address != null) customerDetail.address.address else null,
-                  "province" to if(customerDetail.address != null) customerDetail.address.province else null,
+                  // FIXME: v3 address changes
+                  "city" to null,
+                  "address" to null,
+                  "province" to null,
+//                  "city" to if(customerDetail.address != null) customerDetail.address.city else null,
+//                  "address" to if(customerDetail.address != null) customerDetail.address.address else null,
+//                  "province" to if(customerDetail.address != null) customerDetail.address.province else null,
                   "idCardNumber" to customerDetail.idCardNumber,
                   "rules" to rules,
                   "missingRules" to missingRules,

@@ -376,10 +376,10 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<Map<String, dynamic>> getCustomerInfo() async {
+  Future<Map<String, dynamic>?> getCustomerInfo() async {
     try {
-      final Map<String, dynamic> customerInfo =
-          await methodChannel.invokeMethod("getCustomerInfo");
+      final Map<String, dynamic>? customerInfo = await methodChannel
+          .invokeMapMethod<String, dynamic>("getCustomerInfo");
       return customerInfo;
     } catch (err) {
       rethrow;
