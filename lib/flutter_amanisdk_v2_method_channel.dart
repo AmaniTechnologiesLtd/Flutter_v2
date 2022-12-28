@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -17,37 +18,42 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
 
   @override
   Future<dynamic> startIDCapture(int stepID) async {
-    final dynamic imageData = await methodChannel.invokeMethod<dynamic>(
-        'startIDCapture', {"stepID": stepID}).catchError((err) {
-      throw Exception(err.toString());
-    });
-    return imageData;
+    try {
+      final dynamic imageData = await methodChannel
+          .invokeMethod<dynamic>('startIDCapture', {"stepID": stepID});
+      return imageData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> uploadIDCapture() async {
-    final bool isDone =
-        await methodChannel.invokeMethod('uploadIDCapture').catchError((err) {
-      throw Exception(err);
-    });
-    return isDone;
+    try {
+      final bool isDone = await methodChannel.invokeMethod('uploadIDCapture');
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> setIDCaptureType(String type) async {
-    await methodChannel
-        .invokeMethod('setIDCaptureType', {"type": type}).catchError((err) {
-      throw Exception(err);
-    });
+    try {
+      await methodChannel.invokeMethod('setIDCaptureType', {"type": type});
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> iOSStartIDCaptureNFC() async {
-    final bool isDone =
-        await methodChannel.invokeMethod('iosIDCaptureNFC').catchError((err) {
-      throw Exception(err);
-    });
-    return isDone;
+    try {
+      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC');
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
@@ -69,32 +75,38 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       });
       return loginResult;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
   @override
   Future<dynamic> startSelfie() async {
-    final dynamic imgData = await methodChannel
-        .invokeMethod<dynamic>('startSelfie')
-        .catchError((err) {
-      throw Exception(err.toString());
-    });
-    return imgData;
+    try {
+      final dynamic imgData =
+          await methodChannel.invokeMethod<dynamic>('startSelfie');
+      return imgData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> setSelfieType(String type) async {
-    await methodChannel.invokeMethod('setSelfieType', {'type': type});
+    try {
+      await methodChannel.invokeMethod('setSelfieType', {'type': type});
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> uploadSelfie() async {
-    final bool status =
-        await methodChannel.invokeMethod('uploadSelfie').catchError((err) {
-      throw Exception(err.toString());
-    });
-    return status;
+    try {
+      final bool status = await methodChannel.invokeMethod('uploadSelfie');
+      return status;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // AutoSelfie
@@ -104,31 +116,34 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       required IOSAutoSelfieSettings iosSettings}) async {
     final String androidSettingsJSON = jsonEncode(androidSettings);
     final String iosSettingsJSON = jsonEncode(iosSettings);
-
-    final imgData = await methodChannel.invokeMethod('startAutoSelfie', {
-      "iosSettings": iosSettingsJSON,
-      "androidSettings": androidSettingsJSON
-    }).catchError((err) {
-      throw Exception(err);
-    });
-    return imgData;
+    try {
+      final imgData = await methodChannel.invokeMethod('startAutoSelfie', {
+        "iosSettings": iosSettingsJSON,
+        "androidSettings": androidSettingsJSON
+      });
+      return imgData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> setAutoSelfieType({required String type}) async {
-    await methodChannel
-        .invokeMethod('setAutoSelfieType', {"type": type}).catchError((err) {
-      throw Exception(err.toString());
-    });
+    try {
+      await methodChannel.invokeMethod('setAutoSelfieType', {"type": type});
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> uploadAutoSelfie() async {
-    final bool status =
-        await methodChannel.invokeMethod('uploadAutoSelfie').catchError((err) {
-      throw Exception(err.toString());
-    });
-    return status;
+    try {
+      final bool status = await methodChannel.invokeMethod('uploadAutoSelfie');
+      return status;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // Pose Estimation
@@ -139,30 +154,36 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
     final String androidSettingsJSON =
         jsonEncode(androidPoseEstimationSettings);
     final String iosSettingsJSON = jsonEncode(iosPoseEstimationSettings);
-    final dynamic imgData =
-        await methodChannel.invokeMethod('startPoseEstimation', {
-      "androidSettings": androidSettingsJSON,
-      "iosSettings": iosSettingsJSON,
-    }).catchError((err) {
-      throw Exception(err);
-    });
-
-    return imgData;
+    try {
+      final dynamic imgData =
+          await methodChannel.invokeMethod('startPoseEstimation', {
+        "androidSettings": androidSettingsJSON,
+        "iosSettings": iosSettingsJSON,
+      });
+      return imgData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> uploadPoseEstimation() async {
-    final bool isDone = await methodChannel
-        .invokeMethod('uploadPoseEstimation')
-        .catchError((err) {
-      throw Exception(err);
-    });
-    return isDone;
+    try {
+      final bool isDone =
+          await methodChannel.invokeMethod('uploadPoseEstimation');
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> setPoseEstimationType(String type) async {
-    await methodChannel.invokeMethod('setPoseEstimationType', {"type": type});
+    try {
+      await methodChannel.invokeMethod('setPoseEstimationType', {"type": type});
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // NFC Capture For IOS
@@ -173,7 +194,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
           await methodChannel.invokeMethod('iOSstartNFCWithMRZCapture');
       return isSuccess;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -184,7 +205,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
           .invokeMethod('iOSstartNFCWithImageData', {'imageData': imageData});
       return isSuccess;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -195,7 +216,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
           'iOSstartNFCWithNviModel', nviModel.toMap());
       return isSuccess;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
@@ -205,13 +226,17 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       final bool isSuccess = await methodChannel.invokeMethod('iOSuploadNFC');
       return isSuccess;
     } catch (err) {
-      throw Exception(err);
+      rethrow;
     }
   }
 
   @override
   Future<void> iosSetNFCType(String type) async {
-    await methodChannel.invokeMethod('iOSsetNFCType', {"type": type});
+    try {
+      await methodChannel.invokeMethod('iOSsetNFCType', {"type": type});
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // NFC Capture For Android
@@ -220,30 +245,43 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       {required String birthDate,
       required String expireDate,
       required String documentNo}) async {
-    await methodChannel.invokeMethod('androidStartNFC', {
-      "birthDate": birthDate,
-      "expireDate": expireDate,
-      "documentNo": documentNo
-    });
+    try {
+      await methodChannel.invokeMethod('androidStartNFC', {
+        "birthDate": birthDate,
+        "expireDate": expireDate,
+        "documentNo": documentNo
+      });
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> androidDisableNFCListener() async {
-    await methodChannel.invokeMethod('androidDisableNFC');
+    try {
+      await methodChannel.invokeMethod('androidDisableNFC');
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> androidSetNFCType(String type) async {
-    await methodChannel.invokeMethod('androidSetNFCType', {"type": type});
+    try {
+      await methodChannel.invokeMethod('androidSetNFCType', {"type": type});
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> androidUploadNFC() async {
-    final bool isDone =
-        await methodChannel.invokeMethod('androidUploadNFC').catchError((err) {
-      throw Exception(err);
-    });
-    return isDone;
+    try {
+      final bool isDone = await methodChannel.invokeMethod('androidUploadNFC');
+      return isDone;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // BioLogin
@@ -255,69 +293,96 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       required String attemptId,
       int? source,
       int? comparisonAdapter,
-      String? sharedSecret}) {
-    return methodChannel.invokeMethod("initBioLogin", {
-      "server": server,
-      "token": token,
-      "customerId": customerId,
-      "attemptId": attemptId,
-      "source": source,
-      "comparisonAdapter": comparisonAdapter,
-      "sharedSecret": sharedSecret,
-    });
+      String? sharedSecret}) async {
+    try {
+      await methodChannel.invokeMethod("initBioLogin", {
+        "server": server,
+        "token": token,
+        "customerId": customerId,
+        "attemptId": attemptId,
+        "source": source,
+        "comparisonAdapter": comparisonAdapter,
+        "sharedSecret": sharedSecret,
+      });
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<Uint8List?> startBioLoginWithAutoSelfie(
       {required IOSAutoSelfieSettings iosSettings,
-      required AndroidAutoSelfieSettings androidSettings}) {
-    return methodChannel
-        .invokeMethod<Uint8List>("startBioLoginWithAutoSelfie", {
-      "iosSettings": jsonEncode(iosSettings),
-      "androidSettings": jsonEncode(androidSettings)
-    });
+      required AndroidAutoSelfieSettings androidSettings}) async {
+    try {
+      final imageData = await methodChannel
+          .invokeMethod<Uint8List>("startBioLoginWithAutoSelfie", {
+        "iosSettings": jsonEncode(iosSettings),
+        "androidSettings": jsonEncode(androidSettings)
+      });
+      return imageData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<Uint8List?> iOSStartBioLoginWithPoseEstimation(
-      {required IOSPoseEstimationSettings settings}) {
-    return methodChannel.invokeMethod("iOSStartBioLoginWithPoseEstimation", {
-      "iosSettings": jsonEncode(settings),
-    });
+      {required IOSPoseEstimationSettings settings}) async {
+    try {
+      final imageData = await methodChannel
+          .invokeMethod<Uint8List>("iOSStartBioLoginWithPoseEstimation", {
+        "iosSettings": jsonEncode(settings),
+      });
+      return imageData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
-  Future androidStartBioLoginWithPoseEstimation(
-      {required AndroidPoseEstimationSettings settings}) {
-    return methodChannel.invokeMethod("androidStartBioLoginWithPoseEstimation",
-        {"androidSettings": jsonEncode(settings)});
+  Future<Uint8List?> androidStartBioLoginWithPoseEstimation(
+      {required AndroidPoseEstimationSettings settings}) async {
+    try {
+      final imageData = await methodChannel.invokeMethod<Uint8List>(
+          "androidStartBioLoginWithPoseEstimation",
+          {"androidSettings": jsonEncode(settings)});
+      return imageData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<Uint8List?> startBioLoginWithManualSelfie(
-      {required String androidSelfieDescriptionText}) {
-    return methodChannel.invokeMethod("startBioLoginWithManualSelfie",
-        {"androidSelfieDescriptionText": androidSelfieDescriptionText});
+      {required String androidSelfieDescriptionText}) async {
+    try {
+      final imageData = methodChannel.invokeMethod<Uint8List>(
+          "startBioLoginWithManualSelfie",
+          {"androidSelfieDescriptionText": androidSelfieDescriptionText});
+      return imageData;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> uploadBioLogin() async {
-    final isSuccess = await methodChannel.invokeMethod<bool>("uploadBioLogin");
-    if (isSuccess != null) {
+    try {
+      final bool isSuccess = await methodChannel.invokeMethod("uploadBioLogin");
       return isSuccess;
-    } else {
-      throw Exception("Upload failure");
+    } catch (err) {
+      rethrow;
     }
   }
 
   @override
   Future<Map<String, dynamic>> getCustomerInfo() async {
-    final customerInfo =
-        await methodChannel.invokeMapMethod<String, dynamic>("getCustomerInfo");
-    if (customerInfo != null) {
+    try {
+      final Map<String, dynamic> customerInfo =
+          await methodChannel.invokeMethod("getCustomerInfo");
       return customerInfo;
-    } else {
-      throw Exception("Failed to fetch customer info");
+    } catch (err) {
+      rethrow;
     }
   }
 }

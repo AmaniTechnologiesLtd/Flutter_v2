@@ -35,13 +35,17 @@ class BioLogin {
   Future<Uint8List> startWithAutoSelfie(
       {required IOSAutoSelfieSettings iosAutoSelfieSettings,
       required AndroidAutoSelfieSettings androidAutoSelfieSettings}) async {
-    final imageData = await _methodChannel.startBioLoginWithAutoSelfie(
-        iosSettings: iosAutoSelfieSettings,
-        androidSettings: androidAutoSelfieSettings);
-    if (imageData != null) {
-      return imageData;
-    } else {
-      throw Exception("Nothing returned from BioLogin.startWithAutoSelfie");
+    try {
+      final imageData = await _methodChannel.startBioLoginWithAutoSelfie(
+          iosSettings: iosAutoSelfieSettings,
+          androidSettings: androidAutoSelfieSettings);
+      if (imageData != null) {
+        return imageData;
+      } else {
+        throw Exception("Nothing returned from BioLogin.startWithAutoSelfie");
+      }
+    } catch (err) {
+      rethrow;
     }
   }
 
@@ -73,7 +77,7 @@ class BioLogin {
     }
   }
 
-  Future<void> androidStartWithPoseEstimation(
+  Future<Uint8List?> androidStartWithPoseEstimation(
       {required AndroidPoseEstimationSettings settings,
       required Function(Uint8List) onSuccessCallback,
       required Function(Map<String, dynamic>) onFailureCallback}) async {
@@ -88,12 +92,16 @@ class BioLogin {
 
   Future<Uint8List> startWithManualSelfie(
       {required String androidSelfieDescriptionText}) async {
-    final imageData = await _methodChannel.startBioLoginWithManualSelfie(
-        androidSelfieDescriptionText: androidSelfieDescriptionText);
-    if (imageData != null) {
-      return imageData;
-    } else {
-      throw Exception("Nothing returned from BioLogin.startWithManualSelfie");
+    try {
+      final imageData = await _methodChannel.startBioLoginWithManualSelfie(
+          androidSelfieDescriptionText: androidSelfieDescriptionText);
+      if (imageData != null) {
+        return imageData;
+      } else {
+        throw Exception("Nothing returned from BioLogin.startWithManualSelfie");
+      }
+    } catch (err) {
+      rethrow;
     }
   }
 
