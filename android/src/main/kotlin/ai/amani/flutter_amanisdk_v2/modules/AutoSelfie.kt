@@ -85,10 +85,10 @@ class AutoSelfie: Module {
         autoSelfieModule.upload((activity as FragmentActivity), docType) { isSuccess, uploadRes, errors ->
             if (isSuccess && uploadRes == "OK") {
                 result.success(true)
-            } else if (isSuccess && uploadRes == "ERROR") {
-                result.error("1007", "Validation Errors", errors)
-            } else if (!isSuccess && uploadRes == null && errors != null) {
-                result.error("1006", "Upload Error", errors)
+            } else if (isSuccess && uploadRes == "ERROR" && !errors.isNullOrEmpty()) {
+                result.error("1007", "Validation Errors", errors[0].errorMessage)
+            } else if (!isSuccess && uploadRes == null && !errors.isNullOrEmpty()) {
+                result.error("1006", "Upload Error", errors[0].errorMessage)
             }
         }
     }
