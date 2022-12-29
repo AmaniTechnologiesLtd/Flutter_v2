@@ -62,7 +62,7 @@ class CustomerInfoModel {
     }
 
     // fill the instance data.
-    id = map["id"];
+    id = map["id"] is String ? map["id"] : map["id"].toString();
     name = map["name"];
     email = map["email"];
     phone = map["phone"];
@@ -98,7 +98,7 @@ class KYCRuleModel {
   }
 
   KYCRuleModel.fromMap(Map<String, dynamic> map) {
-    id = map["id"];
+    id = map["id"].runtimeType is String ? map["id"] : map["id"].toString();
     title = map["title"];
     documentClasses = List<String>.from(map["documentClasses"]);
     status = map["status"];

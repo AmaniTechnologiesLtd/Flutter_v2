@@ -11,6 +11,7 @@ import ai.amani.sdk.modules.selfie.pose_estimation.observable.OnFailurePoseEstim
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObserver
 import android.app.Activity
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -25,20 +26,35 @@ class BioLogin {
     private var frag: Fragment? = null
     private var token: String? = null
     private var customerId: Int? = null
+    private var comparisonAdapter: Int = 2
+    private var source: Int = 3
+    private var attemptID: String? = null
+
     companion object  {
         val instance = BioLogin()
     }
 
 
-    fun initBioLogin(server: String, sharedSecret: String?, token: String, customerId: Int, activity: Activity, result: MethodChannel.Result) {
+    fun initBioLogin(server: String, sharedSecret: String?, token: String, customerId: Int, comparisonAdapter: Int?, source: Int?, attemptID: String, activity: Activity, result: MethodChannel.Result) {
         Amani.initBio(activity, server, sharedSecret)
         this.token = token
         this.customerId = customerId
+        if (comparisonAdapter != null) {
+            this.comparisonAdapter = comparisonAdapter
+        }
+
+        if (source != null) {
+            this.source = source
+        }
+        this.attemptID = attemptID
+
         result.success(null)
     }
 
     fun startWithAutoSelfie(settings: AutoSelfieSettings, activity: Activity, result: MethodChannel.Result) {
-        if (customerId == null) {
+        Log.d("BIO", "attempt ID" + attemptID)
+        Log.d("BIO", "attempt ID" + customerId)
+        if (customerId == null && attemptID == null) {
             result.error("BioLogin", "You must call initBioLogin before you use this function", null)
         }
         (activity as FragmentActivity)
@@ -59,6 +75,10 @@ class BioLogin {
                         faceIsTooFarText = settings.distanceText,
                         holdStableText = settings.stableText,
                         faceNotFoundText = settings.faceNotFoundText,
+                ).configuration(
+                        comparisonAdapter = this.comparisonAdapter,
+                        source = this.source,
+                        attemptId = this.attemptID!!
                 ).observer(object : AutoSelfieCaptureObserver {
                     override fun cb(bitmap: Bitmap?) {
                         val allocate: ByteBuffer = ByteBuffer.allocate(bitmap!!.byteCount)
@@ -76,7 +96,7 @@ class BioLogin {
     }
 
     fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
-        if (customerId == null) {
+        if (customerId == null && attemptID == null) {
             result.error("BioLogin", "You must call initBioLogin before you use this function", null)
         }
         (activity as FragmentActivity)
@@ -90,6 +110,11 @@ class BioLogin {
         frag = Amani.sharedInstance().BioLogin().PoseEstimation()
                 .requestedPoseNumber(settings.poseCount)
                 .ovalViewAnimationDurationMilSec(settings.animationDuration)
+                .configuration(
+                        comparisonAdapter = this.comparisonAdapter,
+                        source = this.source,
+                        attemptId = this.attemptID!!
+                )
                 .userInterfaceColors(
                         appFontColor = R.color.pose_estimation_font,
                         ovalViewStartColor = R.color.pose_estimation_oval_view_start,
@@ -135,7 +160,7 @@ class BioLogin {
     }
 
     fun startWithManualSelfie(selfieDescriptionText: String, activity: Activity, result: MethodChannel.Result) {
-        if (customerId == null) {
+        if (customerId == null && attemptID == null) {
             result.error("BioLogin", "You must call initBioLogin before you do this operation", null)
         }
         (activity as FragmentActivity)
@@ -154,7 +179,12 @@ class BioLogin {
                    appBackgroundColor = R.color.biologin_manual_selfie_background
                 ).userInterfaceTexts(
                         selfieDescriptionText = selfieDescriptionText
-                ).observer(object : ManualSelfieCaptureObserver {
+                ).configuration(
+                        comparisonAdapter = this.comparisonAdapter,
+                        source = this.source,
+                        attemptId = this.attemptID!!
+                )
+                .observer(object : ManualSelfieCaptureObserver {
                     override fun cb(bitmap: Bitmap?) {
                         if(bitmap != null) {
                             val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
@@ -179,7 +209,7 @@ class BioLogin {
         }
         Amani.sharedInstance().BioLogin().upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
             override fun cb(result: Boolean?, errors: Errors?) {
-                if (result != null) {
+                if (result != null && result == true) {
                     completion.success(result)
                 } else if(errors != null) {
                     completion.error("BioLogin Upload error", errors.errorMessage, null)

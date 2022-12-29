@@ -143,8 +143,11 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val sharedSecret = call.argument<String>("sharedSecret")
         val token = call.argument<String>("token")!!
         val customerId = call.argument<String>("customerId")
+        val attemptId = call.argument<String>("attemptId")
+        val source = call.argument<Int>("source")
+        val comparisonAdapter = call.argument<Int>("comparisonAdapter")
 
-        BioLogin.instance.initBioLogin(server, sharedSecret, token, customerId!!.toInt(), activity!!, result)
+        BioLogin.instance.initBioLogin(server, sharedSecret, token, customerId!!.toInt(), comparisonAdapter, source, attemptId!!,  activity!!, result)
       }
       "startBioLoginWithAutoSelfie" -> {
         val androidSettings = call.argument<String>("androidSettings")
