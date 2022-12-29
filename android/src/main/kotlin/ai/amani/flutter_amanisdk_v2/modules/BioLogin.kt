@@ -209,10 +209,16 @@ class BioLogin {
         }
         Amani.sharedInstance().BioLogin().upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
             override fun cb(result: Boolean?, errors: Errors?) {
-                if (result != null && result == true) {
-                    completion.success(result)
-                } else if(errors != null) {
-                    completion.error("BioLogin Upload error", errors.errorMessage, null)
+                when {
+                    result != null -> {
+                        completion.success(result)
+                    }
+                    errors != null -> {
+                        completion.error("BioLogin", "BioLogin Error", errors.errorMessage)
+                    }
+                    else -> {
+                        completion.error("BioLogin", "Nothing returned from bio login", null)
+                    }
                 }
             }
         })
