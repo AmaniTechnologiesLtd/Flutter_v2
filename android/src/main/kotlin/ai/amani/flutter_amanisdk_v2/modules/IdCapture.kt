@@ -38,33 +38,14 @@ class IdCapture : Module {
         activity.addContentView(container, viewParams)
 
         frag = idCaptureModule.start(activity, container, docType!!, side) { bitmap, _, file ->
+            Log.d("IDCapture", "CALLBACK TRIGGERED")
             if (bitmap != null) {
-                Log.d("AmaniSDK-IDCapture", "Bitmap found")
+                Log.d("IDCapture", "BITMAP FOUND RETURNING")
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                result.success(stream.toByteArray())
+                activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
             }
-
-            if (file != null) {
-                Log.d("AmaniSDK-IDCapture", "file found")
-            }
-
-            when {
-                file != null -> {
-                    Log.d("AmaniSDK-FILE", "file found")
-                    val fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    val stream = ByteArrayOutputStream()
-                    fileBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                    result.success(stream.toByteArray())
-                }
-                bitmap != null -> {
-                    Log.d("AmaniSDK-FILE", "byte[] found")
-                    val stream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                    result.success(stream.toByteArray())
-                }
-                else -> {
-                    result.error("1006", "Nothing returned from idCapture.start", null)
-                }
-            }
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
         }
 
         val fragmentManager = activity.supportFragmentManager
@@ -74,15 +55,16 @@ class IdCapture : Module {
     }
 
     override fun upload(activity: Activity, result : Result) {
-        idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, uploadRes, errors ->
-            if (isSuccess && uploadRes == "OK") {
-                result.success(true)
-            } else if (isSuccess && uploadRes == "ERROR" && !errors.isNullOrEmpty()) {
-                result.error("1007", "Validation Errors", errors[0].errorMessage)
-            } else if (!isSuccess && uploadRes == null && !errors.isNullOrEmpty()) {
-                result.error("1006", "Upload Error", errors[0].errorMessage)
-            }
-        }
+        try {
+            idCaptureModule.upload(activity as FragmentActivity, docType!!) { isSuccess, uploadRes, errors ->
+                if (isSuccess && uploadRes == "OK") {
+                    result.success(true)
+                } else if (!errors.isNullOrEmpty()) {
+                    result.error("1006", "Upload Error", errors[0].errorMessage)
+                } else {
+                    result.success(false)
+                }
+            }} catch (e: Exception) {}
     }
 
     override fun setType(type: String?, result: Result) {

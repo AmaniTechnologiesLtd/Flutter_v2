@@ -31,23 +31,12 @@ class Selfie: Module {
         activity.addContentView(container, viewParams)
 
         frag = selfieModule.start(docType) { bitmap, _, file ->
-            when {
-                file != null -> {
-                    val fileBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    val stream = ByteArrayOutputStream()
-                    fileBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                    result.success(stream.toByteArray())
-                }
-                bitmap != null -> {
-                    val stream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                    result.success(stream.toByteArray())
-                }
-                else -> {
-                    result.error("1006", "Nothing returned from selfie.start", null)
-                }
+            if (bitmap != null) {
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                result.success(stream.toByteArray())
+                activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
             }
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
         }
 
         val fragmentManager = activity.supportFragmentManager
@@ -57,15 +46,16 @@ class Selfie: Module {
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
+        try {
         selfieModule.upload((activity as FragmentActivity), docType) { isSuccess, uploadRes, errors ->
             if (isSuccess && uploadRes == "OK") {
                 result.success(true)
-            } else if (isSuccess && uploadRes == "ERROR" && !errors.isNullOrEmpty()) {
-                result.error("1007", "Validation Errors", errors[0].errorMessage)
-            } else if (!isSuccess && uploadRes == null && !errors.isNullOrEmpty()) {
+            } else if (!errors.isNullOrEmpty()) {
                 result.error("1006", "Upload Error", errors[0].errorMessage)
+            } else {
+                result.success(false)
             }
-        }
+        }} catch (e: Exception) {}
     }
 
     override fun setType(type: String?, result: MethodChannel.Result) {

@@ -52,8 +52,6 @@ class BioLogin {
     }
 
     fun startWithAutoSelfie(settings: AutoSelfieSettings, activity: Activity, result: MethodChannel.Result) {
-        Log.d("BIO", "attempt ID" + attemptID)
-        Log.d("BIO", "attempt ID" + customerId)
         if (customerId == null && attemptID == null) {
             result.error("BioLogin", "You must call initBioLogin before you use this function", null)
         }
@@ -81,11 +79,12 @@ class BioLogin {
                         attemptId = this.attemptID!!
                 ).observer(object : AutoSelfieCaptureObserver {
                     override fun cb(bitmap: Bitmap?) {
-                        val allocate: ByteBuffer = ByteBuffer.allocate(bitmap!!.byteCount)
-                        bitmap.copyPixelsToBuffer(allocate)
-                        val array: ByteArray = allocate.array()
+                        if(bitmap != null) {
+                            val stream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            result.success(stream.toByteArray())
+                        }
                         activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
-                        result.success(array)
                     }
                 }).build()
 
@@ -146,10 +145,8 @@ class BioLogin {
                             val stream = ByteArrayOutputStream()
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             channel.invokeMethod("androidBioLoginPoseEstimation#onSuccess", mapOf("image" to stream.toByteArray()))
-                        } else {
-                            channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to "No bitmap returned from pose estimation"))
+                            activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
                         }
-                        activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
                     }
                 }).build()
 
@@ -187,12 +184,10 @@ class BioLogin {
                 .observer(object : ManualSelfieCaptureObserver {
                     override fun cb(bitmap: Bitmap?) {
                         if(bitmap != null) {
-                            val allocate: ByteBuffer = ByteBuffer.allocate(bitmap.byteCount)
-                            bitmap.copyPixelsToBuffer(allocate)
-                            result.success(allocate.array())
+                            val stream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            result.success(stream.toByteArray())
                             activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
-                        } else {
-                            result.error("No bitmap", "No bitmap returned from the call", null)
                         }
                     }
                 }).build()

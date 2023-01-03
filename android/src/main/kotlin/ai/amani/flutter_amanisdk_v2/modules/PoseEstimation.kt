@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 
 class PoseEstimation: Module {
     private val poseEstimationModule = Amani.sharedInstance().SelfiePoseEstimation()
@@ -44,14 +45,12 @@ class PoseEstimation: Module {
             }
 
             override fun onSuccess(bitmap: Bitmap?) {
-                (activity as FragmentActivity).supportFragmentManager.
-                beginTransaction().remove(frag!!).commitAllowingStateLoss()
                 if (bitmap != null) {
                    val stream = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    (activity as FragmentActivity).supportFragmentManager.
+                    beginTransaction().remove(frag!!).commitAllowingStateLoss()
                     result.success(stream.toByteArray())
-                } else {
-                    result.error("1006", "Nothing returned from poseEstimation.start", null)
                 }
             }
 
@@ -92,15 +91,16 @@ class PoseEstimation: Module {
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
-        poseEstimationModule.upload(activity, docType) { isSuccess, uploadRes, errors ->
-            if (isSuccess && uploadRes == "OK") {
-                result.success(true)
-            } else if (isSuccess && uploadRes == "ERROR" && !errors.isNullOrEmpty()) {
-                result.error("1007", "Validation Errors", errors[0].errorMessage)
-            } else if (!isSuccess && uploadRes == null && !errors.isNullOrEmpty()) {
-                result.error("1006", "Upload Error", errors[0].errorMessage)
-            }
-        }
+        try {
+            poseEstimationModule.upload((activity as FragmentActivity), docType) { isSuccess, uploadRes, errors ->
+                if (isSuccess && uploadRes == "OK") {
+                    result.success(true)
+                } else if (!errors.isNullOrEmpty()) {
+                    result.error("1006", "Upload Error", errors[0].errorMessage)
+                } else {
+                    result.success(false)
+                }
+            }} catch (e: Exception) {}
     }
 
     override fun setType(type: String?, result: MethodChannel.Result) {
