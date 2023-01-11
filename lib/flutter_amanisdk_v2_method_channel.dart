@@ -213,7 +213,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   Future<bool> iOSNFCCaptureWithNviData(NviModel nviModel) async {
     try {
       final bool isSuccess = await methodChannel.invokeMethod(
-          'iOSstartNFCWithNviModel', nviModel.toMap());
+          'iOSstartNFCWithNviModel', {'nviData': nviModel.toMap()});
       return isSuccess;
     } catch (err) {
       rethrow;
