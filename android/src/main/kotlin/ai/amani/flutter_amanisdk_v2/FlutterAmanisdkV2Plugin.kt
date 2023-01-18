@@ -68,6 +68,10 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           IdCapture.instance.start(0, activity!!, result)
         }
       }
+      "setIDCaptureManualCaptureTimeout" -> {
+        val timeout = call.argument<Int>("timeout")!!
+        IdCapture.instance.setManualCaptureButtonTimeout(timeout)
+      }
       "uploadIDCapture" -> {
         IdCapture.instance.upload(activity!!, result)
       }
@@ -175,8 +179,6 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       else -> result.notImplemented()
     }
-
-
   }
 
 

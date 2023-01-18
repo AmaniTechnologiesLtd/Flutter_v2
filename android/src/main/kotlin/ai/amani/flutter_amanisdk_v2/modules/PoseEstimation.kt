@@ -34,13 +34,13 @@ class PoseEstimation: Module {
         val observer: PoseEstimationObserver = object : PoseEstimationObserver {
             override fun onError(error: Error) {
                 (activity as FragmentActivity).supportFragmentManager.
-                beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                beginTransaction().remove(frag!!).commit()
                 result.error("1009", error.message, null)
             }
 
             override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
                 (activity as FragmentActivity).supportFragmentManager.
-                beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                beginTransaction().remove(frag!!).commit()
                 result.error(reason.code.toString(), reason.name, null)
             }
 
@@ -49,7 +49,7 @@ class PoseEstimation: Module {
                    val stream = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                     (activity as FragmentActivity).supportFragmentManager.
-                    beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                    beginTransaction().remove(frag!!).commit()
                     result.success(stream.toByteArray())
                 }
             }
@@ -87,7 +87,7 @@ class PoseEstimation: Module {
 
         activity.supportFragmentManager.beginTransaction()
                 .replace(id, frag!!)
-                .commitAllowingStateLoss()
+                .commit()
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {

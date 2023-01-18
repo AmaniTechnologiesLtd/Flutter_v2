@@ -61,14 +61,16 @@ class AutoSelfie: Module {
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                 result.success(stream.toByteArray())
-                activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
             }
         }
+
+
 
         val fragmentManager = activity.supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(id, frag!!)
-                .commitAllowingStateLoss()
+                .commit()
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {

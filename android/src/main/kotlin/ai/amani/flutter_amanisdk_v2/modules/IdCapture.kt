@@ -44,14 +44,23 @@ class IdCapture : Module {
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                 result.success(stream.toByteArray())
-                activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
             }
+        }
+
+        if (frag == null) {
+            result.error("20900", "Failed to initialize ID Capture", null)
+            return
         }
 
         val fragmentManager = activity.supportFragmentManager
         fragmentManager.beginTransaction()
                 .replace(id, frag!!)
-                .commitAllowingStateLoss()
+                .commit()
+    }
+
+    fun setManualCaptureButtonTimeout(timeout: Int) {
+        idCaptureModule.setManualCropTimeOut(timeout);
     }
 
     override fun upload(activity: Activity, result : Result) {
