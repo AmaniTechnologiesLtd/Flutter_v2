@@ -44,4 +44,8 @@ class IdCapture {
   Future<void> setType(String type) async {
     await _methodChannel.setIDCaptureType(type);
   }
+
+  Future<void> setManualButtonTimeout(int time) async {
+    await _methodChannel.setIDCaptureManualButtonTimeout(time);
+  }
 }

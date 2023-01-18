@@ -57,5 +57,10 @@ class IdCapture {
     }      
   }
   
+  public func setManualCaptureButtonTimeout(timeout: Int, result: @escaping FlutterResult) {
+    module.setManualCropTimeout(Timeout: timeout)
+    result(nil)
+  }
+  
 }
 

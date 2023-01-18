@@ -47,6 +47,16 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<void> setIDCaptureManualButtonTimeout(int timeout) async {
+    try {
+      await methodChannel.invokeMethod(
+          'setIDCaptureManualButtonTimeout', {"timeout": timeout});
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<bool> iOSStartIDCaptureNFC() async {
     try {
       final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC');

@@ -29,6 +29,10 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       let idCapture = IdCapture()
       let stepID = arguments?["stepID"] as? Int
       idCapture.start(stepID: stepID ?? 0, result: result)
+    case "setIDCaptureManualButtonTimeout":
+      let idCapture = IdCapture()
+      let timeout = arguments?["timeout"] as! Int
+      idCapture.setManualCaptureButtonTimeout(timeout: timeout, result: result)
     case "iosIDCaptureNFC":
       let idCapture = IdCapture()
       if #available(iOS 13, *) {
