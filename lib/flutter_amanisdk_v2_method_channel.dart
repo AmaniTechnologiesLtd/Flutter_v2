@@ -395,4 +395,53 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       rethrow;
     }
   }
+
+  // @override
+  // Future<bool> initAmaniWithEmail(
+  //     {required String server,
+  //     required String customerToken,
+  //     required String customerIdCardNumber,
+  //     required bool useLocation,
+  //     required String lang,
+  //     String? sharedSecret}) async {
+  //   try {
+  //     final bool loginResult = await methodChannel.invokeMethod('initAmani', {
+  //       "server": server,
+  //       "customerToken": customerToken,
+  //       "customerIdCardNumber": customerIdCardNumber,
+  //       "useLocation": useLocation,
+  //       "lang": lang,
+  //       "sharedSecret": sharedSecret
+  //     });
+  //     return loginResult;
+  //   } catch (err) {
+  //     rethrow;
+  //   }
+  // }
+
+  @override
+  Future<bool> initAmaniWithEmail(
+      {required String server,
+      required String email,
+      required String password,
+      required String customerIdCardNumber,
+      required bool useLocation,
+      required String lang,
+      String? sharedSecret}) async {
+    try {
+      final bool loginResult =
+          await methodChannel.invokeMethod('initAmaniWithEmail', {
+        "server": server,
+        "email": email,
+        "password": password,
+        "customerIdCardNumber": customerIdCardNumber,
+        "useLocation": useLocation,
+        "lang": lang,
+        "sharedSecret": sharedSecret
+      });
+      return loginResult;
+    } catch (err) {
+      rethrow;
+    }
+  }
 }

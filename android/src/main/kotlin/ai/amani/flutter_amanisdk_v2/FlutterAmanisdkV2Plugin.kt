@@ -55,6 +55,17 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
         initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, result)
       }
+      "initAmaniWithEmail" -> {
+        val server = call.argument<String>("server")!!
+        val customerIdCardNumber = call.argument<String>("customerIdCardNumber")!!
+        val email = call.argument<String>("email")!!
+        val password = call.argument<String>("password")!!
+        val lang = call.argument<String>("lang")!!
+        val useLocation = call.argument<Boolean>("useLocation")!!
+        val sharedSecret = call.argument<String>("sharedSecret")
+
+        initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, result)
+      }
       // IdCapture
       "setIDCaptureType" -> {
         val type = call.argument<String>("type")
@@ -213,6 +224,28 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     if (activity != null) {
       Amani.init(activity, server, sharedSecret)
       Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, customerToken, useLocation, lang) { loggedIn, errorCode ->
+        if (loggedIn) {
+          result.success(loggedIn)
+        } else {
+          result.error(errorCode.toString(), "Api Error has occur while logging in", "check error code for details")
+        }
+      }
+    } else {
+      Log.e("AmaniSDK", "tried to init amani while activity is null")
+    }
+  }
+
+  private fun initAmaniWithEmail(server: String,
+                        customerIdCardNumber: String,
+                        email: String,
+                        password: String,
+                        lang: String,
+                        useLocation: Boolean,
+                        sharedSecret: String?,
+                        result: Result) {
+    if (activity != null) {
+      Amani.init(activity, server, sharedSecret)
+      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, email, password, useLocation, lang) { loggedIn, errorCode ->
         if (loggedIn) {
           result.success(loggedIn)
         } else {

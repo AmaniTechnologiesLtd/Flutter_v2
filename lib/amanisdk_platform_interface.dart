@@ -210,4 +210,18 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   Future<dynamic> getCustomerInfo() {
     throw UnimplementedError("getCustomerInfo() has not been implemented.");
   }
+
+// **WARNING** Do not use this for production. This is only intented for quick
+// debugging and testing purposes
+  Future<bool> initAmaniWithEmail({
+    required String server,
+    required String email,
+    required String password,
+    required String customerIdCardNumber,
+    required bool useLocation,
+    required String lang,
+    String? sharedSecret,
+  }) {
+    throw UnimplementedError('initAmaniWithEmail() has not been implemented.');
+  }
 }
