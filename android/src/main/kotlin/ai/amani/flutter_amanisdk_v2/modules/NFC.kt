@@ -28,12 +28,30 @@ class NFC {
     }
 
     @SuppressLint("WrongConstant")
-    fun start(birthDate: String, expireDate: String, documentNo: String, activity: Activity, channel: MethodChannel, result: MethodChannel.Result) {
-        this.birthDate = birthDate
-        this.expireDate = expireDate
-        this.documentNo = documentNo
-        this.activityRef = activity
+    fun start(birthDate: String?, expireDate: String?, documentNo: String?, activity: Activity, channel: MethodChannel, result: MethodChannel.Result) {
+        if (IdCapture.instance.usesNFC) {
+            IdCapture.instance.getMRZ(
+                    onComplete = {
+                        this.birthDate = it.mRZBirthDate
+                        this.expireDate = it.mRZExpiryDate
+                        this.documentNo = it.mRZDocumentNumber
+                        this.activityRef = activity
+                        startNFC(activity, result, channel)
+                    },
+                    onError = {
+                        channel.invokeMethod("onError", mapOf("message" to it.errorMessage!!))
+                    }
+            )
+        } else {
+            this.birthDate = birthDate
+            this.expireDate = expireDate
+            this.documentNo = documentNo
+            this.activityRef = activity
+            startNFC(activity, result, channel)
+        }
+    }
 
+    private fun startNFC(activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
         if (nfcAdapter != null) {
             val intent = Intent(activity.applicationContext, this.javaClass)

@@ -1,20 +1,21 @@
 class IOSPoseEstimationSettings {
+  // Info messages
   String? faceIsOk;
   String? notInArea;
   String? faceTooSmall;
   String? faceTooBig;
   String? completed;
-  String? turnedRight;
-  String? turnedLeft;
-  String? turnedUp;
-  String? turnedDown;
-  String? straightMessage;
+  String? turnRight;
+  String? turnLeft;
+  String? turnUp;
+  String? turnDown;
+  String? lookStraight;
   String? errorMessage;
   String? tryAgain;
   String? errorTitle;
   String? confirm;
   String? next;
-  String? phonePitch;
+  String? holdPhoneVertically;
   String? informationScreenDesc1;
   String? informationScreenDesc2;
   String? informationScreenTitle;
@@ -28,9 +29,23 @@ class IOSPoseEstimationSettings {
   String? ovalBorderColor;
   String? ovalBorderSuccessColor;
   String? poseCount;
-  String? showOnlyArrow;
+  String? secondaryGuideVisibility;
+  String? mainGuideVisibility;
   String? buttonRadious;
   int? manualCropTimeout;
+
+  // main guide images
+  String? mainGuideUp;
+  String? mainGuideDown;
+  String? mainGuideLeft;
+  String? mainGuideRight;
+  String? mainGuideStraight;
+
+  // secondary guide images
+  String? secondaryGuideUp;
+  String? secondaryGuideDown;
+  String? secondaryGuideLeft;
+  String? secondaryGuideRight;
 
   IOSPoseEstimationSettings(
       {this.faceIsOk,
@@ -38,17 +53,17 @@ class IOSPoseEstimationSettings {
       this.faceTooSmall,
       this.faceTooBig,
       this.completed,
-      this.turnedRight,
-      this.turnedLeft,
-      this.turnedUp,
-      this.turnedDown,
-      this.straightMessage,
+      this.turnRight,
+      this.turnLeft,
+      this.turnUp,
+      this.turnDown,
+      this.lookStraight,
       this.errorMessage,
       this.tryAgain,
       this.errorTitle,
       this.confirm,
       this.next,
-      this.phonePitch,
+      this.holdPhoneVertically,
       this.informationScreenDesc1,
       this.informationScreenDesc2,
       this.informationScreenTitle,
@@ -61,7 +76,8 @@ class IOSPoseEstimationSettings {
       this.ovalBorderColor,
       this.ovalBorderSuccessColor,
       this.poseCount,
-      this.showOnlyArrow,
+      this.mainGuideVisibility,
+      this.secondaryGuideVisibility,
       this.buttonRadious,
       this.manualCropTimeout});
 
@@ -72,17 +88,17 @@ class IOSPoseEstimationSettings {
       "faceTooSmall": faceTooSmall,
       "faceTooBig": faceTooBig,
       "completed": completed,
-      "turnedRight": turnedRight,
-      "turnedLeft": turnedLeft,
-      "turnedUp": turnedUp,
-      "turnedDown": turnedDown,
-      "straightMessage": straightMessage,
+      "turnRight": turnRight,
+      "turnLeft": turnLeft,
+      "turnUp": turnUp,
+      "turnDown": turnDown,
+      "lookStraight": lookStraight,
       "errorMessage": errorMessage,
       "tryAgain": tryAgain,
       "errorTitle": errorTitle,
       "confirm": confirm,
       "next": next,
-      "phonePitch": phonePitch,
+      "holdPhoneVertically": holdPhoneVertically,
       "informationScreenDesc1": informationScreenDesc1,
       "informationScreenDesc2": informationScreenDesc2,
       "informationScreenTitle": informationScreenTitle,
@@ -95,7 +111,8 @@ class IOSPoseEstimationSettings {
       "ovalBorderColor": ovalBorderColor,
       "ovalBorderSuccessColor": ovalBorderSuccessColor,
       "poseCount": poseCount,
-      "showOnlyArrow": showOnlyArrow,
+      "mainGuideVisibility": mainGuideVisibility,
+      "secondaryGuideVisibility": secondaryGuideVisibility,
       "buttonRadious": buttonRadious,
       "manualCropTimeout": manualCropTimeout
     };

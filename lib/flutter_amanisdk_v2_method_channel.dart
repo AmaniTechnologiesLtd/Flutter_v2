@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
@@ -64,6 +63,11 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
     } catch (err) {
       rethrow;
     }
+  }
+
+  @override
+  Future<void> androidSetUsesNFC(bool usesNFC) async {
+    await methodChannel.invokeMethod("setIDCaptureNFC", {"usesNFC": usesNFC});
   }
 
   @override
@@ -252,9 +256,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   // NFC Capture For Android
   @override
   Future<void> androidStartNFCListener(
-      {required String birthDate,
-      required String expireDate,
-      required String documentNo}) async {
+      {String? birthDate, String? expireDate, String? documentNo}) async {
     try {
       await methodChannel.invokeMethod('androidStartNFC', {
         "birthDate": birthDate,

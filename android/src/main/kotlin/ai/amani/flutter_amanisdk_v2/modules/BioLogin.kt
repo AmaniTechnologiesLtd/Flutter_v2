@@ -115,22 +115,35 @@ class BioLogin {
                         attemptId = this.attemptID!!
                 )
                 .userInterfaceColors(
-                        appFontColor = R.color.pose_estimation_font,
                         ovalViewStartColor = R.color.pose_estimation_oval_view_start,
-                        ovalViewSuccessColor =  R.color.pose_estimation_oval_view_success,
-                        ovalViewErrorColor = R.color.pose_estimation_oval_view_error,
-                        alertFontTitleColor = R.color.pose_estimation_alert_title,
-                        alertFontDescriptionColor = R.color.pose_estimation_alert_description,
-                        alertFontTryAgainColor = R.color.pose_estimation_alert_try_again,
-                        alertBackgroundColor = R.color.pose_estimation_alert_background,
+                        ovalViewSuccessColor = R.color.pose_estimation_oval_view_success,
+                        ovalViewErrorColor =  R.color.pose_estimation_oval_view_error,
+                        alertTitleFontColor = R.color.pose_estimation_alert_title,
+                        alertDescriptionFontColor = R.color.pose_estimation_alert_description,
+                        alertTryAgainFontColor = R.color.pose_estimation_alert_try_again,
+                        alertBackgroundFontColor = R.color.pose_estimation_alert_background,
+                        appFontColor =  R.color.pose_estimation_font,
+                ).userInterfaceVisibilities(
+                        settings.mainGuideVisibility,
+                        settings.secondaryGuideVisibility
+                ).userInterfaceDrawables(
+                        R.drawable.pose_esitmation_main_guide_left,
+                        R.drawable.pose_estimation_main_guide_right,
+                        R.drawable.pose_estimation_main_guide_up,
+                        R.drawable.pose_estimation_main_guide_down,
+                        R.drawable.pose_estimation_main_guide_straight,
+                        R.drawable.pose_estimation_secondary_guide_left,
+                        R.drawable.pose_estimation_secondary_guide_right,
+                        R.drawable.pose_estimation_secondary_guide_up,
+                        R.drawable.pose_estimation_secondary_guide_down,
                 ).userInterfaceTexts(
-                        faceIsTooFarText = settings.faceIsTooFar,
-                        faceNotInside = settings.faceNotInside,
-                        faceNotStraightText = settings.faceNotStraight,
-                        alertTitle = settings.alertTitle,
-                        alertDescription = settings.alertDescription,
-                        alertTryAgain = settings.alertTryAgain,
-                        keepStraightText = settings.keepStraight,
+                        settings.faceNotInside,
+                        settings.faceNotStraight,
+                        settings.faceIsTooFar,
+                        settings.holdPhoneVertically,
+                        settings.alertTitle,
+                        settings.alertDescription,
+                        settings.alertTryAgain
                 ).observer(object: PoseEstimationObserver {
                     override fun onError(error: Error) {
                         channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to error.message))

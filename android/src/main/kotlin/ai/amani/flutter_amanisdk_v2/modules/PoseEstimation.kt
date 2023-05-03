@@ -7,6 +7,7 @@ import ai.amani.sdk.modules.selfie.pose_estimation.observable.OnFailurePoseEstim
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObserver
 import android.app.Activity
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -39,9 +40,11 @@ class PoseEstimation: Module {
             }
 
             override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                (activity as FragmentActivity).supportFragmentManager.
-                beginTransaction().remove(frag!!).commit()
-                result.error(reason.code.toString(), reason.name, null)
+                // TODO: Add androidPoseEstimation#onFailure to method channel instead of removing
+                // the fragment.
+//                (activity as FragmentActivity).supportFragmentManager.
+//                beginTransaction().remove(frag!!).commit()
+//                result.error(reason.code.toString(), reason.name, null)
             }
 
             override fun onSuccess(bitmap: Bitmap?) {
@@ -56,13 +59,13 @@ class PoseEstimation: Module {
 
         }
 
-        frag = poseEstimationModule.requestedPoseNumber(settings!!.poseCount)
-                .ovalViewAnimationDurationMilSec(settings!!.animationDuration)
-                .userInterfaceTexts(
+        frag = poseEstimationModule
+                .Builder()
+       .userInterfaceTexts(
                 settings!!.faceNotInside,
                 settings!!.faceNotStraight,
                 settings!!.faceIsTooFar,
-                settings!!.keepStraight,
+                settings!!.holdPhoneVertically,
                 settings!!.alertTitle,
                 settings!!.alertDescription,
                 settings!!.alertTryAgain
@@ -74,8 +77,24 @@ class PoseEstimation: Module {
                 alertDescriptionFontColor = R.color.pose_estimation_alert_description,
                 alertTryAgainFontColor = R.color.pose_estimation_alert_try_again,
                 alertBackgroundFontColor = R.color.pose_estimation_alert_background,
-                appFontColor =  R.color.pose_estimation_font,
-        ).observe(observer).build(activity)
+                appFontColor =  R.color.pose_estimation_font
+        ).userInterfaceVisibilities(
+                settings!!.mainGuideVisibility,
+                settings!!.secondaryGuideVisibility
+        ).userInterfaceDrawables(
+                        R.drawable.pose_esitmation_main_guide_left,
+                        R.drawable.pose_estimation_main_guide_right,
+                        R.drawable.pose_estimation_main_guide_up,
+                        R.drawable.pose_estimation_main_guide_down,
+                        R.drawable.pose_estimation_main_guide_straight,
+                        R.drawable.pose_estimation_secondary_guide_left,
+                        R.drawable.pose_estimation_secondary_guide_right,
+                        R.drawable.pose_estimation_secondary_guide_up,
+                        R.drawable.pose_estimation_secondary_guide_down,
+        )
+        .ovalViewAnimationDurationMilSec(settings!!.animationDuration)
+        .requestedPoseNumber(settings!!.poseCount)
+        .observe(observer).build(activity)
 
         (activity as FragmentActivity)
         val id = 0x123456

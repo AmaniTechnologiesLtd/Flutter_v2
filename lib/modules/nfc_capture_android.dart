@@ -10,9 +10,9 @@ class AndroidNFCCapture {
 
   /// Run this on initState()
   void startNFCListener(
-      {required String birthDate,
-      required String expireDate,
-      required String documentNo,
+      {String? birthDate,
+      String? expireDate,
+      String? documentNo,
       required Function(bool) onFinishedCallback}) {
     _onFinishedCallback = onFinishedCallback;
     _methodChannel

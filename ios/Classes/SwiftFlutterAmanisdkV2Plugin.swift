@@ -20,6 +20,15 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       let useLocation = arguments?["useLocation"] as! Bool
       let sharedSecret = arguments?["sharedSecret"] as? String
      initAmani(server: server, customerIdCardNumber: customerIdCardNumber, customerToken: customerToken, useLocation: useLocation, lang: lang , sharedSecret: sharedSecret, result: result)
+    case "initAmaniWithEmail":
+      let server = arguments?["server"] as! String
+      let customerIdCardNumber = arguments?["customerIdCardNumber"] as! String
+      let email = arguments?["email"] as! String
+      let password = arguments?["password"] as! String
+      let lang = arguments?["lang"] as! String
+      let useLocation = arguments?["useLocation"] as! Bool
+      let sharedSecret = arguments?["sharedSecret"] as? String
+      initAmaniWithEmail(server: server, customerIdCardNumber: customerIdCardNumber, email: email, password: password, useLocation: useLocation, lang: lang, sharedSecret: sharedSecret, result: result)
     // ID Capture
     case "setIDCaptureType":
       let idCapture = IdCapture()
@@ -185,7 +194,25 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       }
     }
   }
-    
+  private func initAmaniWithEmail(
+                        server: String,
+                        customerIdCardNumber: String,
+                        email: String,
+                        password: String,
+                        useLocation: Bool,
+                        lang: String,
+                        sharedSecret: String?,
+                        result: @escaping FlutterResult) {
+     print("AMANISDK-SERVER", server)
+    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: customerIdCardNumber)
+    Amani.sharedInstance.initAmani(server: server, userName: email, password: password, customer: customer, useGeoLocation: useLocation, language: lang) { customerRes, err in
+      if customerRes != nil {
+        result(true)
+      } else if let err = err {
+        result(FlutterError(code: "LoginError", message: "Couldn't login to Amani server", details: err.error_message))
+      }
+    }
+  }
     private func getCustomerInfo(result: @escaping FlutterResult) {
         let customerInfo = Amani.sharedInstance.customerInfo().getCustomer();
         

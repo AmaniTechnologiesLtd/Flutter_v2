@@ -9,6 +9,7 @@ class ConfirmScreen extends StatelessWidget {
   ConfirmScreen({Key? key}) : super(key: key);
   // Modules.
   final _idCapture = AmaniSDK().getIDCapture();
+  final _androidNFCCapture = AmaniSDK().getAndroidNFCCapture();
   final _autoSelfie = AmaniSDK().getAutoSelfie();
   final _selfie = AmaniSDK().getSelfie();
   final _poseEstimation = AmaniSDK().getPoseEstimation();
@@ -60,6 +61,24 @@ class ConfirmScreen extends StatelessWidget {
                                   imageData: args.imageData,
                                   idCaptureBothSidesTaken: true,
                                   idCaptureNFCCompleted: true));
+                        });
+                      } else if (Platform.isAndroid) {
+                        // set android uses nfc to true
+                        print("ANDROID NFC");
+                        _idCapture.setAndroidUsesNFC(true).then((_) {
+                          print("NFC uses true");
+                          _androidNFCCapture.startNFCListener(
+                              onFinishedCallback: (isCaptureComplete) {
+                            print("Capture state");
+                            print(isCaptureComplete);
+                            Navigator.pushNamed(
+                                context, ConfirmScreen.routeName,
+                                arguments: ConfirmArguments(
+                                    source: "idCapture",
+                                    imageData: args.imageData,
+                                    idCaptureBothSidesTaken: true,
+                                    idCaptureNFCCompleted: true));
+                          });
                         });
                       }
                     } else if (args.source == "idCapture" &&

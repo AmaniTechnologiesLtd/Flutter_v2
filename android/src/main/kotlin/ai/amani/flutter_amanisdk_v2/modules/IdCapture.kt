@@ -1,13 +1,14 @@
 package ai.amani.flutter_amanisdk_v2.modules
 
 import ai.amani.sdk.Amani
+import ai.amani.sdk.model.mrz.MRZResult
 import android.app.Activity
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import datamanager.model.customer.Errors
 import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel.Result
 import java.io.ByteArrayOutputStream
@@ -17,6 +18,7 @@ class IdCapture : Module {
     private var idCaptureModule = Amani.sharedInstance().IDCapture()
     private var docType: String? = null
     private var frag: Fragment? = null
+    var usesNFC = false
 
     companion object {
         val instance = IdCapture()
@@ -59,8 +61,17 @@ class IdCapture : Module {
                 .commit()
     }
 
+    fun setWithNFC(usesNFC: Boolean = false) {
+        this.usesNFC = usesNFC
+        idCaptureModule.withNFC(usesNFC)
+    }
+
     fun setManualCaptureButtonTimeout(timeout: Int) {
         idCaptureModule.setManualCropTimeOut(timeout);
+    }
+
+    fun getMRZ(onComplete: (MRZResult) -> Unit,  onError: (Errors) -> Unit  ) {
+        Amani.sharedInstance().IDCapture().getMRZ(type = docType!!, onComplete = onComplete, onError = onError)
     }
 
     override fun upload(activity: Activity, result : Result) {

@@ -12,17 +12,17 @@ struct PoseEstimationSettings: Codable {
   var faceTooSmall: String = "Yüzünüz çok uzakta"
   var faceTooBig: String = "Yüzünüz çok yakında"
   var completed: String = "İşlem Tamam"
-  var turnedRight: String = "→"
-  var turnedLeft: String = "←"
-  var turnedUp: String = "↑"
-  var turnedDown: String = "↓"
-  var straightMessage: String = "düz bak"
+  var turnRight: String = "→"
+  var turnLeft: String = "←"
+  var turnUp: String = "↑"
+  var turnDown: String = "↓"
+  var lookStraight: String = "düz bak"
   var errorMessage: String = "Lütfen adımları dairenin içinden çıkmadan gerçekleştirin"
   var tryAgain: String = "Tekrar Dene"
   var errorTitle: String = "Başarısız"
   var confirm: String = "Onayla"
   var next: String = "Sonraki"
-  var phonePitch: String = "Telefonu düz tutun"
+  var holdPhoneVertically: String = "Telefonu düz tutun"
   var informationScreenDesc1: String = "Doğrulamaya başlamak için, yüzünü alanın içinde tut"
   var informationScreenDesc2: String = ""
   var informationScreenTitle: String = "Selfie Doğrulama Talimatları"
@@ -36,8 +36,21 @@ struct PoseEstimationSettings: Codable {
   var ovalBorderColor: String = "ffffff"
   var ovalBorderSuccessColor: String = "00ff00"
   var poseCount: String = "3"
-  var showOnlyArrow: String = "true"
+  var mainGuideVisibility: String = "true"
+  var secondaryGuideVisibility: String = "false"
   var buttonRadious: String = "10"
+  
+  
+  var mainGuideUp: String?
+  var mainGuideDown: String?
+  var mainGuideLeft: String?
+  var mainGuideRight: String?
+  var mainGuideStraight: String?
+ 
+  var secondaryGuideUp: String?
+  var secondaryGuideDown: String?
+  var secondaryGuideLeft: String?
+  var secondaryGuideRight: String?
   
   var manualCropTimeout: Int = 30
 }

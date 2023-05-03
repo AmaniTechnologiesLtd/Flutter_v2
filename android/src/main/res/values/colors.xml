@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="auto_selfie_text">#000000</color>
-    <color name="auto_selfie_counter_text">#000000</color>
-    <color name="auto_selfie_oval_view">#000000</color>
-    <color name="auto_selfie_success_anim">#000000</color>
+    <color name="auto_selfie_text">#ffffff</color>
+    <color name="auto_selfie_counter_text">#ffffff</color>
+    <color name="auto_selfie_oval_view">#263B5B</color>
+    <color name="auto_selfie_success_anim">#263B5B</color>
 
-    <color name="pose_estimation_oval_view_start">#000000</color>
-    <color name="pose_estimation_oval_view_success">#000000</color>
-    <color name="pose_estimation_oval_view_error">#000000</color>
-    <color name="pose_estimation_alert_title">#000000</color>
-    <color name="pose_estimation_alert_description">#000000</color>
-    <color name="pose_estimation_alert_try_again">#000000</color>
-    <color name="pose_estimation_alert_background">#000000</color>
-    <color name="pose_estimation_font">#000000</color>
+    <color name="pose_estimation_oval_view_start">#263B5B</color>
+    <color name="pose_estimation_oval_view_success">#239F06</color>
+    <color name="pose_estimation_oval_view_error">#A30417</color>
+    <color name="pose_estimation_alert_title">#ffffff</color>
+    <color name="pose_estimation_alert_description">#ffffff</color>
+    <color name="pose_estimation_alert_try_again">#ffffff</color>
+    <color name="pose_estimation_alert_background">#ffffff</color>
+    <color name="pose_estimation_font">#ffffff</color>
 
-    <color name="biologin_manual_selfie_font">#000000</color>
-    <color name="biologin_manual_selfie_button">#000000</color>
-    <color name="biologin_manual_selfie_oval_view">#000000</color>
+    <color name="biologin_manual_selfie_font">#ffffff</color>
+    <color name="biologin_manual_selfie_button">#263B5B</color>
+    <color name="biologin_manual_selfie_oval_view">#263B5B</color>
     <color name="biologin_manual_selfie_background">#000000</color>
 
 </resources>

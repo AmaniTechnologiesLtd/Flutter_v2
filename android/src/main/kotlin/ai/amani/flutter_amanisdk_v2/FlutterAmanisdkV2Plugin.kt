@@ -82,6 +82,12 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "setIDCaptureManualCaptureTimeout" -> {
         val timeout = call.argument<Int>("timeout")!!
         IdCapture.instance.setManualCaptureButtonTimeout(timeout)
+        result.success(true)
+      }
+      "setIDCaptureNFC" -> {
+        val usesNFC = call.argument<Boolean>("usesNFC")!!
+        IdCapture.instance.setWithNFC(usesNFC)
+        result.success(true)
       }
       "uploadIDCapture" -> {
         IdCapture.instance.upload(activity!!, result)
@@ -133,11 +139,13 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val birthDate = call.argument<String>("birthDate")
         val expireDate = call.argument<String>("expireDate")
         val documentNo = call.argument<String>("documentNo")
-
-        if (birthDate == null || expireDate == null || documentNo == null) {
-          result.error("Missing Params", "You must give all the parameters", null)
-          return
+        if (!IdCapture.instance.usesNFC) {
+          if (birthDate == null || expireDate == null || documentNo == null) {
+            result.error("Missing Params", "If you are using this module to capture nfc as a document.", null)
+            return
+          }
         }
+
         NFC.instance.start(birthDate, expireDate, documentNo, activity!!, nfcChannel, result)
       }
       "androidDisableNFC" -> {

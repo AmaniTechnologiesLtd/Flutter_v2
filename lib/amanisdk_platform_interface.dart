@@ -62,6 +62,10 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
         'iOSStartIDCaptureNFC() has not been implemented.');
   }
 
+  Future<void> androidSetUsesNFC(bool usesNFC) {
+    throw UnimplementedError('androidSetUsesNFC() has not been implemented.');
+  }
+
   Future<bool> uploadIDCapture() {
     throw UnimplementedError('uploadIDCapture() has not been implemented.');
   }
@@ -146,9 +150,7 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
 
   // Android NFC Capture
   Future<void> androidStartNFCListener(
-      {required String birthDate,
-      required String expireDate,
-      required String documentNo}) {
+      {String? birthDate, String? expireDate, String? documentNo}) {
     throw UnimplementedError(
         'androidStartNFCListener() has not been implemented.');
   }

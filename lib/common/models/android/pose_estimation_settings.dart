@@ -1,35 +1,40 @@
 class AndroidPoseEstimationSettings {
   int? poseCount;
   int? animationDuration;
-  String? faceNotInsideMessage;
-  String? faceNotStraightMessage;
-  String? faceTooFarMessage;
-  String? keepStraightMessage;
+  String? faceNotInside;
+  String? faceNotStraight;
+  String? faceTooFar;
+  String? keepStraight;
   String? alertTitle;
   String? alertDescription;
-  String? alertTryAgainMessage;
+  String? alertTryAgain;
+  bool? mainGuideVisibility;
+  bool? secondaryGuideVisibility;
 
-  AndroidPoseEstimationSettings({
-    this.poseCount,
-    this.animationDuration,
-    this.faceNotInsideMessage,
-    this.faceNotStraightMessage,
-    this.keepStraightMessage,
-    this.alertTitle,
-    this.alertDescription,
-    this.alertTryAgainMessage,
-  });
+  AndroidPoseEstimationSettings(
+      {this.poseCount,
+      this.animationDuration,
+      this.faceNotInside,
+      this.faceNotStraight,
+      this.keepStraight,
+      this.alertTitle,
+      this.alertDescription,
+      this.alertTryAgain,
+      this.mainGuideVisibility,
+      this.secondaryGuideVisibility});
 
   Map toJson() {
     return {
       "poseCount": poseCount,
       "animationDuration": animationDuration,
-      "faceNotInsideMessage": faceNotInsideMessage,
-      "faceNotStraightMessage": faceNotStraightMessage,
-      "keepStraightMessage": keepStraightMessage,
+      "faceNotInside": faceNotInside,
+      "faceNotStraight": faceNotStraight,
+      "keepStraight": keepStraight,
       "alertTitle": alertTitle,
       "alertDescription": alertDescription,
-      "alertTryAgainMessage": alertTryAgainMessage
+      "alertTryAgain": alertTryAgain,
+      "mainGuideVisibility": mainGuideVisibility,
+      "secondaryGuideVisibility": secondaryGuideVisibility,
     };
   }
 }

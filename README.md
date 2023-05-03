@@ -6,7 +6,7 @@ On the [example folder](https://github.com/AmaniTechnologiesLtd/Flutter_v2/tree/
 ### Requirements
 - iOS 11 or later (13 for NFC Capture)
 - Android API 21 or later
-- Flutter 3.0 or later
+- Flutter 2.12.0 or later
 
 ## Table of Contents
 - [Installation](#installation)
@@ -257,7 +257,53 @@ onPressed: () async {
 
 After getting the image data from the SDK, you can use it with `Image.memory()`.
 
-If you want to use NFC Capture after the ID capture on iOS check out [this section](#small-note-for-id-capture-on-ios)
+### Capturing the NFC Data on iOS
+ID Capture module has it's own NFC method on iOS for making things easier. To call it you must have captured the both front and back sides of the id since **capturing NFC data requires information can be extracted from the MRZ data.**
+
+```dart
+// After capturing the front and back side on the IdCapture
+// Before calling upload
+void iosStartNFCCapture() {
+    if (Platform.isIOS) {
+        _idCapture.startNFC().then((isNFCCaptureDone) {
+            if (isNFCCaptureDone) {
+                // nfc capture completed
+                // You can safely proceed to upload.
+            } else {
+                startNFCCapture();
+            }
+        }).catchError((err) {
+            // handle the error
+        });
+    }
+}
+```
+
+### Capturing the NFC data after the ID Capture on Android
+On android, you must do the following steps to capturing the NFC data after the side that containing the MRZ is captured from the camera
+```dart
+// After capturing the front and back side on the IdCapture
+// Before calling upload
+void androidStartNFCCapture() {
+  // setAndroidUsesNFC sets a state on the NFCCaptureModule to get the MRZ Data from ID itself.
+  _idCapture.setAndroidUsesNFC(true).then(() {
+    _nfcCapture.startNFCListener(
+      onFinishedCallback: (isCaptureCompleted) {
+        // Capture is completed you can upload
+        setState(() {
+          _NFCCompleted = isCaptureCompleted;
+        });
+      }
+    )
+  })
+}
+```
+
+> Using the `setAndroidUsesNFC` doesn't require you to call the setType on the AndroidNFCCapture module.
+
+### Note
+> If you want to use the NFC as a document please check out [this section.](#nfc-capture)
+
 ### Selfie Module
 Get the selfie module from the main `AmaniSDK` [instance which you have previously initialized.](#usage)
 
@@ -483,7 +529,9 @@ Due to differences in Android and iOS SDK's we had to seperate the NFC capture m
 #### NFC capture on Android
 Android has single method for starting NFC Capture while there are multiple options to start the NFC Capture on iOS.
 
-This process requires some parameters from the id itself. All date formats must be in `YYMMDD`. 
+If you're not capturing the NFC Data after the IDCapture, this process requires some parameters from the id itself.
+
+All date formats must be in `YYMMDD`. 
 For example, `September 1st 1999` becomes `990901`.
 
 Also you must stop the NFC listener on the `dispose()` method of your widget. You can also achive this on the `onFinishedCallback` parameter of `startNFCListener` method of `AndroidNFCCapture` class if you're calling this method from a stateless widget.
@@ -612,26 +660,7 @@ OutlinedButton(
 **Note** type of image data is `Uint8List`.
 
 #### Small note for ID Capture on iOS
-ID Capture module has it's own NFC method on iOS for making things easier. To call it you must have captured the both front and back sides of the id since **capturing NFC data requires information can be extracted from the MRZ data.**
 
-```dart
-// After capturing the front and back side on the IdCapture
-// Before calling upload
-void iosStartNFCCapture() {
-    if (Platform.isIOS) {
-        _idCapture.startNFC().then((isNFCCaptureDone) {
-            if (isNFCCaptureDone) {
-                // nfc capture completed
-                // You can safely proceed to upload.
-            } else {
-                startNFCCapture();
-            }
-        }).catchError((err) {
-            // handle the error
-        });
-    }
-}
-```
 
 ### Bio login
 This SDK also contains methods for biologin. You don't need to call `initAmani` method from the `AmaniSDK` class for running this **as the Biologin is hosted on a different server.**

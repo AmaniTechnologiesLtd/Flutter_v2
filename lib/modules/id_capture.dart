@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
@@ -24,11 +25,18 @@ class IdCapture {
   }
 
   Future<bool> iosStartNFC() async {
+    if (!Platform.isIOS) return false;
     try {
       final bool isDone = await _methodChannel.iOSStartIDCaptureNFC();
       return isDone;
     } catch (err) {
       rethrow;
+    }
+  }
+
+  Future<void> setAndroidUsesNFC(bool usesNFC) async {
+    if (Platform.isAndroid) {
+      await _methodChannel.androidSetUsesNFC(usesNFC);
     }
   }
 

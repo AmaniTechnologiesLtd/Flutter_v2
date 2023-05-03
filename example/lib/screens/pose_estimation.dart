@@ -32,12 +32,14 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
       AndroidPoseEstimationSettings(
     poseCount: 3,
     animationDuration: 500,
-    faceNotInsideMessage: "Your face is not inside the area",
-    faceNotStraightMessage: "Your face is not straight",
-    keepStraightMessage: "Please hold stable",
+    faceNotInside: "Your face is not inside the area",
+    faceNotStraight: "Your face is not straight",
+    keepStraight: "Please hold stable",
     alertTitle: "Verification Failed",
     alertDescription: "Failed 1",
-    alertTryAgainMessage: "Try again",
+    alertTryAgain: "Try again",
+    mainGuideVisibility: true,
+    secondaryGuideVisibility: true,
   );
 
   final IOSPoseEstimationSettings _iosPoseEstimationSettings =
@@ -47,18 +49,18 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
     faceTooSmall: "Your face is in too far",
     faceTooBig: "Your face is in too close",
     completed: "Verification Completed",
-    turnedRight: "→",
-    turnedLeft: "←",
-    turnedUp: "↑",
-    turnedDown: "↓",
-    straightMessage: "Look straight",
+    turnRight: "→",
+    turnLeft: "←",
+    turnUp: "↑",
+    turnDown: "↓",
+    lookStraight: "Look straight",
     errorMessage:
         "Please complete the steps while your face is aligned to the area",
     tryAgain: "Try again",
     errorTitle: "Verification Failure",
     confirm: "Confirm",
     next: "Next",
-    phonePitch: "Please hold the phone straight",
+    holdPhoneVertically: "Please hold the phone straight",
     informationScreenDesc1:
         "To start verification, align your face with the area",
     informationScreenDesc2: "",
@@ -73,7 +75,7 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
     ovalBorderColor: "ffffff",
     ovalBorderSuccessColor: "00ff00",
     poseCount: "3",
-    showOnlyArrow: "true",
+    mainGuideVisibility: "true",
     buttonRadious: "10",
     manualCropTimeout: 30,
   );
