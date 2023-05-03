@@ -292,6 +292,7 @@ void androidStartNFCCapture() {
         // Capture is completed you can upload
         setState(() {
           _NFCCompleted = isCaptureCompleted;
+          _nfcCapture.stopNFCListener();
         });
       }
     )
