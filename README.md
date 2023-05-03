@@ -442,6 +442,25 @@ After that modify the file as shown below.
 </resources>
 ```
 
+### Changing the guide images on Android
+
+Open the android studio and add your images with following names. The SDK will automatically use the new images
+for guide images.
+
+> Secondary guide images shows up at bottom, while the main guide images shows in the center of the oval view.
+
+| key                                   | description             |
+| ------------------------------------- | ----------------------- |
+| pose_estimation_main_guide_left       | Main Guide (left)       |
+| pose_estimation_main_guide_right      | Main Guide (right)      |
+| pose_estimation_main_guide_up         | Main Guide (up)         |
+| pose_estimation_main_guide_down       | Main Guide (down)       |
+| pose_estimation_main_guide_straight   | Main Guide (straight)   |
+| pose_estimation_secondary_guide_left  | Secondary Guide (left)  |
+| pose_estimation_secondary_guide_right | Secondary Guide (right) |
+| pose_estimation_secondary_guide_up    | Secondary Guide (up)    |
+| pose_estimation_secondary_guide_down  | Secondary Guide (down)  |
+
 #### Pose estimation usage
 Get the pose estimation module from the main `AmaniSDK` [instance which you have previously initialized.](#usage)
 ```dart
@@ -452,12 +471,14 @@ final AmaniSDK _amaniSDK = AmaniSDK();
       AndroidPoseEstimationSettings(
     poseCount: 3,
     animationDuration: 500,
-    faceNotInsideMessage: "Your face is not inside the area",
-    faceNotStraightMessage: "Your face is not straight",
-    keepStraightMessage: "Please hold stable",
+    faceNotInside: "Your face is not inside the area",
+    faceNotStraight: "Your face is not straight",
+    keepStraight: "Please hold stable",
     alertTitle: "Verification Failed",
     alertDescription: "Failed 1",
-    alertTryAgainMessage: "Try again",
+    alertTryAgain: "Try again",
+    mainGuideVisibility: true,
+    secondaryGuideVisibility: true,
   );
 
   final IOSPoseEstimationSettings _iosPoseEstimationSettings =
@@ -467,17 +488,18 @@ final AmaniSDK _amaniSDK = AmaniSDK();
     faceTooSmall: "Your face is in too far",
     faceTooBig: "Your face is in too close",
     completed: "Verification Completed",
-    turnedRight: "→",
-    turnedLeft: "←",
-    turnedUp: "↑",
-    turnedDown: "↓",
-    straightMessage: "Look straight",
-    errorMessage: "Please complete the steps while your face is aligned to the area",
+    turnRight: "→",
+    turnLeft: "←",
+    turnUp: "↑",
+    turnDown: "↓",
+    lookStraight: "Look straight",
+    errorMessage:
+        "Please complete the steps while your face is aligned to the area",
     tryAgain: "Try again",
     errorTitle: "Verification Failure",
     confirm: "Confirm",
     next: "Next",
-    phonePitch: "Please hold the phone straight",
+    holdPhoneVertically: "Please hold the phone straight",
     informationScreenDesc1:
         "To start verification, align your face with the area",
     informationScreenDesc2: "",
@@ -492,7 +514,7 @@ final AmaniSDK _amaniSDK = AmaniSDK();
     ovalBorderColor: "ffffff",
     ovalBorderSuccessColor: "00ff00",
     poseCount: "3",
-    showOnlyArrow: "true",
+    mainGuideVisibility: "true",
     buttonRadious: "10",
     manualCropTimeout: 30,
   );

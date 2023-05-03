@@ -76,6 +76,7 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
     ovalBorderSuccessColor: "00ff00",
     poseCount: "3",
     mainGuideVisibility: "true",
+    secondaryGuideVisibility: "true",
     buttonRadious: "10",
     manualCropTimeout: 30,
   );
