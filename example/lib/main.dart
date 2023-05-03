@@ -5,6 +5,7 @@ import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
 import 'package:flutter_amanisdk_v2_example/screens/home.dart';
 import 'package:flutter_amanisdk_v2_example/screens/id_capture.dart';
 import 'package:flutter_amanisdk_v2_example/screens/nfc_android.dart';
+import 'package:flutter_amanisdk_v2_example/screens/nfc_confirm.dart';
 import 'package:flutter_amanisdk_v2_example/screens/nfc_home.dart';
 import 'package:flutter_amanisdk_v2_example/screens/nfc_ios.dart';
 import 'package:flutter_amanisdk_v2_example/screens/pose_estimation.dart';
@@ -24,6 +25,7 @@ void main() {
       '/nfc-ios': (ctx) => const IOSNFC(),
       '/nfc-android': (ctx) => const AndroidNFC(),
       '/bio-login': (ctx) => const BioLogin(),
+      '/confirm-nfc': (ctx) => const NFCConfrimScreen(),
     },
   ));
 }
