@@ -11,11 +11,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
     AmaniSDK()
-        .initAmaniWithEmail(
-            server: "https://sandbox.amani.ai",
-            email: "mobile_team@amani.ai",
-            password: "Zkf6fxA8^cRkm^UEmuSs",
-            customerIdCardNumber: "419345",
+        .initAmani(
+            server: "https://server.example",
+            customerToken: "CUSTOMER TOKEN",
+            customerIdCardNumber: "ID NUMBER",
             useLocation: true, // Use location when uploading customer data
             lang: "tr")
         .then((_) {
