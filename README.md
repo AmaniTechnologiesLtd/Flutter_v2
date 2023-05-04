@@ -60,8 +60,7 @@ Add this block to `android` section on your `build.gradle`.
 #### Android Proguard Rules
 Add this into your proguard-rules.pro
 ```
--keep class ai.amani.flutter_amanisdk_v2 {*;}
--dontwarn ai.amani.flutter_amanisdk_v2
+-keep class ai.amani.flutter_amanisdk_v2
 -keep class ai.** {*;}
 -dontwarn ai.**
 -keep class datamanager.** {*;}
@@ -80,6 +79,11 @@ Add this into your proguard-rules.pro
 -dontwarn org.spongycastle.**
 -dontwarn org.jmrtd.**
 -dontwarn net.sf.scuba.**
+
+-keep class org.tensorflow.lite**{ *; }
+-dontwarn org.tensorflow.lite.**
+-keep class org.tensorflow.lite.support**{ *; }
+-dontwarn org.tensorflow.lite.support**
 ```
 
 #### Changing main activity type

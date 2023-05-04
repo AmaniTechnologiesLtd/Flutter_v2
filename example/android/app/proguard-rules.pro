@@ -27,3 +27,8 @@
 -dontwarn org.spongycastle.**
 -dontwarn org.jmrtd.**
 -dontwarn net.sf.scuba.**
+
+-keep class org.tensorflow.lite**{ *; }
+-dontwarn org.tensorflow.lite.**
+-keep class org.tensorflow.lite.support**{ *; }
+-dontwarn org.tensorflow.lite.support**
