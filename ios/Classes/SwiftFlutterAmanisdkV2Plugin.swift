@@ -214,8 +214,11 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
     }
   }
     private func getCustomerInfo(result: @escaping FlutterResult) {
-        let customerInfo = Amani.sharedInstance.customerInfo().getCustomer();
-        
+     Amani.sharedInstance.customerInfo().getCustomer(forceUpdateCallback: {
+        info, error in
+        guard let customerInfo = info else {
+          return
+        }
         var rulesArray: [[String: Any]] = []
         if let rules = customerInfo.rules {
             for rule in rules {
@@ -246,6 +249,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
         ]
         
         result(customerInfoDict)
-    }
+      })
+  }
     
 }
