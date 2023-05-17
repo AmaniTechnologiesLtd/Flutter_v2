@@ -824,3 +824,42 @@ curl --location --request POST 'https://demo.amani.ai/api/v1/customer' \
 - -form 'email="Customer Email"' \ (Optional)
 - -form 'phone="Customer Phone"' (Optional)
 ```
+
+### How to handle back button presses correctly on android
+Due to a quirk in Flutter, we added back button handle functions
+to each module. Depending on your navigation libary (we've used the flutter's default navigator) you must handle the back yourself.
+
+#### Exmaple for Flutter's built in navigation system
+
+You can use the Flutter's WillPopScope feature to prevent default back press and close the view from there.
+
+```dart
+// On your component, somewhere safe from this quirk
+Future<bool> onWillPop() async {
+    if (Platform.isAndroid) {
+      try {
+        bool canPop = await _amaniSelfie.androidBackButtonHandle();
+        return canPop;
+      } catch (e) {
+        return true;
+      }
+    } else {
+      // default behaviour for iOS
+      return true;
+    }
+  }
+```
+
+and don't forget to wrap your Widget with `WillPopScope`
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return WillPopScope(
+    onWillPop: onWillPop,
+    child: Scaffold(
+      // Start working your your selfie view.
+    )
+  )
+}
+```
