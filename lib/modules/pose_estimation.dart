@@ -38,4 +38,8 @@ class PoseEstimation {
   Future<void> setType(String type) async {
     await _methodChannel.setPoseEstimationType(type);
   }
+
+  Future<bool> androidBackButtonHandle() async {
+    return await _methodChannel.androidPoseEstimationBackPressHandle();
+  }
 }

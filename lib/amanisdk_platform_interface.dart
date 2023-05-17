@@ -79,6 +79,13 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('setIDCaptureType() has not been implemented.');
   }
 
+  /// Use this function to handle the back press.
+  /// returns false to use on WillPopScope
+  Future<bool> androidIDCaptureBackPressHandle() {
+    throw UnimplementedError(
+        'androidIDCaptureBackPressHandle() has not been implemented.');
+  }
+
   // Selfie
   Future<dynamic> startSelfie() {
     throw UnimplementedError('startSelfie() has not been implemented.');
@@ -90,6 +97,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
 
   Future<void> setSelfieType(String type) {
     throw UnimplementedError('setSelfieType() has not been implemented.');
+  }
+
+  Future<bool> androidSelfieBackPressHandle() {
+    throw UnimplementedError(
+        'androidSelfieBackPressHandle() has not been implemented.');
   }
 
   // AutoSelfie
@@ -108,6 +120,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('setAutoSelfieType() has not been implemented.');
   }
 
+  Future<bool> androidAutoSelfieBackPressHandle() {
+    throw UnimplementedError(
+        'androidAutoSelfieBackPressHandle() has not been implemented.');
+  }
+
   // PoseEstimation
   Future<dynamic> startPoseEstimation(
       {required AndroidPoseEstimationSettings androidPoseEstimationSettings,
@@ -122,6 +139,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   Future<void> setPoseEstimationType(String type) {
     throw UnimplementedError(
         'setPoseEstimationType() has not been implemented');
+  }
+
+  Future<bool> androidPoseEstimationBackPressHandle() {
+    throw UnimplementedError(
+        'androidPoseEstimationBackPressHandle() has not been implemented.');
   }
 
   // IOS NFC Capture
@@ -213,8 +235,8 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError("getCustomerInfo() has not been implemented.");
   }
 
-// **WARNING** Do not use this for production. This is only intented for quick
-// debugging and testing purposes
+  /// **WARNING** Do not use this for production. This is only intented for quick
+  /// debugging and testing purposes
   Future<bool> initAmaniWithEmail({
     required String server,
     required String email,

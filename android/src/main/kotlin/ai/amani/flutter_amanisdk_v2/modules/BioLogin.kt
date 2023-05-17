@@ -12,7 +12,9 @@ import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObse
 import android.app.Activity
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -29,10 +31,12 @@ class BioLogin {
     private var comparisonAdapter: Int = 2
     private var source: Int = 3
     private var attemptID: String? = null
+    private var closeButton: Button? = null
 
     companion object  {
         val instance = BioLogin()
     }
+
 
 
     fun initBioLogin(server: String, sharedSecret: String?, token: String, customerId: Int, comparisonAdapter: Int?, source: Int?, attemptID: String, activity: Activity, result: MethodChannel.Result) {
@@ -84,10 +88,15 @@ class BioLogin {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             result.success(stream.toByteArray())
                         }
+
+                        closeButton!!.visibility = View.GONE
                         activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
                     }
                 }).build()
 
+        this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+        })
 
         activity.supportFragmentManager.beginTransaction()
                 .replace(id, frag!!)
@@ -158,11 +167,19 @@ class BioLogin {
                             val stream = ByteArrayOutputStream()
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             channel.invokeMethod("androidBioLoginPoseEstimation#onSuccess", mapOf("image" to stream.toByteArray()))
+
+                            activity.runOnUiThread {
+                                closeButton!!.visibility = View.GONE
+                            }
+
                             activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
                         }
                     }
                 }).build()
 
+        this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+        })
 
         activity.supportFragmentManager.beginTransaction()
                 .replace(id, frag!!)
@@ -201,9 +218,18 @@ class BioLogin {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             result.success(stream.toByteArray())
                             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+
+                            activity.runOnUiThread {
+                                closeButton!!.visibility = View.GONE
+                            }
+
                         }
                     }
                 }).build()
+
+        this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+        })
 
         activity.supportFragmentManager.beginTransaction()
                 .replace(id, frag!!)

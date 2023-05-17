@@ -1,10 +1,13 @@
 package ai.amani.flutter_amanisdk_v2.modules
 
+import ai.amani.flutter_amanisdk_v2.R
 import ai.amani.sdk.Amani
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -15,7 +18,7 @@ class Selfie: Module {
     private val selfieModule = Amani.sharedInstance().Selfie()
     private var docType: String? = "XXX_SE_0"
     private var frag: Fragment? = null
-
+    private var closeButton: Button? = null
     companion object {
         val instance = Selfie()
     }
@@ -27,6 +30,7 @@ class Selfie: Module {
         val context = activity.applicationContext
         val viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         val container = FrameLayout(context)
+
         container.id = id
         activity.addContentView(container, viewParams)
 
@@ -38,13 +42,40 @@ class Selfie: Module {
                 activity.supportFragmentManager
                         .beginTransaction()
                         .remove(frag!!).commit()
+
+                activity.runOnUiThread {
+                    closeButton!!.visibility = View.GONE
+                }
             }
         }
+
+        closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+        })
 
         activity.supportFragmentManager
             .beginTransaction()
             .replace(id, frag!!)
             .commit()
+    }
+
+    fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
+        if (frag == null){
+            result.error("1455",
+                    "You must call this function while the" +
+                            "module is running", "You can ignore this message and return true" +
+                    "from onWillPop()")
+        } else {
+            activity.runOnUiThread {
+                frag?.let {
+                    closeButton!!.visibility = View.GONE
+                    it.parentFragmentManager.beginTransaction().remove(frag!!).commit()
+                    frag = null
+                    // This blocks the flutters back press action.
+                    result.success(false)
+                }
+            }
+        }
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {

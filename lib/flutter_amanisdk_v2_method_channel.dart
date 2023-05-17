@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
@@ -72,6 +73,21 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<bool> androidIDCaptureBackPressHandle() async {
+    if (Platform.isAndroid) {
+      try {
+        final bool result =
+            await methodChannel.invokeMethod("idCaptureAndroidBackPressHandle");
+        return result;
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  @override
   Future<bool> initAmani(
       {required String server,
       required String customerToken,
@@ -115,6 +131,21 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<bool> androidSelfieBackPressHandle() async {
+    if (Platform.isAndroid) {
+      try {
+        final bool result =
+            await methodChannel.invokeMethod("selfieAndroidBackPressHandle");
+        return result;
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  @override
   Future<bool> uploadSelfie() async {
     try {
       final bool status = await methodChannel.invokeMethod('uploadSelfie');
@@ -152,6 +183,21 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<bool> androidAutoSelfieBackPressHandle() async {
+    if (Platform.isAndroid) {
+      try {
+        final bool result = await methodChannel
+            .invokeMethod("autoSelfieAndroidBackPressHandle");
+        return result;
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  @override
   Future<bool> uploadAutoSelfie() async {
     try {
       final bool status = await methodChannel.invokeMethod('uploadAutoSelfie');
@@ -178,6 +224,21 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       return imgData;
     } catch (err) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<bool> androidPoseEstimationBackPressHandle() async {
+    if (Platform.isAndroid) {
+      try {
+        final bool result = await methodChannel
+            .invokeMethod("poseEstimationAndroidBackPressHandle");
+        return result;
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      return false;
     }
   }
 
@@ -256,14 +317,15 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
 
   // NFC Capture For Android
   @override
-  Future<void> androidStartNFCListener(
+  Future<bool> androidStartNFCListener(
       {String? birthDate, String? expireDate, String? documentNo}) async {
     try {
-      await methodChannel.invokeMethod('androidStartNFC', {
+      var startRes = await methodChannel.invokeMethod('androidStartNFC', {
         "birthDate": birthDate,
         "expireDate": expireDate,
         "documentNo": documentNo
       });
+      return startRes;
     } catch (err) {
       rethrow;
     }

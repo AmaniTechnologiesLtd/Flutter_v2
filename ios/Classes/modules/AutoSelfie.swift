@@ -11,7 +11,7 @@ import AmaniSDK
 
 class AutoSelfie {
   private let module = Amani.sharedInstance.autoSelfie()
-  private var moduleView: UIView!
+  private var sdkView: SDKView!
   
   func start(settings: AutoSelfieSettings, result: @escaping FlutterResult) {
     let vc = UIApplication.shared.windows.last?.rootViewController
@@ -33,20 +33,17 @@ class AutoSelfie {
     ])
     
     do {
-      moduleView = try module.start { image in
+      let moduleView = try module.start { image in
         let data = image.pngData()
         result(FlutterStandardTypedData(bytes: data!))
         DispatchQueue.main.async {
-          self.moduleView.removeFromSuperview()
+          self.sdkView.removeFromSuperview()
         }
       }
       
-      DispatchQueue.main.async {
-        vc!.view.addSubview(self.moduleView)
-        vc!.view.bringSubviewToFront(self.moduleView)
-        vc!.navigationController?.setNavigationBarHidden(true, animated: false)
-      }
-      
+      sdkView = SDKView(sdkView: moduleView!)
+      sdkView.start(on: vc!)
+      sdkView.setupBackButton(on: moduleView!)
     } catch let err {
       result(FlutterError(code: "ModuleError", message: err.localizedDescription, details: nil))
     }

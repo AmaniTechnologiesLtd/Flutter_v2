@@ -5,24 +5,30 @@ class AndroidNFCCapture {
   final MethodChannelAmaniSDK _methodChannel;
   final nfcChannel = const MethodChannel('amanisdk_nfc_channel');
   Function(bool)? _onFinishedCallback;
+  Function(String)? _onErrorCallback;
+  Function()? _onScanStart;
 
   AndroidNFCCapture(this._methodChannel);
 
-  /// Run this on initState()
-  void startNFCListener(
+  Future<bool> startNFCListener(
       {String? birthDate,
       String? expireDate,
       String? documentNo,
-      required Function(bool) onFinishedCallback}) {
+
+      /// Returns true if the capture is successfull
+      required Function(bool) onFinishedCallback,
+
+      /// Returns the error message from the card read error
+      required Function(String) onErrorCallback,
+
+      /// This runs once the user scan is started
+      required Function() onScanStart}) {
     _onFinishedCallback = onFinishedCallback;
-    _methodChannel
-        .androidStartNFCListener(
-            birthDate: birthDate,
-            expireDate: expireDate,
-            documentNo: documentNo)
-        .then((_) {
-      nfcChannel.setMethodCallHandler(_handleInverseChannel);
-    });
+    _onErrorCallback = onErrorCallback;
+    _onScanStart = onScanStart;
+    nfcChannel.setMethodCallHandler(_handleInverseChannel);
+    return _methodChannel.androidStartNFCListener(
+        birthDate: birthDate, expireDate: expireDate, documentNo: documentNo);
   }
 
   Future<void> _handleInverseChannel(MethodCall call) async {
@@ -34,7 +40,18 @@ class AndroidNFCCapture {
         }
         break;
       case 'onError':
-        throw Exception(args["message"]);
+        // While the NFC listener is active, the user can try
+        // scanning the nfc multiple times, thus this callback
+        // can be invoked multiple time
+        if (_onErrorCallback != null) {
+          _onErrorCallback!(args["message"]);
+        }
+        break;
+      case 'onScanStart':
+        if (_onScanStart != null) {
+          _onScanStart!();
+        }
+        break;
     }
   }
 

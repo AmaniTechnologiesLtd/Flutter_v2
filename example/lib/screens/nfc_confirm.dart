@@ -14,6 +14,8 @@ class NFCConfrimScreen extends StatefulWidget {
 class _NFCConfrimScreenState extends State<NFCConfrimScreen> {
   bool _isCapturing = false;
   bool _uploadState = false;
+  bool _errorState = false;
+  bool _startState = false;
   final _idCapture = AmaniSDK().getIDCapture();
   final _androidNFCCapture = AmaniSDK().getAndroidNFCCapture();
 
@@ -24,40 +26,58 @@ class _NFCConfrimScreenState extends State<NFCConfrimScreen> {
         backgroundColor: Colors.amber,
         title: const Text("Capture NFC"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Text("Is Capturing: $_isCapturing"),
-              Text("Upload State: $_uploadState"),
-              OutlinedButton(
-                  onPressed: () {
-                    if (Platform.isAndroid) {
-                      _idCapture.setAndroidUsesNFC(true).then((_) {
-                        setState(() {
-                          _isCapturing = true;
-                        });
-                        _androidNFCCapture.startNFCListener(
-                            onFinishedCallback: (isCaptureComplete) {
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text("Is Capturing: $_isCapturing"),
+                Text("Upload State: $_uploadState"),
+                Text("Error State: $_errorState"),
+                Text("Started State: $_startState"),
+                OutlinedButton(
+                    onPressed: () {
+                      if (Platform.isAndroid) {
+                        _idCapture.setAndroidUsesNFC(true).then((_) {
                           setState(() {
-                            _isCapturing = false;
-                            _uploadState = true;
+                            _isCapturing = true;
                           });
-                          _idCapture.upload().then((uploadState) {
-                            setState(() {
-                              _uploadState = uploadState;
+                          try {
+                            _androidNFCCapture.startNFCListener(
+                                onFinishedCallback: (isCaptureComplete) {
+                              setState(() {
+                                _isCapturing = false;
+                                _uploadState = true;
+                              });
+                              _idCapture.upload().then((uploadState) {
+                                setState(() {
+                                  _uploadState = uploadState;
+                                });
+                                Navigator.pushReplacementNamed(context, '/');
+                              });
+                            }, onErrorCallback: (errorStr) {
+                              print(errorStr);
+                              setState(() {
+                                _errorState = true;
+                              });
+                            }, onScanStart: () {
+                              setState(() {
+                                _startState = true;
+                              });
                             });
-                            Navigator.pushReplacementNamed(context, '/');
-                          });
-                        });
-                      });
-                    }
-                  },
-                  child: const Text("Start Capture"))
-            ],
-          )
-        ],
+                          } catch (e) {
+                            print("MRZ Error?");
+                            print(e.toString());
+                          }
+                        }); // set uses nfc
+                      }
+                    },
+                    child: const Text("Start Capture"))
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

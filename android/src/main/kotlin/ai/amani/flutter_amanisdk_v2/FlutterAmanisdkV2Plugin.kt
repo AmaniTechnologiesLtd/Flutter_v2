@@ -92,6 +92,9 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "uploadIDCapture" -> {
         IdCapture.instance.upload(activity!!, result)
       }
+      "idCaptureAndroidBackPressHandle" -> {
+        IdCapture.instance.backPressHandle(activity!!, result)
+      }
       // Selfie
       "setSelfieType" -> {
         val type = call.argument<String>("type")
@@ -99,6 +102,9 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "startSelfie" -> {
         Selfie.instance.start(0, activity!!, result)
+      }
+      "selfieAndroidBackPressHandle" -> {
+        Selfie.instance.backPressHandle(activity!!, result)
       }
       "uploadSelfie" -> {
         Selfie.instance.upload( activity!!, result)
@@ -116,6 +122,9 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val type = call.argument<String>("type")
         AutoSelfie.instance.setType(type, result)
       }
+      "autoSelfieAndroidBackPressHandle" -> {
+        AutoSelfie.instance.backPressHandle(activity!!, result)
+      }
       "uploadAutoSelfie" -> {
        AutoSelfie.instance.upload(activity!!, result)
       }
@@ -132,9 +141,13 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val type = call.argument<String>("type")
         PoseEstimation.instance.setType(type, result)
       }
+      "poseEstimationAndroidBackPressHandle" -> {
+        AutoSelfie.instance.backPressHandle(activity!!, result)
+      }
       "uploadPoseEstimation" -> {
         PoseEstimation.instance.upload(activity!!, result)
       }
+      // NFC
       "androidStartNFC" -> {
         val birthDate = call.argument<String>("birthDate")
         val expireDate = call.argument<String>("expireDate")

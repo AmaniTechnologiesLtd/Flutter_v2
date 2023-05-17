@@ -84,15 +84,41 @@ class AndroidNFCState extends State<AndroidNFC> {
                       if (_dateOfBirth != "" &&
                           _expireDate != "" &&
                           _documentNo != "") {
-                        _nfcCapture.startNFCListener(
-                            birthDate: _dateOfBirth,
-                            expireDate: _expireDate,
-                            documentNo: _documentNo,
-                            onFinishedCallback: (isCaptureCompleted) {
-                              setState(() {
-                                _isCompleted = isCaptureCompleted;
-                              });
-                            });
+                        _nfcCapture
+                            .startNFCListener(
+                                birthDate: _dateOfBirth,
+                                expireDate: _expireDate,
+                                documentNo: _documentNo,
+                                onFinishedCallback: (isCaptureCompleted) {
+                                  setState(() {
+                                    _isCompleted = isCaptureCompleted;
+                                  });
+                                },
+                                onErrorCallback: (errorStr) {
+                                  print("ON ERROR");
+                                  print(errorStr);
+                                  print(errorStr);
+                                  print(errorStr);
+                                  print(errorStr);
+                                  print(errorStr);
+                                  print(errorStr);
+                                  print("ON ERROR");
+                                  print("ON ERROR");
+                                  print("ON ERROR");
+                                  print("ON ERROR");
+                                },
+                                onScanStart: () {
+                                  print("SCAN STARTED");
+                                  print("SCAN STARTED");
+                                  print("SCAN STARTED");
+                                  print("SCAN STARTED");
+                                  print("SCAN STARTED");
+                                  print("SCAN STARTED");
+                                })
+                            .then((value) {
+                          // This is where the NFC Listener is active
+                          // For card found event
+                        });
                       }
                     },
                     child:

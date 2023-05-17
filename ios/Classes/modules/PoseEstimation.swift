@@ -12,7 +12,7 @@ import UIKit
 @available(iOS 12.0, *)
 class PoseEstimation {
   private let module = Amani.sharedInstance.poseEstimation()
-  private var moduleView: UIView!
+  private var sdkView: SDKView!
 
   public func start(settings: PoseEstimationSettings, result: @escaping FlutterResult) {
     let vc = UIApplication.shared.windows.last?.rootViewController
@@ -82,22 +82,20 @@ class PoseEstimation {
     module.setManualCropTimeout(Timeout: settings.manualCropTimeout)
 
     do {
-      moduleView = try module.start { [weak self] image in
+      let moduleView = try module.start { [weak self] image in
         guard let self = self else { return }
 
         let data = image.pngData()
         result(FlutterStandardTypedData(bytes: data!))
         
         DispatchQueue.main.async {
-          self.moduleView.removeFromSuperview()
+          self.sdkView.removeFromSuperview()
         }
       }
-
-      DispatchQueue.main.async {
-        vc?.view.addSubview(self.moduleView)
-        vc?.view.bringSubviewToFront(self.moduleView)
-        vc?.navigationController?.setNavigationBarHidden(true, animated: false)
-      }
+      
+      sdkView = SDKView(sdkView: moduleView!)
+      sdkView.start(on: vc!)
+      sdkView.setupBackButton(on: moduleView!)
     } catch let err {
       result(FlutterError(code: "ModuleError", message: err.localizedDescription, details: nil))
     }

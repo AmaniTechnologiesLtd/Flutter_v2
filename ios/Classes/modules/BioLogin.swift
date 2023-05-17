@@ -11,7 +11,7 @@ import Flutter
 class BioLogin {
     private let vc = UIApplication.shared.windows.last?.rootViewController!
     private let module = Amani.sharedInstance.bioLogin()
-    private var moduleView: UIView!
+    private var sdkView: SDKView!
     private var customerId: String!
     private var attemptId: String!
     private var source = 3
@@ -112,20 +112,16 @@ class BioLogin {
     
     private func startModule(result: @escaping FlutterResult) {
         do {
-            moduleView = try module.start { image in
+            let moduleView = try module.start { image in
                 let data = image.pngData()!
                 result(FlutterStandardTypedData(bytes: data))
                 DispatchQueue.main.async {
-                    self.moduleView.removeFromSuperview()
+                    self.sdkView.removeFromSuperview()
                 }
             }
-            
-            DispatchQueue.main.async {
-                self.vc!.view.addSubview(self.moduleView)
-                self.vc!.view.bringSubviewToFront(self.moduleView)
-                self.vc!.navigationController?.setNavigationBarHidden(true, animated: false)
-            }
-            
+          sdkView = SDKView(sdkView: moduleView!)
+          sdkView.start(on: vc!)
+          sdkView.setupBackButton(on: moduleView!)
         } catch let err {
             result(FlutterError(code: "ModuleError", message: err.localizedDescription, details: nil))
         }

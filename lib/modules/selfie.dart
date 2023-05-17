@@ -32,4 +32,8 @@ class Selfie {
   Future<void> setType(String type) async {
     await _methodChannel.setSelfieType(type);
   }
+
+  Future<bool> androidBackButtonHandle() async {
+    return await _methodChannel.androidSelfieBackPressHandle();
+  }
 }

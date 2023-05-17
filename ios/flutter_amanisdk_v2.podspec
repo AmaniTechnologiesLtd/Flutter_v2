@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
+  s.resources = 'Assets/**/*'
   s.dependency 'Flutter'
   s.dependency 'AmaniSDK'
   s.platform = :ios, '11.0'

@@ -56,4 +56,8 @@ class IdCapture {
   Future<void> setManualButtonTimeout(int time) async {
     await _methodChannel.setIDCaptureManualButtonTimeout(time);
   }
+
+  Future<bool> androidBackButtonHandle() async {
+    return await _methodChannel.androidIDCaptureBackPressHandle();
+  }
 }

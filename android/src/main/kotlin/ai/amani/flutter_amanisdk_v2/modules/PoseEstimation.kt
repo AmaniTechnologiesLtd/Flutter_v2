@@ -8,7 +8,9 @@ import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObse
 import android.app.Activity
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -20,7 +22,7 @@ class PoseEstimation: Module {
     private val poseEstimationModule = Amani.sharedInstance().SelfiePoseEstimation()
     private var docType: String = "XXX_SE_0"
     private var frag: Fragment? = null
-
+    var closeButton: Button? = null
     private var settings: PoseEstimationSettings? = null
 
     companion object {
@@ -28,6 +30,7 @@ class PoseEstimation: Module {
     }
 
     override fun start(stepID: Int, activity: Activity, result: MethodChannel.Result) {
+
         if (settings == null) {
             result.error("1005", "Settings not set", null)
         }
@@ -36,6 +39,11 @@ class PoseEstimation: Module {
             override fun onError(error: Error) {
                 (activity as FragmentActivity).supportFragmentManager.
                 beginTransaction().remove(frag!!).commit()
+
+                activity.runOnUiThread {
+                    closeButton!!.visibility = View.GONE
+                }
+
                 result.error("1009", error.message, null)
             }
 
@@ -54,6 +62,11 @@ class PoseEstimation: Module {
                     (activity as FragmentActivity).supportFragmentManager.
                     beginTransaction().remove(frag!!).commit()
                     result.success(stream.toByteArray())
+
+                    activity.runOnUiThread {
+                        closeButton!!.visibility = View.GONE
+                    }
+
                 }
             }
 
@@ -104,9 +117,32 @@ class PoseEstimation: Module {
         container.id = id
         activity.addContentView(container, viewParams)
 
+        closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+        })
+
         activity.supportFragmentManager.beginTransaction()
                 .replace(id, frag!!)
                 .commit()
+    }
+
+    fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
+        if (frag == null){
+            result.error("1455",
+                    "You must call this function while the" +
+                            "module is running", "You can ignore this message and return true" +
+                    "from onWillPop()")
+        } else {
+            activity.runOnUiThread {
+                frag?.let {
+                    closeButton!!.visibility = View.GONE
+                    it.parentFragmentManager.beginTransaction().remove(frag!!).commit()
+                    frag = null
+                    // This blocks the flutters back press action.
+                    result.success(false)
+                }
+            }
+        }
     }
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {

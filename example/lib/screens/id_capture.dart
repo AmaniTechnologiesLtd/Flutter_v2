@@ -23,30 +23,42 @@ class _IdCaptureScreenState extends State<IdCaptureScreen> {
     initSDK();
   }
 
+  Future<bool> onWillPop() async {
+    try {
+      bool canPop = await _idCaptureModule.androidBackButtonHandle();
+      return canPop;
+    } catch (e) {
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: const Text('ID Capture Screen'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            OutlinedButton(
-                onPressed: () {
-                  _idCaptureModule.start(IdSide.front).then((imageData) {
-                    Navigator.pushNamed(context, ConfirmScreen.routeName,
-                        arguments: ConfirmArguments(
-                            source: "idCapture",
-                            imageData: imageData,
-                            idCaptureBothSidesTaken: false,
-                            idCaptureNFCCompleted: false));
-                  }).catchError((err) {});
-                },
-                child: const Text("Start")),
-          ],
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.purple,
+          title: const Text('ID Capture Screen'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                  onPressed: () {
+                    _idCaptureModule.start(IdSide.front).then((imageData) {
+                      Navigator.pushNamed(context, ConfirmScreen.routeName,
+                          arguments: ConfirmArguments(
+                              source: "idCapture",
+                              imageData: imageData,
+                              idCaptureBothSidesTaken: false,
+                              idCaptureNFCCompleted: false));
+                    }).catchError((err) {});
+                  },
+                  child: const Text("Start")),
+            ],
+          ),
         ),
       ),
     );

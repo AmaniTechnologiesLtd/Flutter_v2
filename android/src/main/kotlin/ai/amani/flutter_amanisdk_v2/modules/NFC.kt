@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.nfc.NfcAdapter
+import android.os.Build
 import androidx.fragment.app.FragmentActivity
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodChannel
@@ -22,6 +23,9 @@ class NFC {
     private var birthDate: String? = null
     private var expireDate: String? = null
     private var documentNo: String? = null
+
+    private val FLAG_MUTABLE = 1 shl 25
+    private val VERSION_CODES_S = 31
 
     companion object {
         val instance = NFC()
@@ -39,7 +43,7 @@ class NFC {
                         startNFC(activity, result, channel)
                     },
                     onError = {
-                        channel.invokeMethod("onError", mapOf("message" to it.errorMessage!!))
+                        result.error(it.errorCode.toString(), it.errorMessage, null)
                     }
             )
         } else {
@@ -51,15 +55,26 @@ class NFC {
         }
     }
 
+    // Suppressed lint as we support compiler 33 and we're checking the version code
+    @SuppressLint("WrongConstant")
     private fun startNFC(activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
         if (nfcAdapter != null) {
             val intent = Intent(activity.applicationContext, this.javaClass)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val pendingIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = if (Build.VERSION.SDK_INT >= VERSION_CODES_S) {
+                PendingIntent.getActivity(activity, 0, Intent(activity, javaClass)
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), FLAG_MUTABLE)
+            } else{
+                PendingIntent.getActivity(activity, 0, Intent(activity, javaClass)
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
+            }
             val filter = arrayOf(arrayOf("android.nfc.tech.IsoDep"))
             nfcAdapter!!.enableForegroundDispatch(activity, pendingIntent, null, filter)
             nfcAdapter!!.enableReaderMode(activity, {
+                activity.runOnUiThread {
+                    channel.invokeMethod("onScanStart", mapOf("started" to true))
+                }
                 NFCModule.start(it, activity.applicationContext, birthDate, expireDate, documentNo) { _: Bitmap?, isSuccess: Boolean, exception: String? ->
                     if(isSuccess && exception == null) {
                         channel.invokeMethod("onNFCCompleted", mapOf("isSuccess" to isSuccess))
@@ -68,8 +83,11 @@ class NFC {
                     }
                 }
             }, NfcAdapter.FLAG_READER_NFC_A, null)
+
+            result.success(true)
+        } else {
+            result.error("1458", "Failed to get default nfc adapter", null)
         }
-        result.success(null)
     }
 
     fun disableNFC(activity: FlutterFragmentActivity) {
