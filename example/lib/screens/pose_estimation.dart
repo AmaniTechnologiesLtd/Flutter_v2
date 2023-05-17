@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk_v2/amani_sdk.dart';
 import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
@@ -81,29 +83,46 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
     manualCropTimeout: 30,
   );
 
+  Future<bool> onWillPop() async {
+    if (Platform.isAndroid) {
+      try {
+        bool canPop = await _amaniPoseEstimation.androidBackButtonHandle();
+        return canPop;
+      } catch (e) {
+        return true;
+      }
+    } else {
+      // default behaviour for iOS
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text("Pose estimation"),
-      ),
-      body: Center(
-        child: OutlinedButton(
-          onPressed: () {
-            _amaniPoseEstimation
-                .start(
-                    androidSettings: _androidPoseEstimationSettings,
-                    iosSettings: _iosPoseEstimationSettings)
-                .then((imageData) {
-              Navigator.pushNamed(context, ConfirmScreen.routeName,
-                  arguments: ConfirmArguments(
-                      source: "poseEstimation", imageData: imageData));
-            }).catchError((err) {
-              throw Exception(err);
-            });
-          },
-          child: const Text('Start Pose Estimation'),
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          title: const Text("Pose estimation"),
+        ),
+        body: Center(
+          child: OutlinedButton(
+            onPressed: () {
+              _amaniPoseEstimation
+                  .start(
+                      androidSettings: _androidPoseEstimationSettings,
+                      iosSettings: _iosPoseEstimationSettings)
+                  .then((imageData) {
+                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                    arguments: ConfirmArguments(
+                        source: "poseEstimation", imageData: imageData));
+              }).catchError((err) {
+                throw Exception(err);
+              });
+            },
+            child: const Text('Start Pose Estimation'),
+          ),
         ),
       ),
     );

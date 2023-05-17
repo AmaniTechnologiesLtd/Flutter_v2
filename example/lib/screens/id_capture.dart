@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk_v2/amani_sdk.dart';
 import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
@@ -24,10 +26,14 @@ class _IdCaptureScreenState extends State<IdCaptureScreen> {
   }
 
   Future<bool> onWillPop() async {
-    try {
-      bool canPop = await _idCaptureModule.androidBackButtonHandle();
-      return canPop;
-    } catch (e) {
+    if (Platform.isAndroid) {
+      try {
+        bool canPop = await _idCaptureModule.androidBackButtonHandle();
+        return canPop;
+      } catch (e) {
+        return true;
+      }
+    } else {
       return true;
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk_v2/amani_sdk.dart';
 import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
@@ -24,25 +26,42 @@ class _SelfieScreenState extends State<SelfieScreen> {
     initSDK();
   }
 
+  Future<bool> onWillPop() async {
+    if (Platform.isAndroid) {
+      try {
+        bool canPop = await _amaniSelfie.androidBackButtonHandle();
+        return canPop;
+      } catch (e) {
+        return true;
+      }
+    } else {
+      // default behaviour for iOS
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text("Selfie"),
-      ),
-      body: Center(
-        child: OutlinedButton(
-          onPressed: () async {
-            await _amaniSelfie.start().then((imageData) {
-              Navigator.pushNamed(context, ConfirmScreen.routeName,
-                  arguments:
-                      ConfirmArguments(source: "selfie", imageData: imageData));
-            }).catchError((err) {
-              throw Exception(err);
-            });
-          },
-          child: const Text('Start Selfie'),
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          title: const Text("Selfie"),
+        ),
+        body: Center(
+          child: OutlinedButton(
+            onPressed: () async {
+              await _amaniSelfie.start().then((imageData) {
+                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                    arguments: ConfirmArguments(
+                        source: "selfie", imageData: imageData));
+              }).catchError((err) {
+                throw Exception(err);
+              });
+            },
+            child: const Text('Start Selfie'),
+          ),
         ),
       ),
     );

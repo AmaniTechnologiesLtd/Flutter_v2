@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk_v2/amani_sdk.dart';
 import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
@@ -24,6 +26,19 @@ class _AutoSelfieScreenState extends State<AutoSelfieScreen> {
   void initState() {
     super.initState();
     initSDK();
+  }
+
+  Future<bool> onWillPop() async {
+    if (Platform.isAndroid) {
+      try {
+        bool canPop = await _autoSelfie.androidBackButtonHandle();
+        return canPop;
+      } catch (e) {
+        return true;
+      }
+    } else {
+      return true;
+    }
   }
 
   // Configure the AutoSelfie
@@ -54,27 +69,30 @@ class _AutoSelfieScreenState extends State<AutoSelfieScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text("Start Autoselfie"),
-      ),
-      body: Center(
-        child: OutlinedButton(
-          onPressed: () {
-            _autoSelfie
-                .start(
-                    androidAutoSelfieSettings: _androidAutoSelfieSettings,
-                    iosAutoSelfieSettings: _iOSAutoSelfieSettings)
-                .then((imageData) {
-              Navigator.pushNamed(context, ConfirmScreen.routeName,
-                  arguments: ConfirmArguments(
-                      source: "autoSelfie", imageData: imageData));
-            }).catchError((err) {
-              throw Exception(err);
-            });
-          },
-          child: const Text('Start Selfie'),
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          title: const Text("Start Autoselfie"),
+        ),
+        body: Center(
+          child: OutlinedButton(
+            onPressed: () {
+              _autoSelfie
+                  .start(
+                      androidAutoSelfieSettings: _androidAutoSelfieSettings,
+                      iosAutoSelfieSettings: _iOSAutoSelfieSettings)
+                  .then((imageData) {
+                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                    arguments: ConfirmArguments(
+                        source: "autoSelfie", imageData: imageData));
+              }).catchError((err) {
+                throw Exception(err);
+              });
+            },
+            child: const Text('Start Selfie'),
+          ),
         ),
       ),
     );
