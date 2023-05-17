@@ -298,9 +298,17 @@ void androidStartNFCCapture() {
           _NFCCompleted = isCaptureCompleted;
           _nfcCapture.stopNFCListener();
         });
+      },
+      onErrorCallback: (errorString) {
+        // handle the read errors here 
+      },
+      onScanStart: () {
+        // This callback will be invoked when an NFC tag found
       }
     )
-  })
+  }).catchError((err) {
+    // Handle the intialization errors here
+  });
 }
 ```
 
@@ -601,7 +609,16 @@ OutlinedButton(
               setState(() {
                 _isCompleted = isCaptureCompleted;
               });
-            });
+            },
+            onErrorCallback: (errorString) {
+              // handle the read errors here
+            },
+            onScanStart: () {
+              // This callback will invoked when user shows an NFC tag 
+            }
+          ).catchError((err) {
+            // Handle the intialization errors here
+          });
       }
     },
     child:
