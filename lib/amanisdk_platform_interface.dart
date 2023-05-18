@@ -231,6 +231,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('uploadBioLogin() has not been implemented.');
   }
 
+  Future<bool> androidBioLoginBackPressHandle() {
+    throw UnimplementedError(
+        'androidBioLoginBackPressHandle() has not been implemented.');
+  }
+
   Future<dynamic> getCustomerInfo() {
     throw UnimplementedError("getCustomerInfo() has not been implemented.");
   }

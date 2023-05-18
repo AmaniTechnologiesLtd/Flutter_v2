@@ -203,6 +203,9 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val selfieDescriptionText = call.argument<String>("androidSelfieDescriptionText")!!
         BioLogin.instance.startWithManualSelfie(selfieDescriptionText, activity!!, result)
       }
+      "bioLoginAndroidBackPressHandle" -> {
+        BioLogin.instance.backPressHandle(activity!!, result)
+      }
       "uploadBioLogin" -> {
         BioLogin.instance.upload(result)
       }

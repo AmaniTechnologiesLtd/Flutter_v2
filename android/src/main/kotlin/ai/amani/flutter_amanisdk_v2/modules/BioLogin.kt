@@ -91,11 +91,13 @@ class BioLogin {
 
                         closeButton!!.visibility = View.GONE
                         activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                        frag = null
                     }
                 }).build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            frag = null
         })
 
         activity.supportFragmentManager.beginTransaction()
@@ -173,12 +175,14 @@ class BioLogin {
                             }
 
                             activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
+                            frag = null
                         }
                     }
                 }).build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            frag = null
         })
 
         activity.supportFragmentManager.beginTransaction()
@@ -218,7 +222,7 @@ class BioLogin {
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             result.success(stream.toByteArray())
                             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
-
+                            frag = null
                             activity.runOnUiThread {
                                 closeButton!!.visibility = View.GONE
                             }
@@ -229,6 +233,7 @@ class BioLogin {
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            frag = null
         })
 
         activity.supportFragmentManager.beginTransaction()
@@ -258,4 +263,22 @@ class BioLogin {
         })
     }
 
+    fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
+        if (frag == null){
+            result.error("1455",
+                    "You must call this function while the" +
+                            "module is running", "You can ignore this message and return true" +
+                    "from onWillPop()")
+        } else {
+            activity.runOnUiThread {
+                frag?.let {
+                    closeButton!!.visibility = View.GONE
+                    it.parentFragmentManager.beginTransaction().remove(frag!!).commit()
+                    frag = null
+                    // This blocks the flutters back press action.
+                    result.success(false)
+                }
+            }
+        }
+   }
 }

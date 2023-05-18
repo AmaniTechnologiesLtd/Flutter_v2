@@ -115,4 +115,8 @@ class BioLogin {
       rethrow;
     }
   }
+
+  Future<bool> androidBackButtonHandle() async {
+    return await _methodChannel.androidBioLoginBackPressHandle();
+  }
 }

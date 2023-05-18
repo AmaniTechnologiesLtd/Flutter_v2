@@ -83,7 +83,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         rethrow;
       }
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -141,7 +141,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         rethrow;
       }
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -193,7 +193,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         rethrow;
       }
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -238,7 +238,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         rethrow;
       }
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -441,6 +441,21 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<bool> androidBioLoginBackPressHandle() async {
+    if (Platform.isAndroid) {
+      try {
+        final bool result = await methodChannel
+            .invokeMethod("autoSelfieAndroidBackPressHandle");
+        return result;
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      return true;
+    }
+  }
+
+  @override
   Future<bool> uploadBioLogin() async {
     try {
       final bool isSuccess = await methodChannel.invokeMethod("uploadBioLogin");
@@ -460,29 +475,6 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       rethrow;
     }
   }
-
-  // @override
-  // Future<bool> initAmaniWithEmail(
-  //     {required String server,
-  //     required String customerToken,
-  //     required String customerIdCardNumber,
-  //     required bool useLocation,
-  //     required String lang,
-  //     String? sharedSecret}) async {
-  //   try {
-  //     final bool loginResult = await methodChannel.invokeMethod('initAmani', {
-  //       "server": server,
-  //       "customerToken": customerToken,
-  //       "customerIdCardNumber": customerIdCardNumber,
-  //       "useLocation": useLocation,
-  //       "lang": lang,
-  //       "sharedSecret": sharedSecret
-  //     });
-  //     return loginResult;
-  //   } catch (err) {
-  //     rethrow;
-  //   }
-  // }
 
   @override
   Future<bool> initAmaniWithEmail(
