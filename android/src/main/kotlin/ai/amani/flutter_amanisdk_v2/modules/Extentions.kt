@@ -20,9 +20,9 @@ fun Activity.logToast(message: String) {
 }
 
 fun FrameLayout.setupBackButton(@DrawableRes drawable: Int, onClick: () -> Unit  ): Button {
-    val buttonWidth = 50
-    val buttonHeight = 50
-    val padding = 20
+    val buttonWidth = 90
+    val buttonHeight = 90
+    val padding = 40 
     var statusBarHeight = 0
 
     val button = Button(this.context)
