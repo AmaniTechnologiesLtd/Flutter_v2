@@ -70,6 +70,7 @@ class CustomerInfoModel {
     city = map["city"];
     address = map["address"];
     province = map["province"];
+    status = map["status"];
     this.rules = rules;
     this.missingRules = missingRules;
   }
