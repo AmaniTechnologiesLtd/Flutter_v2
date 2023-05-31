@@ -43,7 +43,8 @@ class NFC {
                         startNFC(activity, result, channel)
                     },
                     onError = {
-                        result.error(it.errorCode.toString(), it.errorMessage, null)
+                        // The iOS Part returns false when the MRZ request had failed.
+                        result.success(false)
                     }
             )
         } else {
