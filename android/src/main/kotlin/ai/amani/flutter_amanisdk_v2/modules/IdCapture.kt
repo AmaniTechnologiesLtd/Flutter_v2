@@ -51,7 +51,7 @@ class IdCapture : Module {
         container.id = id
         activity.addContentView(container, viewParams)
 
-        frag = idCaptureModule.start(activity, container, docType!!, side) { bitmap, _, file ->
+        frag = idCaptureModule.start(activity, container, docType!!, side) { bitmap, _, _ ->
             if (bitmap != null) {
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
@@ -62,8 +62,6 @@ class IdCapture : Module {
                 result.success(stream.toByteArray())
                 activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
                 frag = null
-            } else {
-                result.success(null)
             }
         }
 
