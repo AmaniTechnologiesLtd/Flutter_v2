@@ -184,8 +184,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
                          lang: String,
                          sharedSecret: String?,
                          result: @escaping FlutterResult) {
-      print("AMANISDK-SERVER", server)
-    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: customerIdCardNumber)
+    let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
     Amani.sharedInstance.initAmani(server: server, token: customerToken, customer: customer, useGeoLocation: useLocation, language: lang) { customerRes, err in
       if customerRes != nil {
         result(true)
@@ -203,7 +202,6 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
                         lang: String,
                         sharedSecret: String?,
                         result: @escaping FlutterResult) {
-     print("AMANISDK-SERVER", server)
     let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: customerIdCardNumber)
     Amani.sharedInstance.initAmani(server: server, userName: email, password: password, customer: customer, useGeoLocation: useLocation, language: lang) { customerRes, err in
       if customerRes != nil {
