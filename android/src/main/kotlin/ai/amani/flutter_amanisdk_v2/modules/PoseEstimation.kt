@@ -32,7 +32,7 @@ class PoseEstimation: Module {
     override fun start(stepID: Int, activity: Activity, result: MethodChannel.Result) {
 
         if (settings == null) {
-            result.error("1005", "Settings not set", null)
+            result.error("30003", "Settings not set", null)
         }
 
         val observer: PoseEstimationObserver = object : PoseEstimationObserver {
@@ -44,7 +44,7 @@ class PoseEstimation: Module {
                     closeButton!!.visibility = View.GONE
                 }
 
-                result.error("1009", error.message, null)
+                result.error("30006", error.message, null)
             }
 
             override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
@@ -128,7 +128,7 @@ class PoseEstimation: Module {
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
         if (frag == null){
-            result.error("1455",
+            result.error("30001",
                     "You must call this function while the" +
                             "module is running", "You can ignore this message and return true" +
                     "from onWillPop()")
@@ -151,7 +151,7 @@ class PoseEstimation: Module {
                 if (isSuccess && uploadRes == "OK") {
                     result.success(true)
                 } else if (!errors.isNullOrEmpty()) {
-                    result.error("1006", "Upload Error", errors[0].errorMessage)
+                    result.error(errors[0].errorCode.toString(), "Upload Error", errors[0].errorMessage)
                 } else {
                     result.success(false)
                 }

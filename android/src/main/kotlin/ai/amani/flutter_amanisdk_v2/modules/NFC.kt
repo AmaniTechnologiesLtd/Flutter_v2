@@ -87,7 +87,7 @@ class NFC {
 
             result.success(true)
         } else {
-            result.error("1458", "Failed to get default nfc adapter", null)
+            result.error("30006", "Failed to get default nfc adapter", null)
         }
     }
 
@@ -105,7 +105,7 @@ class NFC {
            if (isSuccess && uploadRes == "OK") {
                 result.success(true)
             } else if (!errors.isNullOrEmpty()) {
-                result.error("1007", "Upload Error", errors[0].errorMessage)
+                result.error(errors[0].errorCode.toString(), "Upload Error", errors[0].errorMessage)
             } else {
                 result.success(false)
             }

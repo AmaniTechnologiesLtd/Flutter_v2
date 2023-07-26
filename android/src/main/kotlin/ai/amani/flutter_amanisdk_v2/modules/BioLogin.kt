@@ -57,7 +57,7 @@ class BioLogin {
 
     fun startWithAutoSelfie(settings: AutoSelfieSettings, activity: Activity, result: MethodChannel.Result) {
         if (customerId == null && attemptID == null) {
-            result.error("BioLogin", "You must call initBioLogin before you use this function", null)
+            result.error("30003", "You must call initBioLogin before you use this function", null)
         }
         (activity as FragmentActivity)
         val id = 0x123456
@@ -107,7 +107,7 @@ class BioLogin {
 
     fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
         if (customerId == null && attemptID == null) {
-            result.error("BioLogin", "You must call initBioLogin before you use this function", null)
+            result.error("30003", "You must call initBioLogin before you use this function", null)
         }
         (activity as FragmentActivity)
         val id = 0x123456
@@ -192,7 +192,7 @@ class BioLogin {
 
     fun startWithManualSelfie(selfieDescriptionText: String, activity: Activity, result: MethodChannel.Result) {
         if (customerId == null && attemptID == null) {
-            result.error("BioLogin", "You must call initBioLogin before you do this operation", null)
+            result.error("30003", "You must call initBioLogin before you do this operation", null)
         }
         (activity as FragmentActivity)
         val id = 0x123456
@@ -244,7 +244,7 @@ class BioLogin {
 
     fun upload(completion: MethodChannel.Result) {
         if (customerId == null) {
-            completion.error("BioLogin", "You must call initBioLogin before you do this operation", null)
+            completion.error("30003", "You must call initBioLogin before you do this operation", null)
         }
         Amani.sharedInstance().BioLogin().upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
             override fun cb(result: Boolean?, errors: Errors?) {
@@ -253,10 +253,10 @@ class BioLogin {
                         completion.success(result)
                     }
                     errors != null -> {
-                        completion.error("BioLogin", "BioLogin Error", errors.errorMessage)
+                        completion.error(errors.errorCode.toString(), "BioLogin Error", errors.errorMessage)
                     }
                     else -> {
-                        completion.error("BioLogin", "Nothing returned from bio login", null)
+                        completion.error("30002", "Nothing returned from bio login", null)
                     }
                 }
             }
@@ -265,7 +265,7 @@ class BioLogin {
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
         if (frag == null){
-            result.error("1455",
+            result.error("30001",
                     "You must call this function while the" +
                             "module is running", "You can ignore this message and return true" +
                     "from onWillPop()")

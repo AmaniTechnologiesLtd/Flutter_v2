@@ -37,7 +37,7 @@ class IdCapture : Module {
     }
     override fun start(stepID: Int, activity: Activity, result: Result) {
         if(docType == null) {
-            result.error("1005", "Type not set.", "You have to call setType on idCapture before calling this method.")
+            result.error("30003", "Type not set.", "You have to call setType on idCapture before calling this method.")
             return
         }
 
@@ -71,7 +71,7 @@ class IdCapture : Module {
         })
 
         if (frag == null) {
-            result.error("20900", "Failed to initialize ID Capture", null)
+            result.error("30005", "Failed to initialize ID Capture", null)
             return
         }
 
@@ -99,7 +99,7 @@ class IdCapture : Module {
 
     fun backPressHandle(activity: Activity, result: Result) {
         if (frag == null){
-            result.error("1455",
+            result.error("30001",
                     "You must call this function while the" +
                     "module is running", "You can ignore this message and return true" +
                     "from onWillPop()")
@@ -122,7 +122,7 @@ class IdCapture : Module {
                 if (isSuccess && uploadRes == "OK") {
                     result.success(true)
                 } else if (!errors.isNullOrEmpty()) {
-                    result.error("1006", "Upload Error", errors[0].errorMessage)
+                    result.error(errors[0].errorCode.toString(), "Upload Error", errors[0].errorMessage)
                 } else {
                     result.success(false)
                 }

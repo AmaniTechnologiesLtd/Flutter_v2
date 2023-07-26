@@ -31,7 +31,7 @@ class AutoSelfie: Module {
     override fun start(stepID: Int, activity: Activity, result: MethodChannel.Result) {
 
         if(settings == null) {
-            result.error("1005", "Settings not set", "You have to call setSettings before calling this method.")
+            result.error("30003", "Settings not set", "You have to call setSettings before calling this method.")
             return
         }
 
@@ -86,7 +86,7 @@ class AutoSelfie: Module {
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
         if (frag == null){
-            result.error("1455",
+            result.error("30001",
                     "You must call this function while the" +
                             "module is running", "You can ignore this message and return true" +
                     "from onWillPop()")
@@ -109,7 +109,7 @@ class AutoSelfie: Module {
                 if (isSuccess && uploadRes == "OK") {
                     result.success(true)
                 } else if (!errors.isNullOrEmpty()) {
-                    result.error("1007", "Upload Error", errors[0].errorMessage)
+                    result.error(errors[0].errorCode.toString(), "Upload Error", errors[0].errorMessage)
                 } else {
                     result.success(false)
                 }
