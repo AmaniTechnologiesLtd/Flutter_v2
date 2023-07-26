@@ -47,7 +47,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       if #available(iOS 13, *) {
         idCapture.startNFC(result: result)
       } else {
-        result(FlutterError(code: "NotAvaible", message: "NFC Requires iOS 13 or newer", details: nil))
+        result(FlutterError(code: "30008", message: "NFC Requires iOS 13 or newer", details: nil))
       }
     case "uploadIDCapture":
       let idCapture = IdCapture()
@@ -86,7 +86,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
         let poseEstimationSettings = try! decoder.decode(PoseEstimationSettings.self, from: Data(iosArgs.utf8))
         poseEstimation.start(settings: poseEstimationSettings, result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
+        result(FlutterError(code: "30008", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
       }
     case "setPoseEstimationType":
       if #available(iOS 12.0, *) {
@@ -94,14 +94,14 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
         let type = arguments?["type"] as! String
         poseEstimation.setType(type: type, result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
+        result(FlutterError(code: "30008", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
       }
     case "uploadPoseEstimation":
       if #available(iOS 12.0, *) {
         let poseEstimation = PoseEstimation()
         poseEstimation.upload(result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
+        result(FlutterError(code: "30008", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
       }
     // NFC
     case "iOSstartNFCWithImageData":
@@ -110,7 +110,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
         let imageData = arguments?["imageData"] as! FlutterStandardTypedData
         nfc.start(imageData: imageData, result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
+        result(FlutterError(code: "30008", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
       }
     case "iOSstartNFCWithNviModel":
       if #available(iOS 13.0, *) {
@@ -119,14 +119,14 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
         let nviModel = NviModel(documentNo: nviData["documentNo"]!, dateOfBirth: nviData["dateOfBirth"]!, dateOfExpire: nviData["dateOfExpire"]!)
         nfc.start(nviData: nviModel, result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
+        result(FlutterError(code: "30008", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
       }
     case "iOSstartNFCWithMRZCapture":
       if #available(iOS 13.0, *) {
         let nfc = NFC()
         nfc.start(result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
+        result(FlutterError(code: "30008", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
       }
     case "iOSsetNFCType":
       if #available(iOS 13.0, *) {
@@ -134,14 +134,14 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
         let type = arguments?["type"] as! String
         nfc.setType(type: type, result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
+        result(FlutterError(code: "30008", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
       }
     case "iOSuploadNFC":
       if #available(iOS 13.0, *) {
         let nfc = NFC()
         nfc.upload(result: result)
       } else {
-        result(FlutterError(code: "NotAvailable", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
+        result(FlutterError(code: "30008", message: "NFC Scan is only avaible after iOS 13.0", details: nil))
       }
     case "initBioLogin":
         let bioLogin = BioLogin.shared
@@ -189,7 +189,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       if customerRes != nil {
         result(true)
       } else if let err = err {
-        result(FlutterError(code: "LoginError", message: "Couldn't login to Amani server", details: err.error_message))
+        result(FlutterError(code: String(err.error_code), message: "Couldn't login to Amani server", details: err.error_message))
       }
     }
   }
@@ -207,7 +207,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       if customerRes != nil {
         result(true)
       } else if let err = err {
-        result(FlutterError(code: "LoginError", message: "Couldn't login to Amani server", details: err.error_message))
+        result(FlutterError(code: String(err.error_code), message: "Couldn't login to Amani server", details: err.error_message))
       }
     }
   }

@@ -28,7 +28,7 @@ class Selfie {
       sdkView.start(on: vc!)
       sdkView.setupBackButton(on: moduleView!)
     } catch let err {
-      result(FlutterError(code: "ModuleError", message: err.localizedDescription, details: nil))
+      result(FlutterError(code: "30007", message: err.localizedDescription, details: nil))
     }
   }
   
@@ -40,7 +40,7 @@ class Selfie {
   public func upload(result: @escaping FlutterResult) {
     module.upload { (isSuccess, error) in
       if let error = error {
-        result(FlutterError(code: "UploadError", message: error.first?.error_message, details: nil))
+        result(FlutterError(code: String(error.first!.error_code), message: error.first?.error_message, details: nil))
       } else {
         result(isSuccess)
       }

@@ -17,7 +17,7 @@ class NFC {
   func start(imageData: FlutterStandardTypedData, result: @escaping FlutterResult) {
     module.start(imageBase64: imageData.data.base64EncodedString()) { (_, err) in
       if let err = err {
-        result(FlutterError(code: "NFCError", message: err.error_message, details: nil))
+        result(FlutterError(code: String(err.error_code), message: err.error_message, details: nil))
       } else {
         result(true)
       }
@@ -29,14 +29,14 @@ class NFC {
     do {
       try module.start(nviData: nviData) { _, err in
         if let err = err {
-          result(FlutterError(code: "NFCError", message: err.error_message, details: nil))
+          result(FlutterError(code: String(err.error_code), message: err.error_message, details: nil))
         } else {
           result(true)
         }
       }
 
     } catch let err {
-      result(FlutterError(code: "ModuleError", message: err.localizedDescription, details: nil))
+      result(FlutterError(code: "30007", message: err.localizedDescription, details: nil))
     }
   }
 
@@ -45,7 +45,7 @@ class NFC {
 
     moduleView = module.start { _, err in
       if let err = err {
-        result(FlutterError(code: "NFCError", message: err.error_message, details: nil))
+        result(FlutterError(code: String(err.error_code), message: err.error_message, details: nil))
       } else {
         result(true)
       }
@@ -66,7 +66,7 @@ class NFC {
   func upload(result: @escaping FlutterResult) {
     module.upload { (isSuccess, err) in
       if let err = err {
-        result(FlutterError(code: "UploadError", message: err.first?.error_message, details: nil))
+        result(FlutterError(code: String(err.first!.error_code), message: err.first?.error_message, details: nil))
       } else {
         result(isSuccess)
       }
