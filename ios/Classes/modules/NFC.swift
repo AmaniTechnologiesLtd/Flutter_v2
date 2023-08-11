@@ -64,11 +64,18 @@ class NFC {
   }
   
   func upload(result: @escaping FlutterResult) {
-    module.upload { (isSuccess, err) in
-      if let err = err {
-        result(FlutterError(code: String(err.first!.error_code), message: err.first?.error_message, details: nil))
+    module.upload { (isSuccess, error) in
+      if let success = isSuccess, success {
+        result(success)
       } else {
-        result(isSuccess)
+        if let error = error {
+          let errorsDict = error.map {
+            $0.toDictionary()
+          }
+          result(FlutterError(code: "30010", message: "Upload result errors", details: errorsDict))
+        } else {
+          result(FlutterError(code: "30011", message: "Upload result returning with nil value", details: nil))
+        }
       }
     }
   }
