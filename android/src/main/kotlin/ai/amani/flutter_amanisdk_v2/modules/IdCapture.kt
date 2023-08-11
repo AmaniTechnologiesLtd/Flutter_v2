@@ -23,6 +23,7 @@ import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodChannel.Result
 import okhttp3.internal.threadFactory
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 
 
 class IdCapture : Module {
@@ -117,16 +118,25 @@ class IdCapture : Module {
     }
 
     override fun upload(activity: Activity, result : Result) {
+        if (docType.isNullOrEmpty()) {
+            result.error("30003", "Type not set.", "You have to call setType on idCapture before calling this method.")
+        }
         try {
-            idCaptureModule.upload(activity as FragmentActivity, docType!!) { isSuccess, uploadRes, errors ->
+            idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, uploadRes, errors ->
                 if (isSuccess && uploadRes == "OK") {
                     result.success(true)
                 } else if (!errors.isNullOrEmpty()) {
-                    result.error(errors[0].errorCode.toString(), "Upload Error", errors[0].errorMessage)
+                    val errorDict = errors.associate {
+                        "error_code" to it.errorCode
+                        "error_message" to it.errorMessage
+                    }
+                    result.error("30010", "Upload Error", errorDict)
                 } else {
-                    result.success(false)
+                    result.error("30011", "Upload result returning null values", null)
                 }
-            }} catch (e: Exception) {}
+            }} catch (e: Exception) {
+            result.error("30012", "Upload exception", e.message)
+        }
     }
 
     override fun setType(type: String?, result: Result) {
