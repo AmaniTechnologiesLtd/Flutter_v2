@@ -2,6 +2,7 @@ package ai.amani.flutter_amanisdk_v2.modules
 
 import ai.amani.flutter_amanisdk_v2.R
 import ai.amani.sdk.Amani
+import ai.amani.sdk.model.amani_events.error.AmaniError
 import ai.amani.sdk.model.mrz.MRZResult
 import android.app.Activity
 import android.graphics.Bitmap
@@ -94,7 +95,7 @@ class IdCapture : Module {
         idCaptureModule.setManualCropTimeOut(timeout);
     }
 
-    fun getMRZ(onComplete: (MRZResult) -> Unit,  onError: (Errors) -> Unit  ) {
+    fun getMRZ(onComplete: (MRZResult) -> Unit,  onError: (AmaniError) -> Unit  ) {
         Amani.sharedInstance().IDCapture().getMRZ(type = docType!!, onComplete = onComplete, onError = onError)
     }
 
@@ -122,18 +123,8 @@ class IdCapture : Module {
             result.error("30003", "Type not set.", "You have to call setType on idCapture before calling this method.")
         }
         try {
-            idCaptureModule.upload((activity as FragmentActivity), docType!!) { isSuccess, uploadRes, errors ->
-                if (isSuccess && uploadRes == "OK") {
-                    result.success(true)
-                } else if (!errors.isNullOrEmpty()) {
-                    val errorDict = errors.associate {
-                        "error_code" to it.errorCode
-                        "error_message" to it.errorMessage
-                    }
-                    result.error("30010", "Upload Error", errorDict)
-                } else {
-                    result.error("30011", "Upload result returning null values", null)
-                }
+            idCaptureModule.upload((activity as FragmentActivity), docType!!) {
+                result.success(it)
             }} catch (e: Exception) {
             result.error("30012", "Upload exception", e.message)
         }

@@ -94,6 +94,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       required String customerIdCardNumber,
       required bool useLocation,
       required String lang,
+      required String apiVersion,
       String? sharedSecret}) async {
     try {
       final bool loginResult = await methodChannel.invokeMethod('initAmani', {
@@ -102,7 +103,8 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         "customerIdCardNumber": customerIdCardNumber,
         "useLocation": useLocation,
         "lang": lang,
-        "sharedSecret": sharedSecret
+        "sharedSecret": sharedSecret,
+        "apiVersion": apiVersion,
       });
       return loginResult;
     } catch (err) {
@@ -483,6 +485,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       required String password,
       required String customerIdCardNumber,
       required bool useLocation,
+      required String apiVersion,
       required String lang,
       String? sharedSecret}) async {
     try {
@@ -494,7 +497,8 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         "customerIdCardNumber": customerIdCardNumber,
         "useLocation": useLocation,
         "lang": lang,
-        "sharedSecret": sharedSecret
+        "sharedSecret": sharedSecret,
+        "apiVersion": apiVersion
       });
       return loginResult;
     } catch (err) {

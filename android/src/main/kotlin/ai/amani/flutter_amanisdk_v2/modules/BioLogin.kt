@@ -247,17 +247,11 @@ class BioLogin {
             completion.error("30003", "You must call initBioLogin before you do this operation", null)
         }
         Amani.sharedInstance().BioLogin().upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
-            override fun cb(result: Boolean?, errors: Errors?) {
-                when {
-                    result != null -> {
-                        completion.success(result)
-                    }
-                    errors != null -> {
-                        completion.error(errors.errorCode.toString(), "BioLogin Error", errors.errorMessage)
-                    }
-                    else -> {
-                        completion.error("30002", "Nothing returned from bio login", null)
-                    }
+            override fun cb(result: Boolean?) {
+                result?.let {
+                    completion.success(it);
+                } ?: run{
+                    completion.error("30012", "Upload exception", null)
                 }
             }
         })

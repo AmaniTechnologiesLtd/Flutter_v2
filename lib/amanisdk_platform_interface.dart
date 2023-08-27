@@ -46,6 +46,9 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     /// Language parameters
     required String lang,
 
+    /// ApiVersion
+    required String apiVersion,
+
     /// Optional shared secret
     String? sharedSecret,
   }) {
@@ -249,6 +252,7 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     required String customerIdCardNumber,
     required bool useLocation,
     required String lang,
+    required String apiVersion,
     String? sharedSecret,
   }) {
     throw UnimplementedError('initAmaniWithEmail() has not been implemented.');

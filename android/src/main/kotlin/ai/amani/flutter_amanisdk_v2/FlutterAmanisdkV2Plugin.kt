@@ -1,13 +1,18 @@
 package ai.amani.flutter_amanisdk_v2
 
+import ai.amani.base.utility.AmaniVersion
 import ai.amani.flutter_amanisdk_v2.modules.*
 import ai.amani.flutter_amanisdk_v2.modules.config_models.AutoSelfieSettings
 import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
+import ai.amani.sdk.interfaces.AmaniEventCallBack
+import ai.amani.sdk.model.amani_events.error.AmaniError
+import ai.amani.sdk.model.amani_events.profile_status.ProfileStatus
+import ai.amani.sdk.model.amani_events.steps_result.StepsResult
 import ai.amani.sdk.model.customer.CustomerDetailResult
 import ai.amani.sdk.modules.customer.detail.CustomerDetailObserver
 import android.app.Activity
-import androidx.annotation.NonNull
+import com.google.gson.Gson
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -17,7 +22,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import java.lang.reflect.Method
 
 
 /** FlutterAmanisdkV2Plugin */
@@ -29,10 +33,11 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var channel: MethodChannel
   private lateinit var nfcChannel: MethodChannel
   private lateinit var bioLoginChannel: MethodChannel
+  private lateinit var delegateChannel: MethodChannel
   // Give this reference to other modules e.g IdCapture when init.
   private var activity: Activity? = null
 
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_method_channel")
     channel.setMethodCallHandler(this)
 
@@ -40,9 +45,10 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     // dart side
     nfcChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_nfc_channel")
     bioLoginChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_biologin_channel")
+    delegateChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_delegate_channel")
   }
 
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+  override fun onMethodCall(call: MethodCall, result: Result) {
 
     when (call.method) {
       "initAmani" -> {
@@ -52,8 +58,33 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val lang = call.argument<String>("lang")!!
         val useLocation = call.argument<Boolean>("useLocation")!!
         val sharedSecret = call.argument<String>("sharedSecret")
+        val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
-        initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, result)
+        initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, version, result)
+
+        Amani.sharedInstance().AmaniEvent().setListener(object: AmaniEventCallBack {
+          override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
+            if (error != null) {
+              val returnMap = mapOf(
+                "type" to type,
+                "errors" to Gson().toJson(error),
+              )
+              delegateChannel.invokeMethod("onError", returnMap)
+            }
+          }
+
+          override fun profileStatus(profileStatus: ProfileStatus) {
+            delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
+          }
+
+          override fun stepsResult(stepsResult: StepsResult?) {
+            if (stepsResult != null) {
+              delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
+            }
+          }
+
+        })
+
       }
       "initAmaniWithEmail" -> {
         val server = call.argument<String>("server")!!
@@ -63,8 +94,32 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val lang = call.argument<String>("lang")!!
         val useLocation = call.argument<Boolean>("useLocation")!!
         val sharedSecret = call.argument<String>("sharedSecret")
+        val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
-        initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, result)
+        initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, version, result)
+
+        Amani.sharedInstance().AmaniEvent().setListener(object: AmaniEventCallBack {
+          override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
+            if (error != null) {
+              val returnMap = mapOf(
+                "type" to type,
+                "errors" to Gson().toJson(error),
+              )
+              delegateChannel.invokeMethod("onError", returnMap)
+            }
+          }
+
+          override fun profileStatus(profileStatus: ProfileStatus) {
+            delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
+          }
+
+          override fun stepsResult(stepsResult: StepsResult?) {
+            if (stepsResult != null) {
+              delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
+            }
+          }
+
+        })
       }
       // IdCapture
       "setIDCaptureType" -> {
@@ -217,7 +272,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
     activity = null
   }
@@ -244,15 +299,13 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                 lang: String,
                 useLocation: Boolean,
                 sharedSecret: String?,
+                version: String,
                 result: Result) {
     if (activity != null) {
+      Amani.VERSION = if(version == "v2") AmaniVersion.V2 else AmaniVersion.V1
       Amani.init(activity, server, sharedSecret)
-      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, customerToken, useLocation, lang) { loggedIn, errorCode ->
-        if (loggedIn) {
+      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, customerToken, useLocation, lang) { loggedIn ->
           result.success(loggedIn)
-        } else {
-          result.error(errorCode.toString(), "Api Error has occur while logging in", "check error code for details")
-        }
       }
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
@@ -266,22 +319,20 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                         lang: String,
                         useLocation: Boolean,
                         sharedSecret: String?,
+                        version: String,
                         result: Result) {
+    Amani.VERSION = if(version == "v2") AmaniVersion.V2 else AmaniVersion.V1
     if (activity != null) {
       Amani.init(activity, server, sharedSecret)
-      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, email, password, useLocation, lang) { loggedIn, errorCode ->
-        if (loggedIn) {
+      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, email, password, useLocation, lang) { loggedIn ->
           result.success(loggedIn)
-        } else {
-          result.error(errorCode.toString(), "Api Error has occur while logging in", "check error code for details")
-        }
       }
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
     }
   }
 
-  private fun getCustomerInfo(result: MethodChannel.Result) {
+  private fun getCustomerInfo(result: Result) {
     Amani.sharedInstance().CustomerDetail().getCustomerDetail(object : CustomerDetailObserver {
       override fun result(customerDetail: CustomerDetailResult?, throwable: Throwable?) {
         if (throwable != null) {
@@ -289,7 +340,7 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         } else if (customerDetail != null) {
 
           val rules = customerDetail.rules?.map {
-              mapOf<String, Any>(
+              mapOf(
                       "id" to (it.id as Any),
                       "title" to (it.title as Any),
                       "documentClasses" to (it.documentClasses as Any),
@@ -298,14 +349,14 @@ class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           }
 
           val missingRules = customerDetail.missingRules?.map {
-            mapOf<String, Any>(
+            mapOf(
                     "id" to (it?.id as Any),
                     "title" to (it.title as Any),
                     "documentClasses" to (it.documentClasses as Any),
             )
           }
 
-          val customerInfoDict = mapOf<String, Any?>(
+          val customerInfoDict = mapOf(
                   "id" to customerDetail.id,
                   "name" to customerDetail.name,
                   "email" to customerDetail.email,

@@ -80,18 +80,8 @@ class Selfie: Module {
 
     override fun upload(activity: Activity, result: MethodChannel.Result) {
         try {
-            selfieModule.upload((activity as FragmentActivity), docType) { isSuccess, uploadRes, errors ->
-                if (isSuccess && uploadRes == "OK") {
-                    result.success(true)
-                } else if (!errors.isNullOrEmpty()) {
-                    val errorDict = errors.associate {
-                        "error_code" to it.errorCode
-                        "error_message" to it.errorMessage
-                    }
-                    result.error("30010", "Upload Error", errorDict)
-                } else {
-                    result.error("30011", "Upload result returning null values", null)
-                }
+            selfieModule.upload((activity as FragmentActivity), docType) {
+                result.success(it)
             }} catch (e: Exception) {
             result.error("30012", "Upload exception", e.message)
         }

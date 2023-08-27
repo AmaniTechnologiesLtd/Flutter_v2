@@ -28,6 +28,7 @@ class NFC {
     private val VERSION_CODES_S = 31
 
     companion object {
+        // TODO: Refactor this
         val instance = NFC()
     }
 
@@ -76,7 +77,7 @@ class NFC {
                 activity.runOnUiThread {
                     channel.invokeMethod("onScanStart", mapOf("started" to true))
                 }
-                NFCModule.start(it, activity.applicationContext, birthDate, expireDate, documentNo) { _: Bitmap?, isSuccess: Boolean, exception: String? ->
+                NFCModule.start(it, activity.applicationContext, birthDate!!, expireDate!!, documentNo!!) { _: Bitmap?, isSuccess: Boolean, exception: String? ->
                     if(isSuccess && exception == null) {
                         channel.invokeMethod("onNFCCompleted", mapOf("isSuccess" to isSuccess))
                     } else {
@@ -104,18 +105,8 @@ class NFC {
         try {
 
             Amani.sharedInstance().ScanNFC()
-                .upload(activityRef as FragmentActivity, docType) { isSuccess, uploadRes, errors ->
-                    if (isSuccess && uploadRes == "OK") {
-                        result.success(true)
-                    } else if (!errors.isNullOrEmpty()) {
-                        val errorDict = errors.associate {
-                            "error_code" to it.errorCode
-                            "error_message" to it.errorMessage
-                        }
-                        result.error("30010", "Upload Error", errorDict)
-                    } else {
-                        result.error("30011", "Upload result returning null values", null)
-                    }
+                .upload(activityRef as FragmentActivity, docType) {
+                    result.success(it)
                 }
         } catch (e: Exception) {
             result.error("30012", "Upload exception", e.message)

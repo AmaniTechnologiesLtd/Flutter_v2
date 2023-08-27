@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_amanisdk_v2/common/models/api_version.dart';
 import 'package:flutter_amanisdk_v2/common/models/customer_detail.dart';
 import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
 import 'package:flutter_amanisdk_v2/modules/auto_selfie.dart';
@@ -13,6 +16,7 @@ import 'package:flutter_amanisdk_v2/modules/selfie.dart';
 
 class AmaniSDK {
   final MethodChannelAmaniSDK _methodChannel = MethodChannelAmaniSDK();
+  final delegateChannel = const MethodChannel("amanisdk_delegate_channel");
 
   /// returns [IdCapture] module
   IdCapture getIDCapture() {
@@ -67,6 +71,10 @@ class AmaniSDK {
     /// Language parameters
     required String lang,
 
+    /// API Version defaults to v2. Do not set this unless
+    /// it's specified by Amani to you.
+    AmaniApiVersion? apiVersion,
+
     /// Optional shared secret
     String? sharedSecret,
   }) async {
@@ -74,19 +82,53 @@ class AmaniSDK {
       throw Exception("server parameter cannot be empty string");
     }
 
+    String apiV = apiVersion == AmaniApiVersion.v1 ? "v1" : "v2";
+
     Uri serverURI = Uri.parse(server).normalizePath();
     try {
       var login = await _methodChannel.initAmani(
-          server: serverURI.origin,
-          customerToken: customerToken,
-          customerIdCardNumber: customerIdCardNumber,
-          lang: lang,
-          useLocation: useLocation,
-          sharedSecret: sharedSecret);
+        server: serverURI.origin,
+        customerToken: customerToken,
+        customerIdCardNumber: customerIdCardNumber,
+        lang: lang,
+        useLocation: useLocation,
+        sharedSecret: sharedSecret,
+        apiVersion: apiV,
+      );
       return login;
     } catch (err) {
       rethrow;
     }
+  }
+
+  void setDelegateMethods(
+
+      /// On error function. Called when native SDK has an error raised
+      // TODO: Models?
+      Function(String, List<Map<String, dynamic>>) onError,
+
+      /// Called when profile status has changes
+      Function(Map<String, dynamic>) onProfileStatus,
+
+      /// Called when steps to complete kyc process has changes
+      Function(List<dynamic>) onStepsResult) {
+    delegateChannel.setMethodCallHandler((call) async {
+      print("call.method = $call.method");
+      if (call.method == "onError") {
+        String errorCode = call.arguments['type'];
+        List<Map<String, dynamic>> errorDetails =
+            json.decode(call.arguments["errors"]);
+        onError.call(errorCode, errorDetails);
+        print("onError call");
+      } else if (call.method == "profileStatus") {
+        Map<String, dynamic> profileStatus = json.decode(call.arguments);
+        onProfileStatus.call(profileStatus);
+      } else if (call.method == "stepResult") {
+        Map<String, dynamic> stepsResult = json.decode(call.arguments);
+        print("stepResult call");
+        onStepsResult.call(stepsResult["result"]);
+      }
+    });
   }
 
   Future<CustomerInfoModel> getCustomerInfo() async {
@@ -123,6 +165,9 @@ class AmaniSDK {
     /// Language parameters
     required String lang,
 
+    /// ApiVersion
+    AmaniApiVersion? apiVersion,
+
     /// Optional shared secret
     String? sharedSecret,
   }) async {
@@ -135,6 +180,8 @@ class AmaniSDK {
           "You can't run this method on production version of your app");
     }
 
+    String apiV = apiVersion == AmaniApiVersion.v1 ? "v1" : "v2";
+
     Uri serverURI = Uri.parse(server).normalizePath();
     try {
       var login = await _methodChannel.initAmaniWithEmail(
@@ -144,7 +191,8 @@ class AmaniSDK {
           customerIdCardNumber: customerIdCardNumber,
           lang: lang,
           useLocation: useLocation,
-          sharedSecret: sharedSecret);
+          sharedSecret: sharedSecret,
+          apiVersion: apiV);
       return login;
     } catch (err) {
       rethrow;
