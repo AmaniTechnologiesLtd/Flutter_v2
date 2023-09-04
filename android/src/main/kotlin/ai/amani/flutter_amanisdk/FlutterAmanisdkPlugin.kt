@@ -1,9 +1,9 @@
-package ai.amani.flutter_amanisdk_v2
+package ai.amani.flutter_amanisdk
 
 import ai.amani.base.utility.AmaniVersion
-import ai.amani.flutter_amanisdk_v2.modules.*
-import ai.amani.flutter_amanisdk_v2.modules.config_models.AutoSelfieSettings
-import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
+import ai.amani.flutter_amanisdk.modules.*
+import ai.amani.flutter_amanisdk.modules.config_models.AutoSelfieSettings
+import ai.amani.flutter_amanisdk.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
 import ai.amani.sdk.interfaces.AmaniEventCallBack
 import ai.amani.sdk.model.amani_events.error.AmaniError
@@ -24,8 +24,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
 
-/** FlutterAmanisdkV2Plugin */
-class FlutterAmanisdkV2Plugin: FlutterPlugin, MethodCallHandler, ActivityAware {
+/** FlutterAmanisdkPlugin */
+class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it

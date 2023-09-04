@@ -1,11 +1,11 @@
 import 'package:flutter/services.dart';
 import 'dart:typed_data';
 
-import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/pose_estimation_settings.dart';
-import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
+import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
 
 class BioLogin {
   final MethodChannelAmaniSDK _methodChannel;

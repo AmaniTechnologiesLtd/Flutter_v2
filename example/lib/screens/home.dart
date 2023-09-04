@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/common/models/api_version.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,11 +12,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
     AmaniSDK()
-        .initAmani(
-            server: "https://server.example",
-            customerToken: "CUSTOMER TOKEN",
-            customerIdCardNumber: "ID NUMBER",
+        .initAmaniWithEmail(
+            server: "https://dev.amani.ai",
+            email: "deniz@amani.ai",
+            password: "uecJQ*B47+\$QVW.",
+            customerIdCardNumber: "38203450858",
             useLocation: true, // Use location when uploading customer data
+            apiVersion: AmaniApiVersion.v2,
             lang: "tr")
         .then((_) {
       AmaniSDK().getCustomerInfo().then((value) {
@@ -25,6 +28,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }).catchError((err) {
       throw Exception(err);
     });
+
+    AmaniSDK().setDelegateMethods(
+        amaniOnError, amaniOnProfileStatus, amaniOnStepResult);
+  }
+
+  void amaniOnError(String errorType, List<dynamic> errors) {
+    print(errorType);
+    print(errors);
+  }
+
+  void amaniOnProfileStatus(Map<String, dynamic> profileStatus) {
+    print(profileStatus);
+  }
+
+  void amaniOnStepResult(List<dynamic> stepResult) {
+    print(stepResult);
   }
 
   @override

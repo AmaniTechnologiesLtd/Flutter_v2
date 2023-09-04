@@ -1,10 +1,9 @@
-package ai.amani.flutter_amanisdk_v2.modules
+package ai.amani.flutter_amanisdk.modules
 
-import ai.amani.flutter_amanisdk_v2.R
+import ai.amani.flutter_amanisdk.R
 import ai.amani.sdk.Amani
 import android.app.Activity
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button

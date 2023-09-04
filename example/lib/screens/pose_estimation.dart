@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/pose_estimation_settings.dart';
-import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk_example/screens/confim.dart';
 
 class PoseEstimationScreen extends StatefulWidget {
   const PoseEstimationScreen({Key? key}) : super(key: key);

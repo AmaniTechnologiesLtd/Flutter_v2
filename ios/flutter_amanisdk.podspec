@@ -3,9 +3,9 @@
 # Run `pod lib lint flutter_amanisdk_v2.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_amanisdk_v2'
+  s.name             = 'flutter_amanisdk'
   s.version          = '1.2.6'
-  s.summary          = 'Amani SDK Flutter bindings for ios and android SDK v2'
+  s.summary          = 'Amani SDK Flutter bindings for ios and android'
   s.description      = <<-DESC
   Amani v2 SDK Flutter bindings for ios and android
                        DESC
@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   s.source_files = 'Classes/**/*'
   s.resources = 'Assets/**/*'
   s.dependency 'Flutter'
-  s.dependency 'AmaniSDK', "~> 2.3.6"
-  s.platform = :ios, '11.0'
+  s.dependency 'AmaniSDK', "~> 3"
+  s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

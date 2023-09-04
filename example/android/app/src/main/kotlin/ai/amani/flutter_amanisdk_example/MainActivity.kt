@@ -1,4 +1,4 @@
-package ai.amani.flutter_amanisdk_v2_example
+package ai.amani.flutter_amanisdk_example
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

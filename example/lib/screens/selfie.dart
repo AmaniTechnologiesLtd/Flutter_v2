@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk_example/screens/confim.dart';
 
 class SelfieScreen extends StatefulWidget {
   const SelfieScreen({Key? key}) : super(key: key);

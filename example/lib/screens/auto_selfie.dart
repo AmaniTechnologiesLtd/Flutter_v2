@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk_example/screens/confim.dart';
 
 class AutoSelfieScreen extends StatefulWidget {
   const AutoSelfieScreen({Key? key}) : super(key: key);

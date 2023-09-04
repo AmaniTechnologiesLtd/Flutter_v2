@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/modules/nfc_capture_android.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/modules/nfc_capture_android.dart';
 
 class AndroidNFC extends StatefulWidget {
   const AndroidNFC({Key? key}) : super(key: key);

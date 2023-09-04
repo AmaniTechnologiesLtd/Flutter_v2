@@ -1,13 +1,12 @@
-package ai.amani.flutter_amanisdk_v2.modules
+package ai.amani.flutter_amanisdk.modules
 
-import ai.amani.flutter_amanisdk_v2.R
-import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
+import ai.amani.flutter_amanisdk.R
+import ai.amani.flutter_amanisdk.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.OnFailurePoseEstimation
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObserver
 import android.app.Activity
 import android.graphics.Bitmap
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button

@@ -1,8 +1,8 @@
-package ai.amani.flutter_amanisdk_v2.modules
+package ai.amani.flutter_amanisdk.modules
 
-import ai.amani.flutter_amanisdk_v2.R
-import ai.amani.flutter_amanisdk_v2.modules.config_models.AutoSelfieSettings
-import ai.amani.flutter_amanisdk_v2.modules.config_models.PoseEstimationSettings
+import ai.amani.flutter_amanisdk.R
+import ai.amani.flutter_amanisdk.modules.config_models.AutoSelfieSettings
+import ai.amani.flutter_amanisdk.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
 import ai.amani.sdk.interfaces.AutoSelfieCaptureObserver
 import ai.amani.sdk.interfaces.BioLoginUploadCallBack
@@ -11,17 +11,14 @@ import ai.amani.sdk.modules.selfie.pose_estimation.observable.OnFailurePoseEstim
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObserver
 import android.app.Activity
 import android.graphics.Bitmap
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import datamanager.model.customer.Errors
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 class BioLogin {
     private var docType: String = "XXX_SE_0"

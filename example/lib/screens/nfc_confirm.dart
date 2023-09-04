@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
 
 class NFCConfrimScreen extends StatefulWidget {
   const NFCConfrimScreen({super.key});

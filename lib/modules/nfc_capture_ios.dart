@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:flutter_amanisdk_v2/common/models/nvi_data.dart';
-import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
+import 'package:flutter_amanisdk/common/models/nvi_data.dart';
+import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
 
 class IOSNFCCapture {
   final MethodChannelAmaniSDK _methodChannel;

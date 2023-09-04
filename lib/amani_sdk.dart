@@ -3,16 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_amanisdk_v2/common/models/api_version.dart';
-import 'package:flutter_amanisdk_v2/common/models/customer_detail.dart';
-import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
-import 'package:flutter_amanisdk_v2/modules/auto_selfie.dart';
-import 'package:flutter_amanisdk_v2/modules/bio_login.dart';
-import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
-import 'package:flutter_amanisdk_v2/modules/nfc_capture_android.dart';
-import 'package:flutter_amanisdk_v2/modules/nfc_capture_ios.dart';
-import 'package:flutter_amanisdk_v2/modules/pose_estimation.dart';
-import 'package:flutter_amanisdk_v2/modules/selfie.dart';
+import 'package:flutter_amanisdk/common/models/api_version.dart';
+import 'package:flutter_amanisdk/common/models/customer_detail.dart';
+import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
+import 'package:flutter_amanisdk/modules/auto_selfie.dart';
+import 'package:flutter_amanisdk/modules/bio_login.dart';
+import 'package:flutter_amanisdk/modules/id_capture.dart';
+import 'package:flutter_amanisdk/modules/nfc_capture_android.dart';
+import 'package:flutter_amanisdk/modules/nfc_capture_ios.dart';
+import 'package:flutter_amanisdk/modules/pose_estimation.dart';
+import 'package:flutter_amanisdk/modules/selfie.dart';
 
 class AmaniSDK {
   final MethodChannelAmaniSDK _methodChannel = MethodChannelAmaniSDK();

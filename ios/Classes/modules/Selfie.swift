@@ -38,19 +38,8 @@ class Selfie {
   }
   
   public func upload(result: @escaping FlutterResult) {
-    module.upload { (isSuccess, error) in
-      if let success = isSuccess, success {
-        result(success)
-      } else {
-        if let error = error {
-          let errorsDict = error.map {
-            $0.toDictionary()
-          }
-          result(FlutterError(code: "30010", message: "Upload result errors", details: errorsDict))
-        } else {
-          result(FlutterError(code: "30011", message: "Upload result returning with nil value", details: nil))
-        }
-      }
+    module.upload { isSuccess in
+      result(isSuccess)
     }
   }
   

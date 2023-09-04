@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
 
 class BioLogin extends StatefulWidget {
   const BioLogin({Key? key}) : super(key: key);

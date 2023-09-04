@@ -1,4 +1,4 @@
-package ai.amani.flutter_amanisdk_v2.modules
+package ai.amani.flutter_amanisdk.modules
 
 import android.app.Activity
 import io.flutter.plugin.common.MethodChannel.Result

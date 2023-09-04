@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ai.amani.flutter_amanisdk_v2_example">
+    package="ai.amani.flutter_amanisdk_example">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,11 +13,11 @@
     <application
         android:label="flutter_amanisdk_v2_example"
         android:name="${applicationName}"
-        tools:replace="android:label"
+        tools:replace="android:label, android:name"
         android:icon="@mipmap/ic_launcher">
 
         <activity
-            android:name=".MainActivity"
+            android:name="ai.amani.flutter_amanisdk_example.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

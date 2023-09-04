@@ -4,10 +4,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/android/pose_estimation_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/auto_selfie_settings.dart';
-import 'package:flutter_amanisdk_v2/common/models/ios/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
+import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
 
 import 'amanisdk_platform_interface.dart';
 import 'common/models/nvi_data.dart';

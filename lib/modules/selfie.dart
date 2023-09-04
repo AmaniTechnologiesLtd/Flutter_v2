@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter_amanisdk_v2/flutter_amanisdk_v2_method_channel.dart';
+import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
 
 class Selfie {
   final MethodChannelAmaniSDK _methodChannel;

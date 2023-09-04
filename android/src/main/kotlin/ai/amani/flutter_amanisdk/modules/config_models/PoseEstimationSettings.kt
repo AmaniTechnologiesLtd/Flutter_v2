@@ -1,5 +1,5 @@
-package ai.amani.flutter_amanisdk_v2.modules.config_models
-import  ai.amani.flutter_amanisdk_v2.modules.JSONConvertable
+package ai.amani.flutter_amanisdk.modules.config_models
+import  ai.amani.flutter_amanisdk.modules.JSONConvertable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

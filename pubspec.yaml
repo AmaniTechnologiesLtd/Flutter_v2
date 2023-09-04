@@ -1,5 +1,5 @@
-name: flutter_amanisdk_v2
-description: Flutter bindings for v2 SDK's of Amani
+name: flutter_amanisdk
+description: Flutter bindings for v2 SDK of Amani
 version: 1.2.6
 homepage:
 
@@ -35,10 +35,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: ai.amani.flutter_amanisdk_v2
-        pluginClass: FlutterAmanisdkV2Plugin
+        package: ai.amani.flutter_amanisdk
+        pluginClass: FlutterAmanisdkPlugin
       ios:
-        pluginClass: FlutterAmanisdkV2Plugin
+        pluginClass: FlutterAmanisdkPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

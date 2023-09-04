@@ -24,13 +24,15 @@ class AutoSelfie {
       .faceIsOk: settings.faceIsOk,
     ])
     
-    module.setScreenConfig(screenConfig: [
+    let screenConfig: [autoSelfieConfigState: String] = [
       .appBackgroundColor: settings.appBackgroundColor,
       .appFontColor: settings.appFontColor,
       .ovalBorderColor: settings.ovalBorderColor,
       .ovalBorderSuccessColor: settings.ovalBorderSuccessColor,
       .countTimer: settings.countTimer,
-    ])
+    ]
+    
+    module.setScreenConfigs(screenConfig: screenConfig)
     
     do {
       let moduleView = try module.start { image in
@@ -56,19 +58,8 @@ class AutoSelfie {
   }
   
   public func upload(result: @escaping FlutterResult) {
-    module.upload { (isSuccess, error) in
-      if let success = isSuccess, success {
-        result(success)
-      } else {
-        if let error = error {
-          let errorsDict = error.map {
-            $0.toDictionary()
-          }
-          result(FlutterError(code: "30010", message: "Upload result errors", details: errorsDict))
-        } else {
-          result(FlutterError(code: "30011", message: "Upload result returning with nil value", details: nil))
-        }
-      }
+    module.upload { (isSuccess) in
+      result(isSuccess)
     }
   }
   

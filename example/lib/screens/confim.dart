@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
-import 'package:flutter_amanisdk_v2_example/screens/nfc_confirm.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/modules/id_capture.dart';
+import 'package:flutter_amanisdk_example/screens/nfc_confirm.dart';
 
 class ConfirmScreen extends StatelessWidget {
   ConfirmScreen({Key? key}) : super(key: key);

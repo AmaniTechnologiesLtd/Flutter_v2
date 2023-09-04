@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
-import 'package:flutter_amanisdk_v2_example/screens/confim.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/modules/id_capture.dart';
+import 'package:flutter_amanisdk_example/screens/confim.dart';
 
 class IdCaptureScreen extends StatefulWidget {
   const IdCaptureScreen({Key? key}) : super(key: key);

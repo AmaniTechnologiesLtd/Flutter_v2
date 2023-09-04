@@ -62,7 +62,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_amanisdk_v2:
+  flutter_amanisdk:
     dependency: "direct main"
     description:
       path: ".."

@@ -1,4 +1,4 @@
-package ai.amani.flutter_amanisdk_v2.modules
+package ai.amani.flutter_amanisdk.modules
 
 import ai.amani.sdk.Amani
 import android.annotation.SuppressLint

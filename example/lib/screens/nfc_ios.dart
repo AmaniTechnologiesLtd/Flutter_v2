@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_amanisdk_v2/amani_sdk.dart';
-import 'package:flutter_amanisdk_v2/common/models/nvi_data.dart';
-import 'package:flutter_amanisdk_v2/modules/id_capture.dart';
+import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/common/models/nvi_data.dart';
+import 'package:flutter_amanisdk/modules/id_capture.dart';
 
 class IOSNFC extends StatefulWidget {
   const IOSNFC({Key? key}) : super(key: key);

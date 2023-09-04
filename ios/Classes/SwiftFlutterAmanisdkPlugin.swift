@@ -1,12 +1,19 @@
 import AmaniSDK
 import Flutter
 
-public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
+public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
+  var methodChannel: FlutterMethodChannel!
+  var delegateChannel: FlutterMethodChannel!
     
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "amanisdk_method_channel", binaryMessenger: registrar.messenger())
-    let instance = SwiftFlutterAmanisdkV2Plugin()
-    registrar.addMethodCallDelegate(instance, channel: channel)
+    let methodChannel = FlutterMethodChannel(name: "amanisdk_method_channel", binaryMessenger: registrar.messenger())
+    let delegateChannel = FlutterMethodChannel(name: "amanisdk_delegate_channel", binaryMessenger: registrar.messenger())
+    
+    let instance = SwiftFlutterAmanisdkPlugin()
+    instance.methodChannel = methodChannel
+    instance.delegateChannel = delegateChannel
+    
+    registrar.addMethodCallDelegate(instance, channel: methodChannel)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -183,9 +190,12 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
                          useLocation: Bool,
                          lang: String,
                          sharedSecret: String?,
+                         version: String = "v2",
                          result: @escaping FlutterResult) {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
-    Amani.sharedInstance.initAmani(server: server, token: customerToken, customer: customer, useGeoLocation: useLocation, language: lang) { customerRes, err in
+    let apiVersion = version == "v2" ? ApiVersions.v2 : ApiVersions.v1
+    
+    Amani.sharedInstance.initAmani(server: server, token: customerToken, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { (customerRes, err) in
       if customerRes != nil {
         result(true)
       } else if let err = err {
@@ -201,9 +211,11 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
                         useLocation: Bool,
                         lang: String,
                         sharedSecret: String?,
+                        version: String = "v2",
                         result: @escaping FlutterResult) {
-    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: customerIdCardNumber)
-    Amani.sharedInstance.initAmani(server: server, userName: email, password: password, customer: customer, useGeoLocation: useLocation, language: lang) { customerRes, err in
+    let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
+                          let apiVersion: ApiVersions = version == "v2" ? .v2 : .v1
+    Amani.sharedInstance.initAmani(server: server, userName: email, password: password, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { customerRes, err in
       if customerRes != nil {
         result(true)
       } else if let err = err {
@@ -213,7 +225,7 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
   }
     private func getCustomerInfo(result: @escaping FlutterResult) {
      Amani.sharedInstance.customerInfo().getCustomer(forceUpdateCallback: {
-        info, error in
+        info in
         guard let customerInfo = info else {
           return
         }
@@ -250,4 +262,37 @@ public class SwiftFlutterAmanisdkV2Plugin: NSObject, FlutterPlugin {
       })
   }
     
+}
+
+extension SwiftFlutterAmanisdkPlugin: AmaniDelegate {
+  public func onProfileStatus(customerId: String, profile: AmaniSDK.wsProfileStatusModel) {
+    do {
+      let jsonData = try JSONEncoder().encode(profile)
+      delegateChannel.invokeMethod("profileStatus", arguments: String(data: jsonData, encoding: .utf8))
+    } catch {
+      delegateChannel.invokeMethod("onError", arguments: ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any])
+    }
+  }
+  
+  public func onStepModel(customerId: String, rules: [AmaniSDK.KYCRuleModel]?) {
+    do {
+      let jsonData = try JSONEncoder().encode(["rules": rules])
+      delegateChannel.invokeMethod("stepResult", arguments: String(data: jsonData, encoding: .utf8))
+    } catch {
+      delegateChannel.invokeMethod("onError", arguments: ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String : Any])
+    }
+  }
+  
+  public func onError(type: String, error: [AmaniSDK.AmaniError]) {
+    do {
+      let jsonData = try JSONEncoder().encode(error)
+      let jsonString = String(data: jsonData, encoding: .utf8)
+      delegateChannel.invokeMethod("onError", arguments: ["type": type, "errors": jsonString])
+    } catch {
+      delegateChannel.invokeMethod("onError", arguments: ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String : Any])
+    }
+    
+  }
+  
+  
 }

@@ -1,6 +1,6 @@
-package ai.amani.flutter_amanisdk_v2.modules
+package ai.amani.flutter_amanisdk.modules
 
-import ai.amani.flutter_amanisdk_v2.R
+import ai.amani.flutter_amanisdk.R
 import ai.amani.sdk.Amani
 import ai.amani.sdk.model.amani_events.error.AmaniError
 import ai.amani.sdk.model.mrz.MRZResult
@@ -10,19 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import androidx.activity.OnBackPressedCallback
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import datamanager.model.customer.Errors
 import io.flutter.Log
-import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodChannel.Result
-import okhttp3.internal.threadFactory
 import java.io.ByteArrayOutputStream
 import java.lang.Exception
 
