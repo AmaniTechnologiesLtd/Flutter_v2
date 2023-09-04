@@ -113,19 +113,16 @@ class AmaniSDK {
       /// Called when steps to complete kyc process has changes
       Function(List<dynamic>) onStepsResult) {
     delegateChannel.setMethodCallHandler((call) async {
-      print("call.method = $call.method");
       if (call.method == "onError") {
         String errorCode = call.arguments['type'];
         List<Map<String, dynamic>> errorDetails =
             json.decode(call.arguments["errors"]);
         onError.call(errorCode, errorDetails);
-        print("onError call");
       } else if (call.method == "profileStatus") {
         Map<String, dynamic> profileStatus = json.decode(call.arguments);
         onProfileStatus.call(profileStatus);
       } else if (call.method == "stepResult") {
         Map<String, dynamic> stepsResult = json.decode(call.arguments);
-        print("stepResult call");
         onStepsResult.call(stepsResult["result"]);
       }
     });
