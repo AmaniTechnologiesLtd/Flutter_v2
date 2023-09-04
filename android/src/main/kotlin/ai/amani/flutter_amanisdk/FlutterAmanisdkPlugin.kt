@@ -60,31 +60,34 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val sharedSecret = call.argument<String>("sharedSecret")
         val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
+        activity!!.runOnUiThread {
+          Amani.init(activity, server, sharedSecret)
+          
+          Amani.sharedInstance().AmaniEvent().setListener(object : AmaniEventCallBack {
+            override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
+              if (error != null) {
+                val returnMap = mapOf(
+                  "type" to type,
+                  "errors" to Gson().toJson(error),
+                )
+                delegateChannel.invokeMethod("onError", returnMap)
+              }
+            }
+
+            override fun profileStatus(profileStatus: ProfileStatus) {
+              delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
+            }
+
+            override fun stepsResult(stepsResult: StepsResult?) {
+              if (stepsResult != null) {
+                delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
+              }
+            }
+
+          })
+        }
+
         initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, version, result)
-
-        Amani.sharedInstance().AmaniEvent().setListener(object: AmaniEventCallBack {
-          override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
-            if (error != null) {
-              val returnMap = mapOf(
-                "type" to type,
-                "errors" to Gson().toJson(error),
-              )
-              delegateChannel.invokeMethod("onError", returnMap)
-            }
-          }
-
-          override fun profileStatus(profileStatus: ProfileStatus) {
-            delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
-          }
-
-          override fun stepsResult(stepsResult: StepsResult?) {
-            if (stepsResult != null) {
-              delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
-            }
-          }
-
-        })
-
       }
       "initAmaniWithEmail" -> {
         val server = call.argument<String>("server")!!
@@ -96,30 +99,32 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val sharedSecret = call.argument<String>("sharedSecret")
         val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
+        activity!!.runOnUiThread {
+          Amani.init(activity, server, sharedSecret)
+          Amani.sharedInstance().AmaniEvent().setListener(object : AmaniEventCallBack {
+            override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
+              if (error != null) {
+                val returnMap = mapOf(
+                  "type" to type,
+                  "errors" to Gson().toJson(error),
+                )
+                delegateChannel.invokeMethod("onError", returnMap)
+              }
+            }
+
+            override fun profileStatus(profileStatus: ProfileStatus) {
+              delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
+            }
+
+            override fun stepsResult(stepsResult: StepsResult?) {
+              if (stepsResult != null) {
+                delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
+              }
+            }
+
+          })
+        }
         initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, version, result)
-
-        Amani.sharedInstance().AmaniEvent().setListener(object: AmaniEventCallBack {
-          override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
-            if (error != null) {
-              val returnMap = mapOf(
-                "type" to type,
-                "errors" to Gson().toJson(error),
-              )
-              delegateChannel.invokeMethod("onError", returnMap)
-            }
-          }
-
-          override fun profileStatus(profileStatus: ProfileStatus) {
-            delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
-          }
-
-          override fun stepsResult(stepsResult: StepsResult?) {
-            if (stepsResult != null) {
-              delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
-            }
-          }
-
-        })
       }
       // IdCapture
       "setIDCaptureType" -> {
@@ -302,10 +307,17 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                 version: String,
                 result: Result) {
     if (activity != null) {
-      Amani.VERSION = if(version == "v2") AmaniVersion.V2 else AmaniVersion.V1
-      Amani.init(activity, server, sharedSecret)
-      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, customerToken, useLocation, lang) { loggedIn ->
+      activity!!.runOnUiThread {
+        Amani.VERSION = if (version == "v2") AmaniVersion.V2 else AmaniVersion.V1
+        Amani.sharedInstance().initAmani(
+          activity!!,
+          customerIdCardNumber,
+          customerToken,
+          useLocation,
+          lang
+        ) { loggedIn ->
           result.success(loggedIn)
+        }
       }
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
@@ -323,9 +335,10 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                         result: Result) {
     Amani.VERSION = if(version == "v2") AmaniVersion.V2 else AmaniVersion.V1
     if (activity != null) {
-      Amani.init(activity, server, sharedSecret)
-      Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, email, password, useLocation, lang) { loggedIn ->
+      activity!!.runOnUiThread {
+        Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, email, password, useLocation, lang) { loggedIn ->
           result.success(loggedIn)
+        }
       }
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
