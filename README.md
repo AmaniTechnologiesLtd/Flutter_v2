@@ -46,7 +46,7 @@ rootProject.allprojects {
 On the same file add our SDK to dependencies
 ```groovy
 dependencies {
-    implementation 'ai.amani.android:AmaniAi:2.2.21' // add this line
+    implementation 'ai.amani.android:AmaniAi:3.0.4' // add this line
 }
 ```
 
@@ -60,7 +60,7 @@ Add this block to `android` section on your `build.gradle`.
 #### Android Proguard Rules
 Add this into your proguard-rules.pro
 ```
--keep class ai.amani.flutter_amanisdk_v2
+-keep class ai.amani.flutter_amanisdk
 -keep class ai.** {*;}
 -dontwarn ai.**
 -keep class datamanager.** {*;}
@@ -112,7 +112,7 @@ You must add `tools:replace="android:label"` on your main android manifest file.
 	<application
         android:label="amanisdk_example"
         android:name="${applicationName}"
-        tools:replace="android:label" #this line must be added
+        tools:replace="android:label, android:name" #this line must be added
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -133,15 +133,14 @@ source "https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo"
 source "https://github.com/CocoaPods/Specs"
 ```
 
-If not yet set the default iOS version to 11
+If not yet set the default iOS version to 13
 ```ruby
- platform :ios, '11.0'
+ platform :ios, '13.0'
  ```
-
 
 ### iOS permissions
 
-You have to add these permissions into your `info.plist` file. All permissions are required for app submission.
+You have to add these permissions into your `info.plist` file. All permissions are required for app submission according to your usage.
 
 For NFC:
 
@@ -197,6 +196,7 @@ To add this flutter plugin you must add the lines below to your `pubspec.yaml` f
 flutter_amanisdk_v2:
   git:
     url: https://github.com/AmaniTechnologiesLtd/Flutter_v2
+    branch: feat/v3
 ```
 
 ## Usage
@@ -224,6 +224,36 @@ if(initSuccess) {
 } else {
     throw Exception("Failed to initialize AmaniSDK");
 }
+```
+
+#### Registering the event callbacks
+
+For getting the errors from this SDK, and getting information about the profile of the KYC as well as getting the
+step results as the steps updated, you must set delegate callbacks.
+
+First let's create the functions that are required.
+
+```dart
+// continued from the previous code block
+void amaniOnError(String errorType, List<dynamic> errors) {
+    print(errorType);
+    print(errors);
+  }
+
+  void amaniOnProfileStatus(Map<String, dynamic> profileStatus) {
+    print(profileStatus);
+  }
+
+  void amaniOnStepResult(List<dynamic> stepResult) {
+    print(stepResult);
+  }
+```
+
+Call the `setDelegateMethods` with function with the functions you just created.
+
+```dart
+AmaniSDK().setDelegateMethods(
+  amaniOnError, amaniOnProfileStatus, amaniOnStepResult);
 ```
 
 ### IDCapture module
@@ -829,7 +859,7 @@ curl --location --request POST 'https://demo.amani.ai/api/v1/customer' \
 Due to a quirk in Flutter, we added back button handle functions
 to each module. Depending on your navigation libary (we've used the flutter's default navigator) you must handle the back yourself.
 
-#### Exmaple for Flutter's built in navigation system
+#### Example for Flutter's built in navigation system
 
 You can use the Flutter's WillPopScope feature to prevent default back press and close the view from there.
 
