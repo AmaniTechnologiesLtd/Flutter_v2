@@ -82,9 +82,7 @@ class PoseEstimation {
     module.setManualCropTimeout(Timeout: settings.manualCropTimeout)
 
     do {
-      let moduleView = try module.start { [weak self] image in
-        guard let self = self else { return }
-
+      let moduleView = try module.start { image in
         let data = image.pngData()
         result(FlutterStandardTypedData(bytes: data!))
         
@@ -110,5 +108,10 @@ class PoseEstimation {
     module.upload { isSuccess in
       result(isSuccess)
     }
+  }
+  
+  public func setVideoRecording(enabled: Bool, result: @escaping FlutterResult) {
+    module.setVideoRecording(enabled: enabled)
+    result(nil)
   }
 }

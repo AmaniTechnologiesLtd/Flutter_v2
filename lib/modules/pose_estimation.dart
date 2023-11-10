@@ -42,4 +42,8 @@ class PoseEstimation {
   Future<bool> androidBackButtonHandle() async {
     return await _methodChannel.androidPoseEstimationBackPressHandle();
   }
+
+  Future<void> setVideoRecording(bool enabled) async {
+    await _methodChannel.setPoseEstimationVideoRecording(enabled);
+  }
 }

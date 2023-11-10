@@ -55,5 +55,15 @@ class IdCapture {
     result(nil)
   }
   
+  public func setVideoRecording(enabled: Bool, result: @escaping FlutterResult) {
+    module.setVideoRecording(enabled: enabled)
+    result(nil)
+  }
+  
+  public func setHologramDetection(enabled: Bool, result: @escaping FlutterResult) {
+    module.setIdHologramDetection(enabled: enabled)
+    result(nil)
+  }
+  
 }
 

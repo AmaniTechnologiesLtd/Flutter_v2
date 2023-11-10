@@ -26,7 +26,8 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       let lang = arguments?["lang"] as! String
       let useLocation = arguments?["useLocation"] as! Bool
       let sharedSecret = arguments?["sharedSecret"] as? String
-     initAmani(server: server, customerIdCardNumber: customerIdCardNumber, customerToken: customerToken, useLocation: useLocation, lang: lang , sharedSecret: sharedSecret, result: result)
+      let apiVersion = arguments?["apiVersion"] as? String ?? "v2"
+      initAmani(server: server, customerIdCardNumber: customerIdCardNumber, customerToken: customerToken, useLocation: useLocation, lang: lang , sharedSecret: sharedSecret, version: apiVersion, result: result)
     case "initAmaniWithEmail":
       let server = arguments?["server"] as! String
       let customerIdCardNumber = arguments?["customerIdCardNumber"] as! String
@@ -35,7 +36,8 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       let lang = arguments?["lang"] as! String
       let useLocation = arguments?["useLocation"] as! Bool
       let sharedSecret = arguments?["sharedSecret"] as? String
-      initAmaniWithEmail(server: server, customerIdCardNumber: customerIdCardNumber, email: email, password: password, useLocation: useLocation, lang: lang, sharedSecret: sharedSecret, result: result)
+      let apiVersion = arguments?["apiVersion"] as? String ?? "v2"
+      initAmaniWithEmail(server: server, customerIdCardNumber: customerIdCardNumber, email: email, password: password, useLocation: useLocation, lang: lang, sharedSecret: sharedSecret, version: apiVersion, result: result)
     // ID Capture
     case "setIDCaptureType":
       let idCapture = IdCapture()
@@ -56,6 +58,15 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       } else {
         result(FlutterError(code: "30008", message: "NFC Requires iOS 13 or newer", details: nil))
       }
+    case "setIDCaptureVideoRecordingEnabled":
+      let idCapture = IdCapture()
+      let enabled = arguments?["enabled"] as? Bool
+      idCapture.setVideoRecording(enabled: enabled ?? true, result: result)
+   case "setIDCaptureHologramDetection":
+      let idCapture = IdCapture()
+      let enabled = arguments?["enabled"] as? Bool
+      // defaults to false as this feature only supported for TUR_ID
+      idCapture.setHologramDetection(enabled: enabled ?? false, result: result)
     case "uploadIDCapture":
       let idCapture = IdCapture()
       idCapture.upload(result: result)
@@ -103,6 +114,10 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       } else {
         result(FlutterError(code: "30008", message: "Pose estimation is only avaible after iOS 12.0", details: nil))
       }
+    case "setPoseEstimationVideoRecording":
+      let poseEstimation = PoseEstimation()
+      let enabled = arguments?["enabled"] as? Bool
+      poseEstimation.setVideoRecording(enabled: enabled ?? true, result: result)
     case "uploadPoseEstimation":
       if #available(iOS 12.0, *) {
         let poseEstimation = PoseEstimation()

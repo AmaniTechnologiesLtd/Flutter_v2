@@ -82,6 +82,16 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('setIDCaptureType() has not been implemented.');
   }
 
+  Future<void> setIDCaptureVideoRecording(bool enabled) {
+    throw UnimplementedError(
+        'setIDCaptureVideoRecording() has not been implemented.');
+  }
+
+  Future<void> setIDCaptureHologramDetection(bool enabled) {
+    throw UnimplementedError(
+        'setIDCaptureHologramDetection() has not been implemented.');
+  }
+
   /// Use this function to handle the back press.
   /// returns false to use on WillPopScope
   Future<bool> androidIDCaptureBackPressHandle() {
@@ -142,6 +152,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   Future<void> setPoseEstimationType(String type) {
     throw UnimplementedError(
         'setPoseEstimationType() has not been implemented');
+  }
+
+  Future<void> setPoseEstimationVideoRecording(bool enabled) {
+    throw UnimplementedError(
+        'setPoseEstimationVideoRecording() has not been implemented');
   }
 
   Future<bool> androidPoseEstimationBackPressHandle() {

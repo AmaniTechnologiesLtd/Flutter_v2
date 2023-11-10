@@ -17,6 +17,8 @@ class _IdCaptureScreenState extends State<IdCaptureScreen> {
 
   Future<void> initSDK() async {
     await _idCaptureModule.setType("TUR_ID_1");
+    await _idCaptureModule.setHologramDetection(true);
+    await _idCaptureModule.setVideoRecording(true);
   }
 
   @override

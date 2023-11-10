@@ -48,6 +48,18 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<void> setIDCaptureVideoRecording(bool enabled) async {
+    await methodChannel.invokeMethod(
+        "setIDCaptureVideoRecordingEnabled", {"enabled": enabled});
+  }
+
+  @override
+  Future<void> setIDCaptureHologramDetection(bool enabled) async {
+    await methodChannel
+        .invokeMethod("setIDCaptureHologramDetection", {"enabled": enabled});
+  }
+
+  @override
   Future<void> setIDCaptureManualButtonTimeout(int timeout) async {
     try {
       await methodChannel.invokeMethod(
@@ -262,6 +274,12 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
     } catch (err) {
       rethrow;
     }
+  }
+
+  @override
+  Future<void> setPoseEstimationVideoRecording(bool enabled) async {
+    await methodChannel
+        .invokeMethod("setPoseEstimationVideoRecording", {"enabled": enabled});
   }
 
   // NFC Capture For IOS

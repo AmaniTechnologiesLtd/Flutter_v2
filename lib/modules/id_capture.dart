@@ -60,4 +60,12 @@ class IdCapture {
   Future<bool> androidBackButtonHandle() async {
     return await _methodChannel.androidIDCaptureBackPressHandle();
   }
+
+  Future<void> setHologramDetection(bool enabled) async {
+    return await _methodChannel.setIDCaptureHologramDetection(enabled);
+  }
+
+  Future<void> setVideoRecording(bool enabled) async {
+    return await _methodChannel.setIDCaptureVideoRecording(enabled);
+  }
 }
