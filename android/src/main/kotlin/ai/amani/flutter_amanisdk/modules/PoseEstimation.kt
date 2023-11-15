@@ -164,4 +164,8 @@ class PoseEstimation: Module {
         this.settings = poseEstimationSettings
     }
 
+    fun setVideoRecording(enabled: Boolean, result: MethodChannel.Result) {
+        poseEstimationModule.videoRecord(enabled)
+        result.success(null)
+    }
 }

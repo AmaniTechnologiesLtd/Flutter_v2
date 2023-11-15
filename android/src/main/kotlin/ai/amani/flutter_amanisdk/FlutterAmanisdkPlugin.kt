@@ -139,7 +139,7 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           IdCapture.instance.start(0, activity!!, result)
         }
       }
-      "setIDCaptureManualButtonTimeOut" -> {
+      "setIDCaptureManualButtonTimeout" -> {
         val timeout = call.argument<Int>("timeout")!!
         IdCapture.instance.setManualCaptureButtonTimeout(timeout)
         result.success(true)
@@ -148,6 +148,14 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val usesNFC = call.argument<Boolean>("usesNFC")!!
         IdCapture.instance.setWithNFC(usesNFC)
         result.success(true)
+      }
+      "setIDCaptureVideoRecordingEnabled" -> {
+        val isEnabled = call.argument<Boolean>("enabled") ?: false
+        IdCapture.instance.setVideoRecording(isEnabled, result)
+      }
+      "setIDCaptureHologramDetection" -> {
+        val isEnabled = call.argument<Boolean>("enabled") ?: false
+        IdCapture.instance.setHologramDetection(isEnabled, result)
       }
       "uploadIDCapture" -> {
         IdCapture.instance.upload(activity!!, result)
@@ -206,6 +214,10 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       "uploadPoseEstimation" -> {
         PoseEstimation.instance.upload(activity!!, result)
+      }
+      "setPoseEstimationVideoRecording" -> {
+        val isEnabled = call.argument<Boolean>("enabled") ?: false
+        PoseEstimation.instance.setVideoRecording(isEnabled, result)
       }
       // NFC
       "androidStartNFC" -> {

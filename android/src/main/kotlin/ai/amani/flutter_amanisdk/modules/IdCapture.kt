@@ -127,4 +127,14 @@ class IdCapture : Module {
         result.success(null)
     }
 
+    fun setHologramDetection(enabled: Boolean, result: Result) {
+        idCaptureModule.hologramDetection(enabled)
+        result.success(null)
+    }
+
+    fun setVideoRecording(enabled: Boolean, result: Result) {
+        idCaptureModule.videoRecord(enabled)
+        result.success(null)
+    }
+
 }
