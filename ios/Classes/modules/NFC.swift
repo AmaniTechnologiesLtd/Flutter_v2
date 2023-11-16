@@ -9,7 +9,6 @@ import AmaniSDK
 import Flutter
 import UIKit
 
-@available(iOS 13, *)
 class NFC {
   private let module = Amani.sharedInstance.scanNFC()
   private var moduleView: UIView!

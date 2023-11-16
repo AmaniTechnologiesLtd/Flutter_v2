@@ -9,7 +9,6 @@ import AmaniSDK
 import Flutter
 import UIKit
 
-@available(iOS 12.0, *)
 class PoseEstimation {
   private let module = Amani.sharedInstance.poseEstimation()
   private var sdkView: SDKView!
