@@ -23,6 +23,7 @@ class PoseEstimation: Module {
     private var frag: Fragment? = null
     var closeButton: Button? = null
     private var settings: PoseEstimationSettings? = null
+    private var videoRecordEnabled = false
 
     companion object {
         val instance = PoseEstimation()
@@ -58,13 +59,14 @@ class PoseEstimation: Module {
                 if (bitmap != null) {
                    val stream = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                    (activity as FragmentActivity).supportFragmentManager.
-                    beginTransaction().remove(frag!!).commit()
                     result.success(stream.toByteArray())
 
                     activity.runOnUiThread {
                         closeButton!!.visibility = View.GONE
                     }
+
+                    (activity as FragmentActivity).supportFragmentManager.
+                    beginTransaction().remove(frag!!).commit()
 
                 }
             }
@@ -106,6 +108,7 @@ class PoseEstimation: Module {
         )
         .ovalViewAnimationDurationMilSec(settings!!.animationDuration)
         .requestedPoseNumber(settings!!.poseCount)
+        .videoRecord(this.videoRecordEnabled)
         .observe(observer).build(activity)
 
         (activity as FragmentActivity)
@@ -165,7 +168,7 @@ class PoseEstimation: Module {
     }
 
     fun setVideoRecording(enabled: Boolean, result: MethodChannel.Result) {
-        poseEstimationModule.videoRecord(enabled)
+        videoRecordEnabled = enabled
         result.success(null)
     }
 }

@@ -20,6 +20,7 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
 
   Future<void> initSDK() async {
     await _amaniPoseEstimation.setType("XXX_SE_0");
+    await _amaniPoseEstimation.setVideoRecording(true);
   }
 
   @override
