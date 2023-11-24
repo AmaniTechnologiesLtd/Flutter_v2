@@ -13,12 +13,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
     AmaniSDK()
         .initAmaniWithEmail(
-            server: "https://dev.amani.ai",
-            email: "deniz@amani.ai",
-            password: "uecJQ*B47+\$QVW.",
-            customerIdCardNumber: "38203450858",
+            server: "https://test.amani.ai",
+            email: "login_email",
+            password: "login_password",
+            customerIdCardNumber: "customer_id_card_number",
             useLocation: true, // Use location when uploading customer data
-            apiVersion: AmaniApiVersion.v2,
+            apiVersion: AmaniApiVersion.v1,
             lang: "tr")
         .then((_) {
       AmaniSDK().getCustomerInfo().then((value) {
