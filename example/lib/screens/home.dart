@@ -11,13 +11,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
+    // AmaniSDK()
+    //     .initAmaniWithEmail(
+    //         server: "https://sandbox.amani.ai",
+    //         email: "mobile_team@amani.ai",
+    //         password: "Zkf6fxA8^cRkm^UEmuSs",
+    //         customerIdCardNumber: "customer_id_card_number",
+    //         useLocation: true, // Use location when uploading customer data
+    //         apiVersion: AmaniApiVersion.v1,
+    //         lang: "tr")
     AmaniSDK()
-        .initAmaniWithEmail(
-            server: "https://test.amani.ai",
-            email: "login_email",
-            password: "login_password",
-            customerIdCardNumber: "customer_id_card_number",
-            useLocation: true, // Use location when uploading customer data
+        .initAmani(
+            server: "https://sandbox.amani.ai",
+            customerToken:
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMiwiZXhwIjoxNzAxMDk3ODI4LCJ1c2VybmFtZSI6Im1vYmlsZV90ZWFtQGFtYW5pLmFpIiwiY3VzdG9tZXJfaWQiOjQ0NjcsImNvbXBhbnlfaWQiOjF9.djaFdF5CWzYg80Kw2rihXLtQpfHOF5bC5nLbsPzkwks",
+            customerIdCardNumber: "383",
+            useLocation: true,
             apiVersion: AmaniApiVersion.v1,
             lang: "tr")
         .then((_) {
