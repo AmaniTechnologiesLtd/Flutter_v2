@@ -30,17 +30,22 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
   }
 
   // Configure the pose estimation
-  // Configure the AutoSelfie
   final AndroidPoseEstimationSettings _androidPoseEstimationSettings =
       AndroidPoseEstimationSettings(
     poseCount: 3,
     animationDuration: 500,
     faceNotInside: "Your face is not inside the area",
     faceNotStraight: "Your face is not straight",
-    keepStraight: "Please hold stable",
+    faceIsTooFar: "Your face is too far",
+    holdPhoneVertically: "Please hold stable",
     alertTitle: "Verification Failed",
     alertDescription: "Failed 1",
     alertTryAgain: "Try again",
+    turnRight: "→",
+    turnLeft: "←",
+    turnUp: "↑",
+    turnDown: "↓",
+    lookStraight: "Look straight",
     mainGuideVisibility: true,
     secondaryGuideVisibility: true,
   );

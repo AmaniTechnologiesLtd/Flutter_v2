@@ -76,13 +76,18 @@ class PoseEstimation: Module {
         frag = poseEstimationModule
                 .Builder()
        .userInterfaceTexts(
-                settings!!.faceNotInside,
-                settings!!.faceNotStraight,
-                settings!!.faceIsTooFar,
-                settings!!.holdPhoneVertically,
-                settings!!.alertTitle,
-                settings!!.alertDescription,
-                settings!!.alertTryAgain
+           settings!!.faceIsTooFar,
+           settings!!.faceNotStraight,
+           settings!!.faceNotInside,
+           settings!!.holdPhoneVertically,
+           settings!!.alertTitle,
+           settings!!.alertDescription,
+           settings!!.alertTryAgain,
+           settings!!.turnLeft,
+           settings!!.turnRight,
+           settings!!.turnUp,
+           settings!!.turnDown,
+           settings!!.lookStraight
         ).userInterfaceColors(
                 ovalViewStartColor = R.color.pose_estimation_oval_view_start,
                 ovalViewSuccessColor = R.color.pose_estimation_oval_view_success,

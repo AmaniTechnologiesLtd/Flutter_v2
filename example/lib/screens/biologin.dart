@@ -36,10 +36,18 @@ class _BioLoginState extends State<BioLogin> {
     animationDuration: 500,
     faceNotInside: "Your face is not inside the area",
     faceNotStraight: "Your face is not straight",
-    keepStraight: "Please hold stable",
+    faceIsTooFar: "Your face is too far",
+    holdPhoneVertically: "Please hold stable",
     alertTitle: "Verification Failed",
     alertDescription: "Failed 1",
     alertTryAgain: "Try again",
+    turnRight: "→",
+    turnLeft: "←",
+    turnUp: "↑",
+    turnDown: "↓",
+    lookStraight: "Look straight",
+    mainGuideVisibility: true,
+    secondaryGuideVisibility: true,
   );
 
   final IOSPoseEstimationSettings _iosPoseEstimationSettings =

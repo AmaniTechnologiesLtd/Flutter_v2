@@ -3,11 +3,16 @@ class AndroidPoseEstimationSettings {
   int? animationDuration;
   String? faceNotInside;
   String? faceNotStraight;
-  String? faceTooFar;
-  String? keepStraight;
+  String? faceIsTooFar;
+  String? holdPhoneVertically;
   String? alertTitle;
   String? alertDescription;
   String? alertTryAgain;
+  String? turnLeft;
+  String? turnRight;
+  String? turnUp;
+  String? turnDown;
+  String? lookStraight;
   bool? mainGuideVisibility;
   bool? secondaryGuideVisibility;
 
@@ -16,10 +21,16 @@ class AndroidPoseEstimationSettings {
       this.animationDuration,
       this.faceNotInside,
       this.faceNotStraight,
-      this.keepStraight,
+      this.faceIsTooFar,
+      this.holdPhoneVertically,
       this.alertTitle,
       this.alertDescription,
       this.alertTryAgain,
+      this.turnLeft,
+      this.turnRight,
+      this.turnUp,
+      this.turnDown,
+      this.lookStraight,
       this.mainGuideVisibility,
       this.secondaryGuideVisibility});
 
@@ -29,10 +40,16 @@ class AndroidPoseEstimationSettings {
       "animationDuration": animationDuration,
       "faceNotInside": faceNotInside,
       "faceNotStraight": faceNotStraight,
-      "keepStraight": keepStraight,
+      "faceIsTooFar": faceIsTooFar,
+      "holdPhoneVertically": holdPhoneVertically,
       "alertTitle": alertTitle,
       "alertDescription": alertDescription,
       "alertTryAgain": alertTryAgain,
+      "turnLeft": turnLeft,
+      "turnRight": turnRight,
+      "turnUp": turnUp,
+      "turnDown": turnDown,
+      "lookStraight": lookStraight,
       "mainGuideVisibility": mainGuideVisibility,
       "secondaryGuideVisibility": secondaryGuideVisibility,
     };

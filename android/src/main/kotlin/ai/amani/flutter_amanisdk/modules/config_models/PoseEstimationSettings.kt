@@ -13,6 +13,11 @@ class PoseEstimationSettings(
         val alertTitle: String,
         val alertDescription: String,
         val alertTryAgain: String,
+        val turnLeft: String,
+        val turnRight: String,
+        val turnUp: String,
+        val turnDown: String,
+        val lookStraight: String,
         val mainGuideVisibility: Boolean = true,
         val secondaryGuideVisibility: Boolean = true,
 ): JSONConvertable

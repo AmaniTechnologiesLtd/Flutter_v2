@@ -42,6 +42,7 @@ class PoseEstimation {
       .next: settings.next,
       .tryAgain: settings.tryAgain,
       .errorTitle: settings.errorTitle,
+      .holdPhoneVertically: settings.holdPhoneVertically,
       .informationScreenDesc1: settings.informationScreenDesc1,
       .informationScreenDesc2: settings.informationScreenDesc2,
       .informationScreenTitle: settings.informationScreenTitle,

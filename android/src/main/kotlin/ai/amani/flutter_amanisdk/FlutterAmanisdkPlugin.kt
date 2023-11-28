@@ -210,7 +210,7 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         PoseEstimation.instance.setType(type, result)
       }
       "poseEstimationAndroidBackPressHandle" -> {
-        AutoSelfie.instance.backPressHandle(activity!!, result)
+        PoseEstimation.instance.backPressHandle(activity!!, result)
       }
       "uploadPoseEstimation" -> {
         PoseEstimation.instance.upload(activity!!, result)
