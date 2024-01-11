@@ -178,6 +178,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
     let apiVersion = version == "v2" ? ApiVersions.v2 : ApiVersions.v1
     
+    Amani.sharedInstance.setDelegate(delegate: self)
     Amani.sharedInstance.initAmani(server: server, token: customerToken, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { (customerRes, err) in
       if customerRes != nil {
         result(true)
@@ -198,6 +199,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
                         result: @escaping FlutterResult) {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
                           let apiVersion: ApiVersions = version == "v2" ? .v2 : .v1
+    Amani.sharedInstance.setDelegate(delegate: self)
     Amani.sharedInstance.initAmani(server: server, userName: email, password: password, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { customerRes, err in
       if customerRes != nil {
         result(true)
