@@ -11,21 +11,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
-    // AmaniSDK()
-    //     .initAmaniWithEmail(
-    //         server: "https://sandbox.amani.ai",
-    //         email: "mobile_team@amani.ai",
-    //         password: "Zkf6fxA8^cRkm^UEmuSs",
-    //         customerIdCardNumber: "customer_id_card_number",
-    //         useLocation: true, // Use location when uploading customer data
-    //         apiVersion: AmaniApiVersion.v1,
-    //         lang: "tr")
     AmaniSDK()
         .initAmani(
-            server: "https://sandbox.amani.ai",
-            customerToken:
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMiwiZXhwIjoxNzAxMDk3ODI4LCJ1c2VybmFtZSI6Im1vYmlsZV90ZWFtQGFtYW5pLmFpIiwiY3VzdG9tZXJfaWQiOjQ0NjcsImNvbXBhbnlfaWQiOjF9.djaFdF5CWzYg80Kw2rihXLtQpfHOF5bC5nLbsPzkwks",
-            customerIdCardNumber: "383",
+            server: "https://server.example",
+            customerToken: "customer_token",
+            customerIdCardNumber: "",
             useLocation: true,
             apiVersion: AmaniApiVersion.v1,
             lang: "tr")
@@ -38,21 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
       throw Exception(err);
     });
 
-    AmaniSDK().setDelegateMethods(
-        amaniOnError, amaniOnProfileStatus, amaniOnStepResult);
-  }
-
-  void amaniOnError(String errorType, List<dynamic> errors) {
-    print(errorType);
-    print(errors);
-  }
-
-  void amaniOnProfileStatus(Map<String, dynamic> profileStatus) {
-    print(profileStatus);
-  }
-
-  void amaniOnStepResult(List<dynamic> stepResult) {
-    print(stepResult);
+    await for (final delegateEvent in AmaniSDK().getDelegateStream()) {
+      print("delegate event recieved");
+      print(delegateEvent);
+    }
   }
 
   @override
