@@ -1,8 +1,8 @@
 PODS:
-  - AmaniSDK (3.3.1):
+  - AmaniSDK (3.3.3):
     - OpenSSL-Universal (~> 1.1.1100)
   - Flutter (1.0.0)
-  - flutter_amanisdk (2.0.4):
+  - flutter_amanisdk (2.0.7):
     - AmaniSDK (~> 3)
     - Flutter
   - OpenSSL-Universal (1.1.2200)
@@ -24,9 +24,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_amanisdk/ios"
 
 SPEC CHECKSUMS:
-  AmaniSDK: 81a931f08107d490cd8b27bf240d57a55f238d46
+  AmaniSDK: 0f718bd383a45120b93787e1091c80a42a471e0e
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_amanisdk: d7ca8db2e83da2630d1f12c42335933200c7b324
+  flutter_amanisdk: d90b44afbfbcb8a59b16376ef96d858c7912611e
   OpenSSL-Universal: 6e1ae0555546e604dbc632a2b9a24a9c46c41ef6
 
 PODFILE CHECKSUM: 2015cdad02153ed515eece42823a78c20c6294e8

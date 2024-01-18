@@ -3,15 +3,17 @@ import Flutter
 
 public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
   var methodChannel: FlutterMethodChannel!
-  var delegateChannel: FlutterMethodChannel!
+  var delegateChannel: FlutterEventChannel!
+  static var eventHandler = DelegateEventHandler()
     
   public static func register(with registrar: FlutterPluginRegistrar) {
     let methodChannel = FlutterMethodChannel(name: "amanisdk_method_channel", binaryMessenger: registrar.messenger())
-    let delegateChannel = FlutterMethodChannel(name: "amanisdk_delegate_channel", binaryMessenger: registrar.messenger())
+    let delegateChannel = FlutterEventChannel(name: "amanisdk_delegate_channel", binaryMessenger: registrar.messenger())
     
     let instance = SwiftFlutterAmanisdkPlugin()
     instance.methodChannel = methodChannel
     instance.delegateChannel = delegateChannel
+    instance.delegateChannel.setStreamHandler(SwiftFlutterAmanisdkPlugin.eventHandler)
     
     registrar.addMethodCallDelegate(instance, channel: methodChannel)
   }
@@ -178,7 +180,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
     let apiVersion = version == "v2" ? ApiVersions.v2 : ApiVersions.v1
     
-    Amani.sharedInstance.setDelegate(delegate: self)
+    Amani.sharedInstance.setDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
     Amani.sharedInstance.initAmani(server: server, token: customerToken, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { (customerRes, err) in
       if customerRes != nil {
         result(true)
@@ -198,8 +200,8 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
                         version: String = "v2",
                         result: @escaping FlutterResult) {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
-                          let apiVersion: ApiVersions = version == "v2" ? .v2 : .v1
-    Amani.sharedInstance.setDelegate(delegate: self)
+    let apiVersion: ApiVersions = version == "v2" ? .v2 : .v1
+    Amani.sharedInstance.setDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
     Amani.sharedInstance.initAmani(server: server, userName: email, password: password, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { customerRes, err in
       if customerRes != nil {
         result(true)
@@ -246,38 +248,4 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         result(customerInfoDict)
       })
   }
-    
-}
-
-extension SwiftFlutterAmanisdkPlugin: AmaniDelegate {
-  public func onProfileStatus(customerId: String, profile: AmaniSDK.wsProfileStatusModel) {
-    do {
-      let jsonData = try JSONEncoder().encode(profile)
-      delegateChannel.invokeMethod("profileStatus", arguments: String(data: jsonData, encoding: .utf8))
-    } catch {
-      delegateChannel.invokeMethod("onError", arguments: ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any])
-    }
-  }
-  
-  public func onStepModel(customerId: String, rules: [AmaniSDK.KYCRuleModel]?) {
-    do {
-      let jsonData = try JSONEncoder().encode(["rules": rules])
-      delegateChannel.invokeMethod("stepResult", arguments: String(data: jsonData, encoding: .utf8))
-    } catch {
-      delegateChannel.invokeMethod("onError", arguments: ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String : Any])
-    }
-  }
-  
-  public func onError(type: String, error: [AmaniSDK.AmaniError]) {
-    do {
-      let jsonData = try JSONEncoder().encode(error)
-      let jsonString = String(data: jsonData, encoding: .utf8)
-      delegateChannel.invokeMethod("onError", arguments: ["type": type, "errors": jsonString])
-    } catch {
-      delegateChannel.invokeMethod("onError", arguments: ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String : Any])
-    }
-    
-  }
-  
-  
 }

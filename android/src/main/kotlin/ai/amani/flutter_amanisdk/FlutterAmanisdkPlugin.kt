@@ -18,6 +18,7 @@ import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -33,7 +34,7 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var channel: MethodChannel
   private lateinit var nfcChannel: MethodChannel
   private lateinit var bioLoginChannel: MethodChannel
-  private lateinit var delegateChannel: MethodChannel
+  private lateinit var delegateChannel: EventChannel
   // Give this reference to other modules e.g IdCapture when init.
   private var activity: Activity? = null
 
@@ -45,7 +46,9 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     // dart side
     nfcChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_nfc_channel")
     bioLoginChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_biologin_channel")
-    delegateChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "amanisdk_delegate_channel")
+    // Event channel goes brr
+    delegateChannel = EventChannel(flutterPluginBinding.binaryMessenger, "amanisdk_delegate_channel")
+    delegateChannel.setStreamHandler(AmaniDelegateEventHandler())
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
@@ -60,33 +63,7 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val sharedSecret = call.argument<String>("sharedSecret")
         val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
-        activity!!.runOnUiThread {
-          Amani.init(activity, server, sharedSecret)
-          
-          Amani.sharedInstance().AmaniEvent().setListener(object : AmaniEventCallBack {
-            override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
-              if (error != null) {
-                val returnMap = mapOf(
-                  "type" to type,
-                  "errors" to Gson().toJson(error),
-                )
-                delegateChannel.invokeMethod("onError", returnMap)
-              }
-            }
-
-            override fun profileStatus(profileStatus: ProfileStatus) {
-              delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
-            }
-
-            override fun stepsResult(stepsResult: StepsResult?) {
-              if (stepsResult != null) {
-                delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
-              }
-            }
-
-          })
-        }
-
+        Amani.init(activity, server, sharedSecret)
         initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, version, result)
       }
       "initAmaniWithEmail" -> {
@@ -101,28 +78,6 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
         activity!!.runOnUiThread {
           Amani.init(activity, server, sharedSecret)
-          Amani.sharedInstance().AmaniEvent().setListener(object : AmaniEventCallBack {
-            override fun onError(type: String?, error: ArrayList<AmaniError?>?) {
-              if (error != null) {
-                val returnMap = mapOf(
-                  "type" to type,
-                  "errors" to Gson().toJson(error),
-                )
-                delegateChannel.invokeMethod("onError", returnMap)
-              }
-            }
-
-            override fun profileStatus(profileStatus: ProfileStatus) {
-              delegateChannel.invokeMethod("profileStatus", Gson().toJson(profileStatus))
-            }
-
-            override fun stepsResult(stepsResult: StepsResult?) {
-              if (stepsResult != null) {
-                delegateChannel.invokeMethod("stepResult", Gson().toJson(stepsResult))
-              }
-            }
-
-          })
         }
         initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, version, result)
       }

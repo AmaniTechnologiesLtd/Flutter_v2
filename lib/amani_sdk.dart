@@ -16,7 +16,8 @@ import 'package:flutter_amanisdk/modules/selfie.dart';
 
 class AmaniSDK {
   final MethodChannelAmaniSDK _methodChannel = MethodChannelAmaniSDK();
-  final delegateChannel = const MethodChannel("amanisdk_delegate_channel");
+  // final delegateChannel = const MethodChannel("amanisdk_delegate_channel");
+  final delegateEventChannel = const EventChannel("amanisdk_delegate_channel");
 
   /// returns [IdCapture] module
   IdCapture getIDCapture() {
@@ -101,31 +102,8 @@ class AmaniSDK {
     }
   }
 
-  void setDelegateMethods(
-
-      /// On error function. Called when native SDK has an error raised
-      // TODO: Models?
-      Function(String, List<Map<String, dynamic>>) onError,
-
-      /// Called when profile status has changes
-      Function(Map<String, dynamic>) onProfileStatus,
-
-      /// Called when steps to complete kyc process has changes
-      Function(List<dynamic>) onStepsResult) {
-    delegateChannel.setMethodCallHandler((call) async {
-      if (call.method == "onError") {
-        String errorCode = call.arguments['type'];
-        List<Map<String, dynamic>> errorDetails =
-            json.decode(call.arguments["errors"]);
-        onError.call(errorCode, errorDetails);
-      } else if (call.method == "profileStatus") {
-        Map<String, dynamic> profileStatus = json.decode(call.arguments);
-        onProfileStatus.call(profileStatus);
-      } else if (call.method == "stepResult") {
-        Map<String, dynamic> stepsResult = json.decode(call.arguments);
-        onStepsResult.call(stepsResult["result"]);
-      }
-    });
+  Stream<dynamic> getDelegateStream() {
+    return delegateEventChannel.receiveBroadcastStream().map((event) => event);
   }
 
   Future<CustomerInfoModel> getCustomerInfo() async {
