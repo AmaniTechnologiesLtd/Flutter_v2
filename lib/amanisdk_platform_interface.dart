@@ -254,6 +254,25 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
         'androidBioLoginBackPressHandle() has not been implemented.');
   }
 
+  Future<Uint8List?> startDocumentCaptureWithView(int documentCount) {
+    throw UnimplementedError(
+        'startDocumentCaptureWithView() has not been implemented.');
+  }
+
+  Future<void> documentCaptureSetType(String type) {
+    throw UnimplementedError(
+        'documentCaptureSetType() has not been implemented.');
+  }
+
+  Future<void> addDocumentWithImage(Uint8List image) {
+    throw UnimplementedError(
+        'addDocumentWithImage() has not been implemented.');
+  }
+
+  Future<bool> documentCaptureUpload(List<Map<String, dynamic>>? files) {
+    throw UnimplementedError('upload() has not been implemented.');
+  }
+
   Future<dynamic> getCustomerInfo() {
     throw UnimplementedError("getCustomerInfo() has not been implemented.");
   }

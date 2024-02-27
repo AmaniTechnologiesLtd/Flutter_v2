@@ -497,6 +497,49 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<Uint8List?> startDocumentCaptureWithView(int documentCount) async {
+    try {
+      final Uint8List? resultingDocumentImage = await methodChannel
+          .invokeMethod<Uint8List>(
+              'startDocumentCapture', {'documentCount': documentCount});
+      return resultingDocumentImage;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> addDocumentWithImage(Uint8List image) async {
+    try {
+      await methodChannel.invokeMethod(
+          'documentCaptureAddDocumentWithImage', {'image': image});
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> documentCaptureSetType(String type) async {
+    try {
+      await methodChannel
+          .invokeMethod('documentCaptureSetType', {'type': type});
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> documentCaptureUpload(List<Map<String, dynamic>>? files) async {
+    try {
+      final bool uploadRes = await methodChannel
+          .invokeMethod('documentCaptureUpload', {'files': files});
+      return uploadRes;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<bool> initAmaniWithEmail(
       {required String server,
       required String email,
