@@ -12,10 +12,6 @@ class IdCapture {
 
   Future<Uint8List> start(IdSide idSide) async {
     try {
-      // Note(ddnzcn): Temp fix until android side is finalized
-      if (idSide == IdSide.back) {
-        await setHologramDetection(false);
-      }
       final dynamic imageData =
           await _methodChannel.startIDCapture(idSide.index);
       if (imageData != null) {
