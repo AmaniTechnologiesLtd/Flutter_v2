@@ -8,6 +8,7 @@ import 'package:flutter_amanisdk/common/models/customer_detail.dart';
 import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
 import 'package:flutter_amanisdk/modules/auto_selfie.dart';
 import 'package:flutter_amanisdk/modules/bio_login.dart';
+import 'package:flutter_amanisdk/modules/document_capture.dart';
 import 'package:flutter_amanisdk/modules/id_capture.dart';
 import 'package:flutter_amanisdk/modules/nfc_capture_android.dart';
 import 'package:flutter_amanisdk/modules/nfc_capture_ios.dart';
@@ -52,6 +53,11 @@ class AmaniSDK {
   /// Returns [BioLogin] module
   BioLogin getBioLogin() {
     return BioLogin(_methodChannel);
+  }
+
+  /// Returns [DocumentCapture] module
+  DocumentCapture getDocumentCapture() {
+    return DocumentCapture(_methodChannel);
   }
 
   /// Initializes the SDK

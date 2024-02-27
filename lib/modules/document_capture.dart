@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter_amanisdk/common/models/file_type.dart';
 import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
 
-class DocumentUpload {
+class DocumentCapture {
   final MethodChannelAmaniSDK _methodChannel;
 
-  DocumentUpload(this._methodChannel);
+  DocumentCapture(this._methodChannel);
 
   Future<Uint8List> start({int documentCount = 1}) async {
     if (documentCount < 0) {
@@ -51,6 +51,15 @@ class DocumentUpload {
   Future<void> setType(String type) async {
     try {
       await _methodChannel.documentCaptureSetType(type);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<bool> androidBackButtonHandler() async {
+    try {
+      final res = await _methodChannel.androidDocumentCaptureBackPressHandle();
+      return res;
     } catch (err) {
       rethrow;
     }

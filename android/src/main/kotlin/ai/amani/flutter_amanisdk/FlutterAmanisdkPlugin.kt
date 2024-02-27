@@ -239,6 +239,25 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "getCustomerInfo" -> {
         getCustomerInfo(result)
       }
+      "startDocumentCapture" -> {
+        val docCountParam = call.argument<Int>("documentCount") ?: 1
+        DocumentCapture.instance.start(docCountParam, activity!!, result)
+      }
+      "documentCaptureSetType" -> {
+        val type = call.argument<String>("type")
+        DocumentCapture.instance.setType(type, result)
+      }
+      "documentCaptureUpload" -> {
+        val files = call.argument<List<Map<String, Any>>>("files")
+        if (files != null) {
+          DocumentCapture.instance.setFiles(files)
+        } else {
+          DocumentCapture.instance.upload(activity!!, result)
+        }
+      }
+      "documentCaptureBackPressHandle" -> {
+        DocumentCapture.instance.backPressHandle(activity!!, result)
+      }
       else -> result.notImplemented()
     }
   }

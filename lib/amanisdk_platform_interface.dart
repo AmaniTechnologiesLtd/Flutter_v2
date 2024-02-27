@@ -268,6 +268,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('upload() has not been implemented.');
   }
 
+  Future<bool> androidDocumentCaptureBackPressHandle() {
+    throw UnimplementedError(
+        'androidDocumentCaptureBackPressHandle() has not been implemented.');
+  }
+
   Future<dynamic> getCustomerInfo() {
     throw UnimplementedError("getCustomerInfo() has not been implemented.");
   }

@@ -80,7 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/bio-login');
                     },
-                    child: const Text("BioLogin"))
+                    child: const Text("BioLogin")),
+                OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/document-capture');
+                    },
+                    child: const Text("Document Capture"))
               ]),
         ));
   }

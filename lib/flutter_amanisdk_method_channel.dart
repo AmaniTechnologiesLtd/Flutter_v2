@@ -519,6 +519,17 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
+  Future<bool> androidDocumentCaptureBackPressHandle() async {
+    try {
+      final backResult = await methodChannel
+          .invokeMethod('androidDocumentCaptureBackPressHandle');
+      return backResult;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<bool> documentCaptureUpload(List<Map<String, dynamic>>? files) async {
     try {
       final bool uploadRes = await methodChannel

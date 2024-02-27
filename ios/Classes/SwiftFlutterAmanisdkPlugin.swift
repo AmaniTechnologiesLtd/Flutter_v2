@@ -164,6 +164,30 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         bioLogin.upload(result: result)
     case "getCustomerInfo":
         getCustomerInfo(result: result)
+    // MARK: Document Capture
+    case "startDocumentCapture":
+      let documentCount = arguments!["documentCount"] as! Int? ?? 1
+      let documentCapture = DocumentCapture()
+      documentCapture.start(documentCount: documentCount, result: result)
+    case "documentCaptureSetType":
+      let documentCapture = DocumentCapture()
+      let documentType = arguments!["documentType"] as! String
+      documentCapture.setType(type: documentType, result: result)
+    case "documentCaptureUpload":
+      let documentCapture = DocumentCapture()
+      // possible keys: data, dataType
+      let files: [[String: Any]] = arguments!["files"] as! [[String: Any]]? ?? []
+      let filesData = files.map { mappedData in
+        let fileData = mappedData["data"] as! Data;
+        let fileType = mappedData["dataType"] as! String;
+        return FileWithType(data: fileData, dataType: fileType)
+      }
+      
+      if filesData.isEmpty {
+        documentCapture.upload(files: nil, result: result)
+      } else {
+        documentCapture.upload(files: filesData, result: result)
+      }
     default:
       result(FlutterMethodNotImplemented)
     }
