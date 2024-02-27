@@ -264,11 +264,6 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
         'documentCaptureSetType() has not been implemented.');
   }
 
-  Future<void> addDocumentWithImage(Uint8List image) {
-    throw UnimplementedError(
-        'addDocumentWithImage() has not been implemented.');
-  }
-
   Future<bool> documentCaptureUpload(List<Map<String, dynamic>>? files) {
     throw UnimplementedError('upload() has not been implemented.');
   }

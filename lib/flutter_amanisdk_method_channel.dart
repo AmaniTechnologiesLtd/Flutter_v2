@@ -509,16 +509,6 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<void> addDocumentWithImage(Uint8List image) async {
-    try {
-      await methodChannel.invokeMethod(
-          'documentCaptureAddDocumentWithImage', {'image': image});
-    } catch (err) {
-      rethrow;
-    }
-  }
-
-  @override
   Future<void> documentCaptureSetType(String type) async {
     try {
       await methodChannel
