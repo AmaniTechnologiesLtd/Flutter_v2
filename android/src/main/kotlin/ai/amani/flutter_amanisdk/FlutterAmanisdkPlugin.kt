@@ -5,6 +5,7 @@ import ai.amani.flutter_amanisdk.modules.*
 import ai.amani.flutter_amanisdk.modules.config_models.AutoSelfieSettings
 import ai.amani.flutter_amanisdk.modules.config_models.PoseEstimationSettings
 import ai.amani.sdk.Amani
+import ai.amani.sdk.UploadSource
 import ai.amani.sdk.interfaces.AmaniEventCallBack
 import ai.amani.sdk.model.amani_events.error.AmaniError
 import ai.amani.sdk.model.amani_events.profile_status.ProfileStatus
@@ -63,8 +64,9 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val sharedSecret = call.argument<String>("sharedSecret")
         val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
-        Amani.init(activity, server, sharedSecret)
-        initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, version, result)
+        activity?.runOnUiThread {
+          initAmani(server, customerToken, customerIdCardNumber, lang, useLocation, sharedSecret, version, result)
+        }
       }
       "initAmaniWithEmail" -> {
         val server = call.argument<String>("server")!!
@@ -77,9 +79,8 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val version = call.argument<String>("apiVersion") ?: "v2" // Default to v2
 
         activity!!.runOnUiThread {
-          Amani.init(activity, server, sharedSecret)
+          initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, version, result)
         }
-        initAmaniWithEmail(server, customerIdCardNumber, email, password, lang, useLocation, sharedSecret, version, result)
       }
       // IdCapture
       "setIDCaptureType" -> {
@@ -294,7 +295,9 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                 result: Result) {
     if (activity != null) {
       activity!!.runOnUiThread {
-        Amani.VERSION = if (version == "v2") AmaniVersion.V2 else AmaniVersion.V1
+        val amaniVersion = if (version == "v2") AmaniVersion.V2 else AmaniVersion.V1
+        Amani.init(activity, server, sharedSecret, amaniVersion, UploadSource.KYC)
+        android.util.Log.d("TAG", "initAmani: $version")
         Amani.sharedInstance().initAmani(
           activity!!,
           customerIdCardNumber,
@@ -307,6 +310,7 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
+      result.error("30020", "Activity is null", null)
     }
   }
 
@@ -319,15 +323,17 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                         sharedSecret: String?,
                         version: String,
                         result: Result) {
-    Amani.VERSION = if(version == "v2") AmaniVersion.V2 else AmaniVersion.V1
     if (activity != null) {
       activity!!.runOnUiThread {
+        val amaniVersion = if (version == "v2") AmaniVersion.V2 else AmaniVersion.V1
+        Amani.init(activity, server, sharedSecret, amaniVersion, UploadSource.KYC)
         Amani.sharedInstance().initAmani(activity!!, customerIdCardNumber, email, password, useLocation, lang) { loggedIn ->
           result.success(loggedIn)
         }
       }
     } else {
       Log.e("AmaniSDK", "tried to init amani while activity is null")
+      result.error("30020", "Activity is null", null)
     }
   }
 
@@ -379,5 +385,4 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
     })
   }
-
 }

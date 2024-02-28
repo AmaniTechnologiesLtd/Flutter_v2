@@ -25,7 +25,11 @@ class AmaniDelegateEventHandler: EventChannel.StreamHandler {
                             "type" to "error",
                             "data" to dataMap
                         )
-                        events?.success(returnMap)
+
+                        Handler(Looper.getMainLooper()).post {
+                            events?.success(returnMap)
+                        }
+
                     }
                 }
 
@@ -34,7 +38,10 @@ class AmaniDelegateEventHandler: EventChannel.StreamHandler {
                         "type" to "profileStatus",
                         "data" to Gson().toJson(profileStatus)
                     )
-                    events?.success(returnMap)
+
+                    Handler(Looper.getMainLooper()).post {
+                        events?.success(returnMap)
+                    }
                 }
 
                 override fun stepsResult(stepsResult: StepsResult?) {
@@ -43,7 +50,9 @@ class AmaniDelegateEventHandler: EventChannel.StreamHandler {
                             "type" to "stepModel",
                             "data" to Gson().toJson(stepsResult)
                         )
-                        events?.success(returnMap)
+                        Handler(Looper.getMainLooper()).post {
+                            events?.success(returnMap)
+                        }
                     }
                 }
 

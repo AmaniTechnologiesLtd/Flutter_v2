@@ -13,7 +13,7 @@ class ConfirmScreen extends StatelessWidget {
   final _autoSelfie = AmaniSDK().getAutoSelfie();
   final _selfie = AmaniSDK().getSelfie();
   final _poseEstimation = AmaniSDK().getPoseEstimation();
-  final _documentCapture = AmaniSDK().getPoseEstimation();
+  final _documentCapture = AmaniSDK().getDocumentCapture();
 
   static const routeName = '/confirm';
 
@@ -101,7 +101,7 @@ class ConfirmScreen extends StatelessWidget {
                         }
                       });
                     } else if (args.source == "documentCapture") {
-                      _documentCapture.upload().then((isSuccess) {
+                      _documentCapture.startUploadWithFiles(null).then((isSuccess) {
                         Navigator.pushReplacementNamed(context, '/');
                       });
                     }
