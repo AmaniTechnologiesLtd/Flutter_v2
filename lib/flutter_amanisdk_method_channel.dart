@@ -512,7 +512,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   Future<void> documentCaptureSetType(String type) async {
     try {
       await methodChannel
-          .invokeMethod('documentCaptureSetType', {'type': type});
+          .invokeMethod('setDocumentCaptureType', {'type': type});
     } catch (err) {
       rethrow;
     }

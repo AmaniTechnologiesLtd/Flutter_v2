@@ -169,9 +169,9 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       let documentCount = arguments!["documentCount"] as! Int? ?? 1
       let documentCapture = DocumentCapture()
       documentCapture.start(documentCount: documentCount, result: result)
-    case "documentCaptureSetType":
+    case "setDocumentCaptureType":
       let documentCapture = DocumentCapture()
-      let documentType = arguments!["documentType"] as! String
+      let documentType = arguments!["type"] as! String
       documentCapture.setType(type: documentType, result: result)
     case "documentCaptureUpload":
       let documentCapture = DocumentCapture()
