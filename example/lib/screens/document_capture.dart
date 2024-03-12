@@ -17,7 +17,7 @@ class _DocumentCaputureScreenState extends State<DocumentCaputureScreen> {
       AmaniSDK().getDocumentCapture();
 
   Future<void> initSDK() async {
-    await _documentCaptureModule.setType("XXX_IB_0");
+    await _documentCaptureModule.setType("TUR_IB_0");
   }
 
   @override
