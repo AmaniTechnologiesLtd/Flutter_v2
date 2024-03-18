@@ -12,6 +12,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     
     let instance = SwiftFlutterAmanisdkPlugin()
     instance.methodChannel = methodChannel
+    instance.methodChannel = methodChannel
     instance.delegateChannel = delegateChannel
     instance.delegateChannel.setStreamHandler(SwiftFlutterAmanisdkPlugin.eventHandler)
     
@@ -176,18 +177,21 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     case "documentCaptureUpload":
       let documentCapture = DocumentCapture()
       // possible keys: data, dataType
-      let files: [[String: Any]] = arguments!["files"] as! [[String: Any]]? ?? []
-      let filesData = files.map { mappedData in
-        let fileData = mappedData["data"] as! Data;
-        let fileType = mappedData["dataType"] as! String;
-        return FileWithType(data: fileData, dataType: fileType)
-      }
-      
-      if filesData.isEmpty {
-        documentCapture.upload(files: nil, result: result)
+        if let files: [[String: Any]] = arguments!["files"] as? [[String: Any]] {
+            let filesData = files.map { mappedData in
+              let fileData = mappedData["data"] as! Data;
+              let fileType = mappedData["dataType"] as! String;
+              return FileWithType(data: fileData, dataType: fileType)
+            }
+            if filesData.isEmpty {
+              documentCapture.upload(files: nil, result: result)
+            } else {
+              documentCapture.upload(files: filesData, result: result)
+            }
       } else {
-        documentCapture.upload(files: filesData, result: result)
+        documentCapture.upload(files: nil, result: result)
       }
+
     default:
       result(FlutterMethodNotImplemented)
     }

@@ -17,7 +17,7 @@ class DocumentCapture {
     let vc = UIApplication.shared.windows.last?.rootViewController
 
     do {
-      if let moduleView = try module.start(stepId: documentCount!, completion: { image in
+      if let moduleView = try module.start(stepId: documentCount!-1, completion: { image in
         if let data = image.pngData() {
           result(FlutterStandardTypedData(bytes: data))
         }
