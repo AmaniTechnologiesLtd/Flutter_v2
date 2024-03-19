@@ -244,7 +244,7 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val docCountParam = call.argument<Int>("documentCount") ?: 1
         DocumentCapture.instance.start(docCountParam, activity!!, result)
       }
-      "documentCaptureSetType" -> {
+      "setDocumentCaptureType" -> {
         val type = call.argument<String>("type")
         DocumentCapture.instance.setType(type, result)
       }
