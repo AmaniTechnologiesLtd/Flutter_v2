@@ -252,9 +252,8 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val files = call.argument<List<Map<String, Any>>>("files")
         if (files != null) {
           DocumentCapture.instance.setFiles(files)
-        } else {
-          DocumentCapture.instance.upload(activity!!, result)
         }
+          DocumentCapture.instance.upload(activity!!, result)
       }
       "documentCaptureBackPressHandle" -> {
         DocumentCapture.instance.backPressHandle(activity!!, result)

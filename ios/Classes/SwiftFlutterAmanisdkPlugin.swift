@@ -179,9 +179,10 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       // possible keys: data, dataType
         if let files: [[String: Any]] = arguments!["files"] as? [[String: Any]] {
             let filesData = files.map { mappedData in
-              let fileData = mappedData["data"] as! Data;
+              let fileData = mappedData["data"] as! FlutterStandardTypedData;
               let fileType = mappedData["dataType"] as! String;
-              return FileWithType(data: fileData, dataType: fileType)
+
+              return FileWithType(data: fileData.data, dataType: fileType)
             }
             if filesData.isEmpty {
               documentCapture.upload(files: nil, result: result)

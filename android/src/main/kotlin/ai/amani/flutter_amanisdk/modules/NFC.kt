@@ -37,6 +37,13 @@ class NFC {
         if (IdCapture.instance.usesNFC) {
             IdCapture.instance.getMRZ(
                     onComplete = {
+                        if (it.mRZBirthDate == null && it.mRZExpiryDate == null && it.mRZDocumentNumber == null) {
+                            channel.invokeMethod("onError", mapOf("message" to "mrz value wrong" ))
+                            android.util.Log.d("NFC.kt", "start: mrzError ")
+                            result.success(false)
+                            return@getMRZ
+                        }
+
                         this.birthDate = it.mRZBirthDate
                         this.expireDate = it.mRZExpiryDate
                         this.documentNo = it.mRZDocumentNumber

@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk/amani_sdk.dart';
+import 'package:flutter_amanisdk/common/models/file_type.dart';
 import 'package:flutter_amanisdk/modules/document_capture.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
+import 'package:file_picker/file_picker.dart';
+
 
 class DocumentCaputureScreen extends StatefulWidget {
   const DocumentCaputureScreen({super.key});
@@ -13,6 +16,23 @@ class DocumentCaputureScreen extends StatefulWidget {
 }
 
 class _DocumentCaputureScreenState extends State<DocumentCaputureScreen> {
+  void _pickFile() async {
+    // opens storage to pick files and the picked file or files
+    // are assigned into result and if no file is chosen result is null.
+    // you can also toggle "allowMultiple" true or false depending on your need
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    // if no file is picked
+    if (result == null) return;
+
+    final fileConvertUint8List = await File(result.files.first.path!).readAsBytes();
+    // final mineType = lookupMimeType(result.files.first.path!);
+    FileTypeModel documentFile = FileTypeModel(data: fileConvertUint8List,dataType:"application/pdf");
+    _documentCaptureModule.startUploadWithFiles([documentFile]).then((image) {
+      Navigator.pushNamed(context, "/");
+    }).catchError((err) {});
+  }
+
   final DocumentCapture _documentCaptureModule =
       AmaniSDK().getDocumentCapture();
 
@@ -62,7 +82,13 @@ class _DocumentCaputureScreenState extends State<DocumentCaputureScreen> {
                               idCaptureNFCCompleted: false));
                     }).catchError((err) {});
                   },
-                  child: const Text("Start"))
+                  child: const Text("Start")),
+              OutlinedButton(
+                  onPressed: () {
+                    _pickFile();
+
+                  },
+                  child: const Text("Upload Document"))
             ],
           ),
         ),

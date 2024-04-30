@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_amanisdk'
-  s.version          = '2.0.11'
+  s.version          = '2.0.12'
   s.summary          = 'Amani SDK Flutter bindings for ios and android'
   s.description      = <<-DESC
   Amani v2 SDK Flutter bindings for ios and android
