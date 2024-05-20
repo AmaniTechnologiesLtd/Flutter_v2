@@ -1,48 +1,48 @@
 PODS:
-  - AmaniSDK (3.3.7):
-    - OpenSSL-Universal (~> 1.1.1100)
-  - DKImagePickerController/Core (4.3.8):
+  - AmaniOpenSSL (1.1.2000)
+  - AmaniSDK (3.3.11):
+    - AmaniOpenSSL (~> 1.1.2000)
+  - DKImagePickerController/Core (4.3.9):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.8)
-  - DKImagePickerController/PhotoGallery (4.3.8):
+  - DKImagePickerController/ImageDataManager (4.3.9)
+  - DKImagePickerController/PhotoGallery (4.3.9):
     - DKImagePickerController/Core
     - DKPhotoGallery
-  - DKImagePickerController/Resource (4.3.8)
-  - DKPhotoGallery (0.0.17):
-    - DKPhotoGallery/Core (= 0.0.17)
-    - DKPhotoGallery/Model (= 0.0.17)
-    - DKPhotoGallery/Preview (= 0.0.17)
-    - DKPhotoGallery/Resource (= 0.0.17)
+  - DKImagePickerController/Resource (4.3.9)
+  - DKPhotoGallery (0.0.19):
+    - DKPhotoGallery/Core (= 0.0.19)
+    - DKPhotoGallery/Model (= 0.0.19)
+    - DKPhotoGallery/Preview (= 0.0.19)
+    - DKPhotoGallery/Resource (= 0.0.19)
     - SDWebImage
     - SwiftyGif
-  - DKPhotoGallery/Core (0.0.17):
+  - DKPhotoGallery/Core (0.0.19):
     - DKPhotoGallery/Model
     - DKPhotoGallery/Preview
     - SDWebImage
     - SwiftyGif
-  - DKPhotoGallery/Model (0.0.17):
+  - DKPhotoGallery/Model (0.0.19):
     - SDWebImage
     - SwiftyGif
-  - DKPhotoGallery/Preview (0.0.17):
+  - DKPhotoGallery/Preview (0.0.19):
     - DKPhotoGallery/Model
     - DKPhotoGallery/Resource
     - SDWebImage
     - SwiftyGif
-  - DKPhotoGallery/Resource (0.0.17):
+  - DKPhotoGallery/Resource (0.0.19):
     - SDWebImage
     - SwiftyGif
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
-  - flutter_amanisdk (2.0.12):
-    - AmaniSDK (~> 3)
+  - flutter_amanisdk (2.0.13):
+    - AmaniSDK (= 3.3.11)
     - Flutter
-  - OpenSSL-Universal (1.1.2200)
-  - SDWebImage (5.19.1):
-    - SDWebImage/Core (= 5.19.1)
-  - SDWebImage/Core (5.19.1)
+  - SDWebImage (5.19.2):
+    - SDWebImage/Core (= 5.19.2)
+  - SDWebImage/Core (5.19.2)
   - SwiftyGif (5.4.5)
 
 DEPENDENCIES:
@@ -52,11 +52,11 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/AmaniTechnologiesLtd/Mobile_SDK_Repo:
+    - AmaniOpenSSL
     - AmaniSDK
   https://github.com/CocoaPods/Specs.git:
     - DKImagePickerController
     - DKPhotoGallery
-    - OpenSSL-Universal
     - SDWebImage
     - SwiftyGif
 
@@ -69,14 +69,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_amanisdk/ios"
 
 SPEC CHECKSUMS:
-  AmaniSDK: 7ff669a05a46b0bb10776d81497cd631bdfa5a05
-  DKImagePickerController: a7836546cfdfe014171694f643a7d575bc8ace7f
-  DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
+  AmaniOpenSSL: 7a1714c32d10145b6a54ec63a713cf5b71af0159
+  AmaniSDK: b3b0e1ba13b97cbdc1122b583c4ceefa71a383d1
+  DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
+  DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_amanisdk: 888fc05f554009cfc8cfecfefa469047d238320d
-  OpenSSL-Universal: 6e1ae0555546e604dbc632a2b9a24a9c46c41ef6
-  SDWebImage: 40b0b4053e36c660a764958bff99eed16610acbb
+  flutter_amanisdk: 10de5c323142627840b2eab38f5552eb2cb649f6
+  SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
 
 PODFILE CHECKSUM: 2015cdad02153ed515eece42823a78c20c6294e8

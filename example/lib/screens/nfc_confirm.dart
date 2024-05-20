@@ -16,6 +16,8 @@ class _NFCConfrimScreenState extends State<NFCConfrimScreen> {
   bool _uploadState = false;
   bool _errorState = false;
   bool _startState = false;
+  bool _HasNfc = false;
+
   final _idCapture = AmaniSDK().getIDCapture();
   final _androidNFCCapture = AmaniSDK().getAndroidNFCCapture();
 
@@ -33,6 +35,7 @@ class _NFCConfrimScreenState extends State<NFCConfrimScreen> {
             Column(
               children: [
                 Text("Is Capturing: $_isCapturing"),
+                Text("Nfc Caputred: $_HasNfc"),
                 Text("Upload State: $_uploadState"),
                 Text("Error State: $_errorState"),
                 Text("Started State: $_startState"),
@@ -48,6 +51,7 @@ class _NFCConfrimScreenState extends State<NFCConfrimScreen> {
                                 onFinishedCallback: (isCaptureComplete) {
                               setState(() {
                                 _isCapturing = false;
+                                _HasNfc = isCaptureComplete;
                                 _uploadState = true;
                               });
                               _idCapture.upload().then((uploadState) {
