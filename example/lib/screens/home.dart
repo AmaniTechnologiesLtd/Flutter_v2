@@ -13,11 +13,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
     AmaniSDK()
         .initAmani(
-            server: "https://server.example",
-            customerToken: "customer_token",
-            customerIdCardNumber: "",
+            server: "https://dev.amani.ai",
+            customerToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3NTkyODYzLCJpYXQiOjE3MTc1ODkyNjMsImp0aSI6IjgzZjFiMDZhZTVlYzRhNjdhYTQ4ZTc5OTliZWMzZTVlIiwidXNlcl9pZCI6IjM5ODQ4Yjc5LWM3NjItNGExNi1iMDFlLTdkYjlkMjJmNmNkNyIsImFwaV91c2VyIjpmYWxzZSwiY29tcGFueV9pZCI6ImU5YWZiZDMxLTczY2UtNGRkNi1hMjU3LWY4ZjE2YTFmMGQ1MiIsInByb2ZpbGVfaWQiOiJhYWZkMmQ3Ny0zZTg5LTRiYTAtYWYwYy0zYjZhZDZkODNmMWYifQ.n1kW7405vbD3MPgl4SOrILl1satr-WuRgkoHOGIQRTA",
+            customerIdCardNumber: "22180378472",
             useLocation: true,
-            apiVersion: AmaniApiVersion.v1,
+            apiVersion: AmaniApiVersion.v2,
             lang: "tr")
         .then((_) {
       AmaniSDK().getCustomerInfo().then((value) {

@@ -55,6 +55,7 @@ class ConfirmScreen extends StatelessWidget {
                         args.idCaptureBothSidesTaken == true &&
                         args.idCaptureNFCCompleted == false) {
                       if (Platform.isIOS) {
+                        
                         _idCapture.iosStartNFC().then((isDone) {
                           Navigator.pushNamed(context, ConfirmScreen.routeName,
                               arguments: ConfirmArguments(

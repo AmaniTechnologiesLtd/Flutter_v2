@@ -12,27 +12,33 @@ import UIKit
 class NFC {
   private let module = Amani.sharedInstance.scanNFC()
   private var moduleView: UIView!
+  weak var delegate: mrzInfoDelegate?
 
+  func start(nviData: NviModel, result: @escaping FlutterResult) async {
+    do {
+      let nfcRequest = try await module.start(nviData: nviData)
+       
+       result(nfcRequest)
+        
+    } catch let err {
+        result(FlutterError(code: "30007", message: err.localizedDescription, details: nil))
+    }
+}
+
+ /*
   func start(imageData: FlutterStandardTypedData, result: @escaping FlutterResult) {
     module.start(imageBase64: imageData.data.base64EncodedString()) { (_) in
         result(true)
     }
   }
 
-  func start(nviData: NviModel, result: @escaping FlutterResult) {
-    do {
-      try module.start(nviData: nviData) { _ in
-        result(true)
-      }
 
-    } catch let err {
-      result(FlutterError(code: "30007", message: err.localizedDescription, details: nil))
-    }
-  }
 
+  //Buraya tekrar bak
+ 
   func start(result: @escaping FlutterResult) {
     let vc = UIApplication.shared.windows.last?.rootViewController
-
+    
     moduleView = module.start { _ in
       result(true)
     }
@@ -42,7 +48,7 @@ class NFC {
       vc!.navigationController?.setNavigationBarHidden(true, animated: false)
     }
   }
-  
+  */
   func setType(type: String, result: @escaping FlutterResult) {
     module.setType(type: type)
     result(nil)

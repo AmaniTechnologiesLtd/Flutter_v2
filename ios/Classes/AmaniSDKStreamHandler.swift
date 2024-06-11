@@ -54,3 +54,18 @@ extension DelegateEventHandler: AmaniDelegate {
     
   }
 }
+extension DelegateEventHandler: mrzInfoDelegate {
+   public func mrzInfo(_ mrz: AmaniSDK.MrzModel?, documentId: String?) {
+       guard let mrz = mrz else {
+        eventSink?(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30022", "error_message": "mrz model is nil"]] as [String: Any]])
+        return
+    }
+
+    let nviData = AmaniSDK.NviModel(mrzModel: mrz)
+    if nviData != nil {
+        eventSink?(["type": "mrzInfoDelegate", "data": String(describing: mrz)])
+    } else {
+        eventSink?(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30021", "error_message": "Nvi model parsing error"]] as [String: Any]])
+    }
+   }
+}

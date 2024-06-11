@@ -33,10 +33,17 @@ class IdCapture {
   }
   
   @available(iOS 13, *)
-  public func startNFC(result: @escaping FlutterResult) {
-    module.startNFC { done in
-      result(done)
+ public func startNFC(nvi: AmaniSDK.NviModel?) async -> Bool {
+  if let nvi = nvi {
+    do {
+      var result = try await module.startNFC(nvi: nvi)
+      return result
+    } catch(let error) {
+     return false
     }
+  }
+  return false
+
   }
   
   public func setType(type: String, result: @escaping FlutterResult) {
@@ -64,6 +71,11 @@ class IdCapture {
     module.setIdHologramDetection(enabled: enabled)
     result(nil)
   }
-  
+  //Get mrz fonk buraya
+  public func getMrz(result: @escaping FlutterResult) {
+    module.getMrz { [weak self] mrzData in 
+    result(mrzData)
+    }
+  }
 }
 
