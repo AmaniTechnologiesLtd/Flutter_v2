@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
@@ -32,6 +33,32 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
     try {
       final bool isDone = await methodChannel.invokeMethod('uploadIDCapture');
       return isDone;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+@override
+    Future<String?> getMrzRequest() async {
+    try {
+
+     final String? result = await methodChannel.invokeMethod<String>('getMrz');
+      print("gelen result değeri: $result");
+      if (result != null) {
+        
+        print("Gelen JSON verisi: $result");
+      try {
+        var resultMap = await json.decode(json.encode(result));
+        print("Method Channel tarafında result map değeri return edildi:  $resultMap");
+        return resultMap;
+      } catch (e) {
+        print("JSON decoding failed: $e");
+        return null;
+      }
+
+    } else {
+      print("Result nil geldi");
+    }
     } catch (err) {
       rethrow;
     }
@@ -71,6 +98,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   @override
   Future<bool> iOSStartIDCaptureNFC() async {
     try {
+     
       final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC');
       return isDone;
     } catch (err) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/modules/id_capture.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
+import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 class IdCaptureScreen extends StatefulWidget {
   const IdCaptureScreen({Key? key}) : super(key: key);
@@ -56,7 +57,7 @@ class _IdCaptureScreenState extends State<IdCaptureScreen> {
               OutlinedButton(
                   onPressed: () {
                     _idCaptureModule.start(IdSide.front).then((imageData) {
-                      Navigator.pushNamed(context, ConfirmScreen.routeName,
+                      Navigator.pushNamed(context, ConfirmScreenState.routeName,
                           arguments: ConfirmArguments(
                               source: "idCapture",
                               imageData: imageData,

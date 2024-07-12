@@ -5,6 +5,7 @@ import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
 import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
+import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 class AutoSelfieScreen extends StatefulWidget {
   const AutoSelfieScreen({Key? key}) : super(key: key);
@@ -84,7 +85,7 @@ class _AutoSelfieScreenState extends State<AutoSelfieScreen> {
                       androidAutoSelfieSettings: _androidAutoSelfieSettings,
                       iosAutoSelfieSettings: _iOSAutoSelfieSettings)
                   .then((imageData) {
-                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                Navigator.pushNamed(context, ConfirmScreenState.routeName,
                     arguments: ConfirmArguments(
                         source: "autoSelfie", imageData: imageData));
               }).catchError((err) {

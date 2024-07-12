@@ -6,6 +6,7 @@ import 'package:flutter_amanisdk/common/models/file_type.dart';
 import 'package:flutter_amanisdk/modules/document_capture.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 
 class DocumentCaputureScreen extends StatefulWidget {
@@ -74,7 +75,7 @@ class _DocumentCaputureScreenState extends State<DocumentCaputureScreen> {
               OutlinedButton(
                   onPressed: () {
                     _documentCaptureModule.start().then((image) {
-                      Navigator.pushNamed(context, ConfirmScreen.routeName,
+                      Navigator.pushNamed(context, ConfirmScreenState.routeName,
                           arguments: ConfirmArguments(
                               source: "documentCapture",
                               imageData: image,

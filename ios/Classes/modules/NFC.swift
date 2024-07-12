@@ -12,7 +12,6 @@ import UIKit
 class NFC {
   private let module = Amani.sharedInstance.scanNFC()
   private var moduleView: UIView!
-  weak var delegate: mrzInfoDelegate?
 
   func start(nviData: NviModel, result: @escaping FlutterResult) async {
     do {

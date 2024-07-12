@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter_amanisdk/common/models/nvi_data.dart';
 import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
 
 enum IdSide { front, back }
+
+
 
 class IdCapture {
   final MethodChannelAmaniSDK _methodChannel;
@@ -24,15 +29,21 @@ class IdCapture {
     }
   }
 
-  Future<bool> iosStartNFC() async {
+  Future<bool> iosStartNFC(String? mrzDocumentId) async {
     if (!Platform.isIOS) return false;
-    try {
+    if (mrzDocumentId != null) {
+      print("IDCAPTURE MODULU MRZ DOCUMENT ID: $mrzDocumentId");
+     try {
       final bool isDone = await _methodChannel.iOSStartIDCaptureNFC();
       return isDone;
-    } catch (err) {
+       } catch (err) {
       rethrow;
+       }
+      } else {
+        return false;
+      }
     }
-  }
+     
 
   Future<void> setAndroidUsesNFC(bool usesNFC) async {
     if (Platform.isAndroid) {
@@ -48,6 +59,17 @@ class IdCapture {
       rethrow;
     }
   }
+
+
+Future<String?> getMrzRequest() async {
+  if (!Platform.isIOS) return null;
+  try {
+    final result =  await _methodChannel.getMrzRequest();
+    return result;
+  } catch (err) {
+    rethrow;
+  }
+}
 
   Future<void> setType(String type) async {
     await _methodChannel.setIDCaptureType(type);

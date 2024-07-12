@@ -12,7 +12,7 @@ import UIKit
 class IdCapture {
   private let module = Amani.sharedInstance.IdCapture()
   private var sdkView: SDKView!
-  
+
   public func start(stepID: Int, result: @escaping FlutterResult) {
     let vc = UIApplication.shared.windows.last?.rootViewController
     do {
@@ -73,9 +73,12 @@ class IdCapture {
   }
   //Get mrz fonk buraya
   public func getMrz(result: @escaping FlutterResult) {
-    module.getMrz { [weak self] mrzData in 
-    result(mrzData)
+    print("IDCapture tarafında getMRz fonksiyonun içerisine girdi sdk tarafına isteğe çıkacak.")
+        self.module.getMrz { mrzData in 
+            print("MRZ DATA PRINT EDILDIGI YER: \(mrzData)")
+                result(mrzData)
+        }
     }
   }
-}
+
 

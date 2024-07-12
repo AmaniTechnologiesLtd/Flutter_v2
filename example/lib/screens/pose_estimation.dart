@@ -5,6 +5,7 @@ import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
 import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
+import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 class PoseEstimationScreen extends StatefulWidget {
   const PoseEstimationScreen({Key? key}) : super(key: key);
@@ -120,7 +121,7 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
                       androidSettings: _androidPoseEstimationSettings,
                       iosSettings: _iosPoseEstimationSettings)
                   .then((imageData) {
-                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                Navigator.pushNamed(context, ConfirmScreenState.routeName,
                     arguments: ConfirmArguments(
                         source: "poseEstimation", imageData: imageData));
               }).catchError((err) {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
+import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 class SelfieScreen extends StatefulWidget {
   const SelfieScreen({Key? key}) : super(key: key);
@@ -53,7 +54,7 @@ class _SelfieScreenState extends State<SelfieScreen> {
           child: OutlinedButton(
             onPressed: () async {
               await _amaniSelfie.start().then((imageData) {
-                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                Navigator.pushNamed(context, ConfirmScreenState.routeName,
                     arguments: ConfirmArguments(
                         source: "selfie", imageData: imageData));
               }).catchError((err) {

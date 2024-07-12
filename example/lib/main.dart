@@ -18,7 +18,7 @@ void main() {
     routes: {
       '/': (ctx) => const HomeScreen(),
       '/id-capture': (ctx) => const IdCaptureScreen(),
-      '/confirm': (ctx) => ConfirmScreen(),
+      '/confirm': (ctx) => ConfirmScreenState(),
       '/selfie': (ctx) => const SelfieScreen(),
       '/auto-selfie': (ctx) => const AutoSelfieScreen(),
       '/pose-estimation': (ctx) => const PoseEstimationScreen(),

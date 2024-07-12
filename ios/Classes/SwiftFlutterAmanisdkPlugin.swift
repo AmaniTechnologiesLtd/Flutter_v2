@@ -154,8 +154,6 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         Task {
             do {
                 let nfc = NFC()
-                let eventHandler = DelegateEventHandler()
-                nfc.delegate = eventHandler
                  let nviData = arguments?["nviData"] as! [String: String]
                  let nviModel = NviModel(documentNo: nviData["documentNo"]!, dateOfBirth: nviData["dateOfBirth"]!, dateOfExpire: nviData["dateOfExpire"]!)
                 try await nfc.start(nviData: nviModel, result: result)  
@@ -251,6 +249,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     let apiVersion = version == "v2" ? ApiVersions.v2 : ApiVersions.v1
     
     Amani.sharedInstance.setDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
+    Amani.sharedInstance.setMRZDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
     Amani.sharedInstance.initAmani(server: server, token: customerToken, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { (customerRes, err) in
       if customerRes != nil {
         result(true)
@@ -272,6 +271,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
     let apiVersion: ApiVersions = version == "v2" ? .v2 : .v1
     Amani.sharedInstance.setDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
+    Amani.sharedInstance.setMRZDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
     Amani.sharedInstance.initAmani(server: server, userName: email, password: password, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { customerRes, err in
       if customerRes != nil {
         result(true)
@@ -318,4 +318,6 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         result(customerInfoDict)
       })
   }
+  
 }
+

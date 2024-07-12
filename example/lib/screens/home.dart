@@ -13,8 +13,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> initAmani() async {
     AmaniSDK()
         .initAmani(
-            server: "https://dev.amani.ai",
-            customerToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE3NTkyODYzLCJpYXQiOjE3MTc1ODkyNjMsImp0aSI6IjgzZjFiMDZhZTVlYzRhNjdhYTQ4ZTc5OTliZWMzZTVlIiwidXNlcl9pZCI6IjM5ODQ4Yjc5LWM3NjItNGExNi1iMDFlLTdkYjlkMjJmNmNkNyIsImFwaV91c2VyIjpmYWxzZSwiY29tcGFueV9pZCI6ImU5YWZiZDMxLTczY2UtNGRkNi1hMjU3LWY4ZjE2YTFmMGQ1MiIsInByb2ZpbGVfaWQiOiJhYWZkMmQ3Ny0zZTg5LTRiYTAtYWYwYy0zYjZhZDZkODNmMWYifQ.n1kW7405vbD3MPgl4SOrILl1satr-WuRgkoHOGIQRTA",
+            server: "https://demo2.amani.ai",
+            customerToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNzk1MTUyLCJpYXQiOjE3MjA3OTE1NTIsImp0aSI6ImRiYzI1ZDVmNGM5ZTQ4MTQ4NWQzODM5Y2I4ZGQ5NTVjIiwidXNlcl9pZCI6Ijg4Y2E1ZGIzLTJiMWEtNDdiMC04ZDRiLWMzYjk5ZWJiY2M1YSIsImFwaV91c2VyIjpmYWxzZSwiY29tcGFueV9pZCI6ImZjNGIyN2M2LTk3NzctNGYzMC1hNDc1LWE4MDFlNzFmZWY4MiIsInByb2ZpbGVfaWQiOiI4MTVjOTA4OS1jOTNiLTQxZDItYjhlNS1hN2UyZDBlNDEwZGUifQ.upsYTZ6CfcC_snF1w0KY6ko4M-qdz9dty6UGy1WaPpQ",
             customerIdCardNumber: "22180378472",
             useLocation: true,
             apiVersion: AmaniApiVersion.v2,
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     await for (final delegateEvent in AmaniSDK().getDelegateStream()) {
-      print("delegate event recieved");
+      print("delegate event recievedDDDD");
       print(delegateEvent);
     }
   }
