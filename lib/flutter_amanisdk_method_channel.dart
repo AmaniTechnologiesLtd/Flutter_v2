@@ -96,10 +96,29 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   }
 
   @override
-  Future<bool> iOSStartIDCaptureNFC() async {
+  Future<bool> iOSStartIDCaptureNFC(Map<String, dynamic> mrzResult) async {
+    String _mrzDocumentNo = "";
+    String _mrzDateOfBirth = "";
+    String _mrzDateOfExpire = "";
     try {
-     
-      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC');
+       if (mrzResult.isNotEmpty) {
+        mrzResult.forEach((key, value) {
+          if (key == "mrzDocumentNumber") {
+            _mrzDocumentNo = value;
+          } else if (key == "mrzExpiryDate") {
+            _mrzDateOfExpire = value;
+          } else if (key == "mrzBirthDate") {
+            _mrzDateOfBirth = value;
+          }
+        });
+        
+      }
+      print("Sending arguments to iOS DateOfBirth: $_mrzDateOfBirth");
+      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC', {
+        "birthDate": _mrzDateOfBirth,
+        "expireDate": _mrzDateOfExpire,
+        "documentNo": _mrzDocumentNo
+    });
       return isDone;
     } catch (err) {
       rethrow;

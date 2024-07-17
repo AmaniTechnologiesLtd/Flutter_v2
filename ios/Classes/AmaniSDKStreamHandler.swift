@@ -59,19 +59,20 @@ extension DelegateEventHandler: AmaniDelegate {
   }
 }
 extension DelegateEventHandler: mrzInfoDelegate {
-    func mrzInfo(_ mrz: AmaniSDK.MrzModel?, documentId: String?) {
-     print("STREAM HANDLER GUARD LET ILE MRZ KONTROLU YAPILACAK")
-       guard let mrz = mrz else {
-        print("GELEN MRZ INFO DATASI EXTENSION: \(mrz) ")
-        eventSink?(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30022", "error_message": "mrz model is nil"]] as [String: Any]])
-        return
+   func mrzInfo(_ mrz: AmaniSDK.MrzModel?, documentId: String?) {
+    print("STREAM HANDLER GUARD LET ILE MRZ KONTROLU YAPILACAK")
+    guard let mrz = mrz else {
+      print("GELEN MRZ INFO DATASI EXTENSION: \(mrz) ")
+      eventSink?(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30022", "error_message": "mrz model is nil"]] as [String: Any]])
+      return
     }
 
     let nviData = AmaniSDK.NviModel(mrzModel: mrz)
     if nviData != nil {
-        eventSink?(["type": "mrzInfoDelegate", "data": String(describing: mrz)])
+      print("NviData nil check yapıldı ve eventSink ile dart tarafına gönderilecek.")
+      eventSink?(["type": "mrzInfoDelegate", "data": String(describing: mrz)])
     } else {
-        eventSink?(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30021", "error_message": "Nvi model parsing error"]] as [String: Any]])
+      eventSink?(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30021", "error_message": "Nvi model parsing error"]] as [String: Any]])
     }
+  }
    }
-}

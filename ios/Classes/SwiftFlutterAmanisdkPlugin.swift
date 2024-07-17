@@ -55,16 +55,25 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       let timeout = arguments?["timeout"] as! Int
       idCapture.setManualCaptureButtonTimeout(timeout: timeout, result: result)
     case "iosIDCaptureNFC":
-      if #available(iOS 13, *) {
-        let idCapture = IdCapture()
-        Task {
-           let nviData = arguments?["nviData"] as! [String: String]
-            let nviModel = NviModel(documentNo: nviData["documentNo"]!, dateOfBirth: nviData["dateOfBirth"]!, dateOfExpire: nviData["dateOfExpire"]!)
-            await idCapture.startNFC(nvi: nviModel)        
+    
+        if let arguments = call.arguments as? [String: Any], 
+           let birthDate = arguments["birthDate"] as? String,
+           let expireDate = arguments["expireDate"] as? String,
+           let documentNo = arguments["documentNo"] as? String {
+            print("Plugin tarafından NFC için isteğe çıkılacak: \(arguments)")
+            
+            let idCapture = IdCapture()
+            Task {
+                let nviModel = NviModel(documentNo: documentNo, dateOfBirth: birthDate, dateOfExpire: expireDate)
+                let isDone = await idCapture.startNFC(nvi: nviModel)
+                print("PLUGİN TARAFINDA startNFC fonksiyonundan dönen BOOLEAN DEGERI: \(isDone)")
+                result(isDone)
+            }
+        } else {
+            result(FlutterError(code: "30009", message: "Invalid arguments", details: nil))
         }
-    } else {
-        result(FlutterError(code: "30008", message: "NFC Requires iOS 13 or newer", details: nil))
-    }
+
+            
     case "setIDCaptureVideoRecordingEnabled":
       let idCapture = IdCapture()
       let enabled = arguments?["enabled"] as? Bool

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/modules/id_capture.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
-import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 class IdCaptureScreen extends StatefulWidget {
   const IdCaptureScreen({Key? key}) : super(key: key);

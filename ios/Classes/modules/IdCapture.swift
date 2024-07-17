@@ -37,6 +37,7 @@ class IdCapture {
   if let nvi = nvi {
     do {
       var result = try await module.startNFC(nvi: nvi)
+      print("IDCAPTURE SWIFT TARAFINDA STARTNFC BASARIYLA TAMAMLANDI: \(result)")
       return result
     } catch(let error) {
      return false

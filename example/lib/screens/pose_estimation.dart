@@ -5,7 +5,6 @@ import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
 import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
 import 'package:flutter_amanisdk_example/screens/confim.dart';
-import 'package:flutter_amanisdk_example/screens/confirm_arguments.dart';
 
 class PoseEstimationScreen extends StatefulWidget {
   const PoseEstimationScreen({Key? key}) : super(key: key);

@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
     AmaniSDK()
         .initAmani(
             server: "https://demo2.amani.ai",
-            customerToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNzk1MTUyLCJpYXQiOjE3MjA3OTE1NTIsImp0aSI6ImRiYzI1ZDVmNGM5ZTQ4MTQ4NWQzODM5Y2I4ZGQ5NTVjIiwidXNlcl9pZCI6Ijg4Y2E1ZGIzLTJiMWEtNDdiMC04ZDRiLWMzYjk5ZWJiY2M1YSIsImFwaV91c2VyIjpmYWxzZSwiY29tcGFueV9pZCI6ImZjNGIyN2M2LTk3NzctNGYzMC1hNDc1LWE4MDFlNzFmZWY4MiIsInByb2ZpbGVfaWQiOiI4MTVjOTA4OS1jOTNiLTQxZDItYjhlNS1hN2UyZDBlNDEwZGUifQ.upsYTZ6CfcC_snF1w0KY6ko4M-qdz9dty6UGy1WaPpQ",
+            customerToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIxMjE3MjA3LCJpYXQiOjE3MjEyMTM2MDcsImp0aSI6ImE0MzJkMzE4MTdhYTRkZTI5ZTdmZGE4ZTZiMDE0ZjU1IiwidXNlcl9pZCI6Ijg4Y2E1ZGIzLTJiMWEtNDdiMC04ZDRiLWMzYjk5ZWJiY2M1YSIsImFwaV91c2VyIjpmYWxzZSwiY29tcGFueV9pZCI6ImZjNGIyN2M2LTk3NzctNGYzMC1hNDc1LWE4MDFlNzFmZWY4MiIsInByb2ZpbGVfaWQiOiI4MTVjOTA4OS1jOTNiLTQxZDItYjhlNS1hN2UyZDBlNDEwZGUifQ.EzETNk486qtn-ocrHjMVdS4VJkHB_F3jT0uayHCD0CI",
             customerIdCardNumber: "22180378472",
             useLocation: true,
             apiVersion: AmaniApiVersion.v2,

@@ -60,10 +60,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('startIDCapture() has not been implemented.');
   }
 
-  Future<bool> iOSStartIDCaptureNFC() {
+  Future<bool> iOSStartIDCaptureNFC(Map<String, dynamic> mrzResult) async {
     throw UnimplementedError(
         'iOSStartIDCaptureNFC() has not been implemented.');
   }
+  
 
   Future<void> androidSetUsesNFC(bool usesNFC) {
     throw UnimplementedError('androidSetUsesNFC() has not been implemented.');
