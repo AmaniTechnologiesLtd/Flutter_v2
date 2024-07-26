@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
@@ -37,6 +38,32 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
     }
   }
 
+@override
+    Future<String?> getMrzRequest() async {
+    try {
+
+     final String? result = await methodChannel.invokeMethod<String>('getMrz');
+      print("gelen result değeri: $result");
+      if (result != null) {
+        
+        print("Gelen JSON verisi: $result");
+      try {
+        var resultMap = await json.decode(json.encode(result));
+        print("Method Channel tarafında result map değeri return edildi:  $resultMap");
+        return resultMap;
+      } catch (e) {
+        print("JSON decoding failed: $e");
+        return null;
+      }
+
+    } else {
+      print("Result nil geldi");
+    }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Future<void> setIDCaptureType(String type) async {
     try {
@@ -67,11 +94,32 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       rethrow;
     }
   }
+  
 
   @override
-  Future<bool> iOSStartIDCaptureNFC() async {
+  Future<bool> iOSStartIDCaptureNFC(Map<String, dynamic> mrzResult) async {
+    String _mrzDocumentNo = "";
+    String _mrzDateOfBirth = "";
+    String _mrzDateOfExpire = "";
     try {
-      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC');
+       if (mrzResult.isNotEmpty) {
+        mrzResult.forEach((key, value) {
+          if (key == "mrzDocumentNumber") {
+            _mrzDocumentNo = value;
+          } else if (key == "mrzExpiryDate") {
+            _mrzDateOfExpire = value;
+          } else if (key == "mrzBirthDate") {
+            _mrzDateOfBirth = value;
+          }
+        });
+        
+      }
+      print("Sending arguments to iOS DateOfBirth: $_mrzDateOfBirth");
+      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC', {
+        "birthDate": _mrzDateOfBirth,
+        "expireDate": _mrzDateOfExpire,
+        "documentNo": _mrzDocumentNo
+    });
       return isDone;
     } catch (err) {
       rethrow;

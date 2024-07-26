@@ -84,7 +84,7 @@ class _AutoSelfieScreenState extends State<AutoSelfieScreen> {
                       androidAutoSelfieSettings: _androidAutoSelfieSettings,
                       iosAutoSelfieSettings: _iOSAutoSelfieSettings)
                   .then((imageData) {
-                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                Navigator.pushNamed(context, ConfirmScreenState.routeName,
                     arguments: ConfirmArguments(
                         source: "autoSelfie", imageData: imageData));
               }).catchError((err) {

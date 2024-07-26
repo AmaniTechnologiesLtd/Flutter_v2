@@ -55,12 +55,25 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       let timeout = arguments?["timeout"] as! Int
       idCapture.setManualCaptureButtonTimeout(timeout: timeout, result: result)
     case "iosIDCaptureNFC":
-      let idCapture = IdCapture()
-      if #available(iOS 13, *) {
-        idCapture.startNFC(result: result)
-      } else {
-        result(FlutterError(code: "30008", message: "NFC Requires iOS 13 or newer", details: nil))
-      }
+    
+        if let arguments = call.arguments as? [String: Any], 
+           let birthDate = arguments["birthDate"] as? String,
+           let expireDate = arguments["expireDate"] as? String,
+           let documentNo = arguments["documentNo"] as? String {
+            print("Plugin tarafından NFC için isteğe çıkılacak: \(arguments)")
+            
+            let idCapture = IdCapture()
+            Task {
+                let nviModel = NviModel(documentNo: documentNo, dateOfBirth: birthDate, dateOfExpire: expireDate)
+                let isDone = await idCapture.startNFC(nvi: nviModel)
+                print("PLUGİN TARAFINDA startNFC fonksiyonundan dönen BOOLEAN DEGERI: \(isDone)")
+                result(isDone)
+            }
+        } else {
+            result(FlutterError(code: "30009", message: "Invalid arguments", details: nil))
+        }
+
+            
     case "setIDCaptureVideoRecordingEnabled":
       let idCapture = IdCapture()
       let enabled = arguments?["enabled"] as? Bool
@@ -73,6 +86,10 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     case "uploadIDCapture":
       let idCapture = IdCapture()
       idCapture.upload(result: result)
+      // get Mrz Data
+    case "getMrz":
+     let idCapture = IdCapture()
+     idCapture.getMrz(result: result)
     // Selfie
     case "setSelfieType":
       let selfie = Selfie()
@@ -117,18 +134,46 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         let poseEstimation = PoseEstimation()
         poseEstimation.upload(result: result)
     // NFC
+    /*
     case "iOSstartNFCWithImageData":
         let nfc = NFC()
         let imageData = arguments?["imageData"] as! FlutterStandardTypedData
         nfc.start(imageData: imageData, result: result)
+      */
     case "iOSstartNFCWithNviModel":
-        let nfc = NFC()
-        let nviData = arguments?["nviData"] as! [String: String]
-        let nviModel = NviModel(documentNo: nviData["documentNo"]!, dateOfBirth: nviData["dateOfBirth"]!, dateOfExpire: nviData["dateOfExpire"]!)
-        nfc.start(nviData: nviModel, result: result)
+        Task {
+            do {
+                let nfc = NFC()
+                guard let nviData = arguments?["nviData"] as? [String: String] else {
+                    result(FlutterError(code: "400", message: "Invalid arguments", details: nil))
+                    return
+                }
+                let nviModel = NviModel(
+                    documentNo: nviData["documentNo"]!,
+                    dateOfBirth: nviData["dateOfBirth"]!,
+                    dateOfExpire: nviData["dateOfExpire"]!
+                )
+                try await nfc.start(nviData: nviModel, result: result)
+            } catch {
+                result(FlutterError(code: "500", message: "Internal error", details: nil))
+            }
+        }
     case "iOSstartNFCWithMRZCapture":
-        let nfc = NFC()
-        nfc.start(result: result)
+            if #available(iOS 13, *) {
+        Task {
+            do {
+                let nfc = NFC()
+                 let nviData = arguments?["nviData"] as! [String: String]
+                 let nviModel = NviModel(documentNo: nviData["documentNo"]!, dateOfBirth: nviData["dateOfBirth"]!, dateOfExpire: nviData["dateOfExpire"]!)
+                try await nfc.start(nviData: nviModel, result: result)  
+                
+            } catch let err {
+                result(FlutterError(code: "30007", message: err.localizedDescription, details: nil))
+            }
+        }
+    } else {
+        result(FlutterError(code: "30008", message: "NFC Requires iOS 13 or newer", details: nil))
+    }
     case "iOSsetNFCType":
         let nfc = NFC()
         let type = arguments?["type"] as! String
@@ -192,6 +237,9 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       } else {
         documentCapture.upload(files: nil, result: result)
       }
+  
+
+
 
     default:
       result(FlutterMethodNotImplemented)
@@ -210,6 +258,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     let apiVersion = version == "v2" ? ApiVersions.v2 : ApiVersions.v1
     
     Amani.sharedInstance.setDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
+    Amani.sharedInstance.setMRZDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
     Amani.sharedInstance.initAmani(server: server, token: customerToken, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { (customerRes, err) in
       if customerRes != nil {
         result(true)
@@ -231,6 +280,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     let customer = CustomerRequestModel(name: nil, email: nil, phone: nil, idCardNumber: customerIdCardNumber)
     let apiVersion: ApiVersions = version == "v2" ? .v2 : .v1
     Amani.sharedInstance.setDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
+    Amani.sharedInstance.setMRZDelegate(delegate: SwiftFlutterAmanisdkPlugin.eventHandler)
     Amani.sharedInstance.initAmani(server: server, userName: email, password: password, sharedSecret: sharedSecret, customer: customer, language: lang, apiVersion: apiVersion) { customerRes, err in
       if customerRes != nil {
         result(true)
@@ -277,4 +327,6 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         result(customerInfoDict)
       })
   }
+  
 }
+

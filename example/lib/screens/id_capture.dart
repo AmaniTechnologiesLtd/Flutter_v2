@@ -56,7 +56,7 @@ class _IdCaptureScreenState extends State<IdCaptureScreen> {
               OutlinedButton(
                   onPressed: () {
                     _idCaptureModule.start(IdSide.front).then((imageData) {
-                      Navigator.pushNamed(context, ConfirmScreen.routeName,
+                      Navigator.pushNamed(context, ConfirmScreenState.routeName,
                           arguments: ConfirmArguments(
                               source: "idCapture",
                               imageData: imageData,

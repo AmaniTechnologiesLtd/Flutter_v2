@@ -53,7 +53,7 @@ class _SelfieScreenState extends State<SelfieScreen> {
           child: OutlinedButton(
             onPressed: () async {
               await _amaniSelfie.start().then((imageData) {
-                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                Navigator.pushNamed(context, ConfirmScreenState.routeName,
                     arguments: ConfirmArguments(
                         source: "selfie", imageData: imageData));
               }).catchError((err) {
