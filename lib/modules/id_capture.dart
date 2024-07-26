@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk/common/models/nvi_data.dart';
 import 'package:flutter_amanisdk/flutter_amanisdk_method_channel.dart';
+import 'package:flutter/material.dart';
 
 enum IdSide { front, back }
 
@@ -12,8 +13,9 @@ enum IdSide { front, back }
 
 class IdCapture {
   final MethodChannelAmaniSDK _methodChannel;
+  final eventChannel = const EventChannel('amanisdk_event_channel');
+  
   IdCapture(this._methodChannel);
-
   Future<Uint8List> start(IdSide idSide) async {
     try {
       final dynamic imageData =
@@ -124,7 +126,8 @@ Future<String?> getMrzRequest() async {
 
   return parsedData;
 }
-  
+
+ 
 }
 
 

@@ -94,6 +94,7 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       rethrow;
     }
   }
+  
 
   @override
   Future<bool> iOSStartIDCaptureNFC(Map<String, dynamic> mrzResult) async {

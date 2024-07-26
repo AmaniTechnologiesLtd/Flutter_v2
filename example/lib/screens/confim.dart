@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -26,8 +26,8 @@ class ConfirmArguments {
 }
 
 class ConfirmScreenState extends StatefulWidget {
-   const ConfirmScreenState({super.key});
-   static const routeName = '/confirm';
+  const ConfirmScreenState({super.key});
+  static const routeName = '/confirm';
 
   @override
   State<ConfirmScreenState> createState() => _ConfirmScreen();
@@ -35,8 +35,8 @@ class ConfirmScreenState extends StatefulWidget {
 
 class _ConfirmScreen extends State<ConfirmScreenState> {
   static const eventChannel = EventChannel('amanisdk_delegate_channel');
+
   StreamSubscription<dynamic>? _eventSubscription;
-  // Modules.
   final _idCapture = AmaniSDK().getIDCapture();
   final _autoSelfie = AmaniSDK().getAutoSelfie();
   final _selfie = AmaniSDK().getSelfie();
@@ -49,83 +49,18 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
   int mrzReqCount = 0;
   bool _isLoading = false;
 
-Future <String?> startMrzRequest() async {
- final String? mrzDocId = await _idCapture.getMrzRequest();
- return mrzDocId;
-}
 
+  Future<String?> startMrzRequest() async {
+    final String? mrzDocId = await _idCapture.getMrzRequest();
+    return mrzDocId;
+  }
 
-
-@override
+  @override 
   void initState() {
     super.initState();
-    if (mrzReqCount < 1) {
-       print("mrz reqCount kontrolü -----  $mrzReqCount");
-       _isLoading = false;
-      startMrzRequest().then((mrzDocumentId) {
-          mrzDocId = mrzDocumentId;
-          mrzReqCount += 1;
-          _startListening();
-          print("ilk mrz count değeri arttırıldı. $mrzReqCount");
-      });
-    } else {
-      if (mrzReqCount >= 2) {
-        mrzReqCount = 0;
-         print(" mrz count değeri sıfırlandı. $mrzReqCount");
-      }
-      
-    }
+    startListeningForMrzResult();
   }
 
-   void _startListening() {
-    _eventSubscription = eventChannel.receiveBroadcastStream().listen(
-      _onEvent,
-      onError: _onError,
-    );
-  }
-
-  void _stopListening() {
-    _eventSubscription?.cancel();
-  }
-
-  @override
-  void dispose() {
-    _stopListening();
-    super.dispose();
-  }
-
-void _onEvent(dynamic event) {
-    setState(() {
-      if (event['type'] == 'mrzInfoDelegate') {
-        if (event['data'] is String) {
-          _processAndStartNFC(event['data']);
-        }
-      } else if (event['type'] == 'error') {
-        _error = "Hata: ${event['data']['error_message']}";
-      }
-    });
-  }
-
-  void _onError(Object error) {
-    setState(() {
-      _error = "Error: $error";
-    });
-  }
-  Future<void> _routeNextScreen(ConfirmArguments args, bool isDone) async {
-    print("bir sonraki sayfaya ilerleyecek navigator çalışacak ---- CONFIRMENT ARGS:  $args, BOOLEAN DEGERI $isDone");
-    if (isDone) {
-         Navigator.pushNamed(context, ConfirmScreenState.routeName,
-         arguments: ConfirmArguments(
-         source: "idCapture",
-         imageData: args.imageData,
-         idCaptureBothSidesTaken: true,
-         idCaptureNFCCompleted: true));
-    } else {
-      print("bir sonraki sayfaya ilerleyemedi ---- CONFIRMENT ARGS:  $args");
-    }
-
-    }
-  
 
   @override
 Widget build(BuildContext context) {
@@ -155,9 +90,9 @@ Widget build(BuildContext context) {
                 child: const Text("Try again!")),
             OutlinedButton(
                 onPressed: (() async {
-                  setState(() {
-                          _isLoading = true;
-                     });
+                 setState(() {
+                   _isLoading = true;
+                 });
                   if (args.source == "idCapture" &&
                       args.idCaptureBothSidesTaken == true &&
                       args.idCaptureNFCCompleted == true) {
@@ -169,18 +104,32 @@ Widget build(BuildContext context) {
                       args.idCaptureBothSidesTaken == true &&
                       args.idCaptureNFCCompleted == false) {
                     if (Platform.isIOS) {
-                          if (mrzDocId != null && mrzResult.isEmpty != true) {
-                            setState(() {
-                               _isLoading = false;
-                             });
-                           bool isDone = await _idCapture.iosStartNFC(mrzDocId, mrzResult);
-                            print("CONFIRM EKRANINDA ISDONE DEGERI 1: $isDone");
-                            _routeNextScreen(args, isDone);
-                              
-                          } else {
-                            print("$mrzDocId ya da $mrzResult değerleri NULL GELDİ");
+                     String? mrzDocumentId = await startMrzRequest();
+                     print("CONFIRM BUTTON CLICK MRZDOCUMENTID $mrzDocumentId");
+                     setState(() {
+                       mrzDocId = mrzDocumentId;
+                     });
+                       await startListeningForMrzResult();
+                      await Future.delayed(Duration(seconds: 5));
+                      print("StartListening fonk içerisine girdi ve timer çalıştı:");
+                      if (mrzDocId != null && mrzResult.isNotEmpty) {
+                        bool isDone = await _idCapture.iosStartNFC(mrzDocId!, mrzResult);
+                        if (isDone) {
+                         bool isSuccess = await _idCapture.upload(); 
+                          if (isSuccess) {
+                            Navigator.pushNamed(context, ConfirmScreenState.routeName,
+                            arguments: ConfirmArguments(
+                            source: "idCapture",
+                            imageData: args.imageData,
+                            idCaptureBothSidesTaken: true,
+                            idCaptureNFCCompleted: true));
                           }
-                                   
+                          print("CONFIRM EKRANINDA UPLOAD ISLEMI TAMAMLANDI: $isSuccess");
+                        }
+                        
+                      } else {
+                        print("$mrzDocId ya da $mrzResult değerleri NULL GELDİ");
+                      }
                     } else if (Platform.isAndroid) {
                       Navigator.pushNamed(context, NFCConfrimScreen.routeName);
                     }
@@ -188,20 +137,39 @@ Widget build(BuildContext context) {
                       args.idCaptureBothSidesTaken == false) {
                     var imageData = await _idCapture.start(IdSide.back);
                     Navigator.pushNamed(context, ConfirmScreenState.routeName,
-                            arguments: ConfirmArguments(
-                                source: "idCapture",
-                                imageData: imageData,
-                                idCaptureBothSidesTaken: true,
-                                idCaptureNFCCompleted: false))
+                        arguments: ConfirmArguments(
+                            source: "idCapture",
+                            imageData: imageData,
+                            idCaptureBothSidesTaken: true,
+                            idCaptureNFCCompleted: false))
                         .then((_) async {
                       if (Platform.isIOS) {
-                          if (mrzDocId != null && mrzResult.isEmpty != true) {
-                               bool isDone = await _idCapture.iosStartNFC(mrzDocId, mrzResult);
-                                print("CONFIRM EKRANINDA ISDONE DEGERI 1: $isDone");
-                                _routeNextScreen(args, isDone);
-                            } else {
-                                  print("$mrzDocId ya da $mrzResult değerleri NULL GELDİ");
-                            }    
+                     await startMrzRequest().then((mrzDocumentId) {
+                        setState(() {
+                          mrzDocId = mrzDocumentId;
+                          print("CONFIRM EKRANINDA MRZDOCUMENT ID DEGERI  : $mrzDocumentId");
+                        });
+                      });
+                      
+                      await Future.delayed(Duration(seconds: 3));
+                        if (mrzDocId != null && mrzResult.isNotEmpty) {
+                          bool isDone = await _idCapture.iosStartNFC(mrzDocId!, mrzResult);
+                          if (isDone) {
+                          bool isSuccess = await _idCapture.upload(); 
+                          if (isSuccess) {
+                            Navigator.pushNamed(context, ConfirmScreenState.routeName,
+                            arguments: ConfirmArguments(
+                            source: "idCapture",
+                            imageData: args.imageData,
+                            idCaptureBothSidesTaken: true,
+                            idCaptureNFCCompleted: true));
+                          }
+                       
+                          }
+                          print("CONFIRM EKRANINDA ISDONE DEGERI 1: $isDone");
+                        } else {
+                          print("$mrzDocId ya da $mrzResult değerleri NULL GELDİ");
+                        }
                       }
                     });
                   } else if (args.source == "selfie") {
@@ -234,54 +202,16 @@ Widget build(BuildContext context) {
   );
 }
 
-Future<Map<String, dynamic>> _processAndStartNFC(String mrzString) async {
-  Map<String, dynamic> mrzData = await _idCapture.processNFC(mrzString);
-  mrzResult.addAll(mrzData);
 
-  return mrzResult;
- 
- 
-  }
-}
-
-/*
-class ConfirmScreenState extends StatefulWidget {
-  const ConfirmScreenState({super.key});
-  static const routeName = '/confirm';
-
-  @override
-  State<ConfirmScreenState> createState() => _ConfirmScreen();
-}
-
-class _ConfirmScreen extends State<ConfirmScreenState> {
-  static const eventChannel = EventChannel('amanisdk_delegate_channel');
-  StreamSubscription<dynamic>? _eventSubscription;
-
-  final _idCapture = AmaniSDK().getIDCapture();
-  final _autoSelfie = AmaniSDK().getAutoSelfie();
-  final _selfie = AmaniSDK().getSelfie();
-  final _poseEstimation = AmaniSDK().getPoseEstimation();
-  final _documentCapture = AmaniSDK().getDocumentCapture();
-
-  Map<String, dynamic> mrzResult = {};
-  String mrzDocumentId = "";
-  String _error = "No Error";
-  bool _isLoading = false;
-
-  
-
-  Future<String?> startMrzRequest() async {
-    print("CONFIRM EKRANINDA STARTMRZ FONKSİYONA GİRDİ -----");
-    final String? mrzDocId = await _idCapture.getMrzRequest();
-    setState(() {
-      mrzDocumentId = mrzDocId ?? "";
-    });
-    return mrzDocId;
+  Future<Map<String, dynamic>> _processAndStartNFC(String mrzString) async {
+    Map<String, dynamic> mrzData = await _idCapture.processNFC(mrzString);
+    mrzResult.addAll(mrzData);
+    return mrzResult;
   }
 
   Future<Map<String, dynamic>> startListeningForMrzResult() async {
     Map<String, dynamic> mrzData = {};
-   eventChannel.receiveBroadcastStream().listen((event) {
+     eventChannel.receiveBroadcastStream().listen((event) {
       if (event['type'] == 'mrzInfoDelegate') {
         if (event['data'] is String) {
           setState(() {
@@ -299,7 +229,74 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
     }, onError: (error) {
       setState(() {
         _error = "Error: $error";
-        _isLoading = false; // Stop the spinner
+         // Stop the spinner
+      });
+    });
+
+    return mrzData;
+  }
+}
+
+
+/*
+class ConfirmScreenState extends StatefulWidget {
+  const ConfirmScreenState({super.key});
+  static const routeName = '/confirm';
+
+  @override
+  State<ConfirmScreenState> createState() => _ConfirmScreen();
+}
+
+class _ConfirmScreen extends State<ConfirmScreenState> {
+  static const eventChannel = EventChannel('amanisdk_delegate_channel');
+
+  final _idCapture = AmaniSDK().getIDCapture();
+  final _autoSelfie = AmaniSDK().getAutoSelfie();
+  final _selfie = AmaniSDK().getSelfie();
+  final _poseEstimation = AmaniSDK().getPoseEstimation();
+  final _documentCapture = AmaniSDK().getDocumentCapture();
+
+  Map<String, dynamic> mrzResult = {};
+  String? mrzDocumentId = "";
+  String _error = "No Error";
+  bool _isLoading = false;
+
+ @override
+  void initState() {
+    super.initState();
+    startMrzRequest();
+  }
+  
+  Future<String?> startMrzRequest() async {
+    print("CONFIRM EKRANINDA STARTMRZ FONKSİYONA GİRDİ -----");
+     await _idCapture.getMrzRequest().then((mrzDocId) {
+        mrzDocumentId = mrzDocId;
+     });
+    
+    return mrzDocumentId;
+  }
+
+  Future<Map<String, dynamic>> startListeningForMrzResult() async {
+    Map<String, dynamic> mrzData = {};
+     eventChannel.receiveBroadcastStream().listen((event) {
+      if (event['type'] == 'mrzInfoDelegate') {
+        if (event['data'] is String) {
+          setState(() {
+            _processAndStartNFC(event['data']);
+            
+          });        
+        }
+        print("CONFIRM EKRANI MRZ DATA WIDGET'A GONDERILICEK $mrzResult");
+      } else if (event['type'] == 'error') {
+        setState(() {
+          _error = "Hata: ${event['data']['error_message']}";
+          _isLoading = false; // Stop the spinner
+        });
+      }
+    }, onError: (error) {
+      setState(() {
+        _error = "Error: $error";
+         // Stop the spinner
       });
     });
 
@@ -313,21 +310,7 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
     return mrzResult;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    startMrzRequest();
-  }
-
-  @override
-  void dispose() {
-    _stopListening();
-    super.dispose();
-  }
-
-  void _stopListening() {
-    _eventSubscription?.cancel();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -338,9 +321,8 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
         backgroundColor: Colors.deepPurple,
         title: const Text("Confirm Document?"),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
+      body: 
+       Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.memory(
@@ -358,9 +340,7 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
                     ),
                     OutlinedButton(
                       onPressed: () async {
-                        setState(() {
-                          _isLoading = true;
-                        });
+                        
                         if (args.source == "idCapture" &&
                             args.idCaptureBothSidesTaken == true &&
                             args.idCaptureNFCCompleted == true) {
@@ -372,11 +352,13 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
                             args.idCaptureBothSidesTaken == true &&
                             args.idCaptureNFCCompleted == false) {
                           if (Platform.isIOS) {
-                            
-
-                            await startListeningForMrzResult().whenComplete(() {
-                                  if (mrzDocumentId != null && mrzResult.isEmpty != true) {
-                                _isLoading = false;
+                            await startListeningForMrzResult().then((mrzValues) {
+                              setState(() {
+                                mrzResult = mrzValues;
+                              });
+                            });
+                              if (mrzDocumentId != null && mrzResult.isEmpty != true) {
+                                
                                 _idCapture.iosStartNFC(mrzDocumentId, mrzResult).then((isDone) {
                                    Navigator.pushNamed(context, ConfirmScreenState.routeName,
                                    arguments: ConfirmArguments(
@@ -388,7 +370,7 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
                               } else {
                                 print("MRZ RESULT BOS $mrzResult ----- MRZDOCID BOŞ $mrzDocumentId");
                               }
-                            });
+                           
                             
                           } else if (Platform.isAndroid) {
                             Navigator.pushNamed(context, NFCConfrimScreen.routeName);
@@ -404,8 +386,11 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
                                   idCaptureNFCCompleted: false))
                               .then((_) async {
                             if (Platform.isIOS) {
-                              await startListeningForMrzResult().whenComplete(() {
-                               
+                                await startListeningForMrzResult().then((mrzValues) {
+                                    setState(() {
+                                      mrzResult = mrzValues;
+                                    });
+                                  });
                                   if (mrzDocumentId != null && mrzResult.isEmpty != true) {
                                 _idCapture.iosStartNFC(mrzDocumentId, mrzResult).then((isDone) {
                                    Navigator.pushNamed(context, ConfirmScreenState.routeName,
@@ -418,7 +403,7 @@ class _ConfirmScreen extends State<ConfirmScreenState> {
                               } else {
                                 print("MRZ RESULT BOS $mrzResult ----- MRZDOCID BOŞ $mrzDocumentId");
                               }
-                            });
+                            
                             }
                           });
                         } else if (args.source == "selfie") {
