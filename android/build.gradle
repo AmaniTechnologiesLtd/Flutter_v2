@@ -28,6 +28,8 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 34
 
+    namespace = 'ai.amani.flutter_amanisdk'
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -36,7 +38,7 @@ android {
     dataBinding { enabled true }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets {
