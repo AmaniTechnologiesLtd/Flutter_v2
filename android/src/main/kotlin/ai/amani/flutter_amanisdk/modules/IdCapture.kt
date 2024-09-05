@@ -34,6 +34,15 @@ class IdCapture : Module {
             return
         }
 
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
+
         val side: Boolean = stepID == 0
 
         (activity as FragmentActivity)

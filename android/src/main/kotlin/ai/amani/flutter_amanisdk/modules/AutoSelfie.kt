@@ -33,6 +33,15 @@ class AutoSelfie: Module {
             return
         }
 
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
+
         (activity as FragmentActivity)
         val id = 0x123456
         val context = activity.applicationContext
@@ -73,6 +82,7 @@ class AutoSelfie: Module {
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            frag = null
         })
 
         val fragmentManager = activity.supportFragmentManager

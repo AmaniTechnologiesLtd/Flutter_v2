@@ -56,6 +56,16 @@ class BioLogin {
         if (customerId == null && attemptID == null) {
             result.error("30003", "You must call initBioLogin before you use this function", null)
         }
+
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
+
         (activity as FragmentActivity)
         val id = 0x123456
         val context = activity.applicationContext

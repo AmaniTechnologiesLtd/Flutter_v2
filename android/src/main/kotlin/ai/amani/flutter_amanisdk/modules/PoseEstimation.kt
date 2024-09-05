@@ -33,6 +33,16 @@ class PoseEstimation: Module {
 
         if (settings == null) {
             result.error("30003", "Settings not set", null)
+            return
+        }
+
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
         }
 
         val observer: PoseEstimationObserver = object : PoseEstimationObserver {
@@ -48,11 +58,7 @@ class PoseEstimation: Module {
             }
 
             override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                // TODO: Add androidPoseEstimation#onFailure to method channel instead of removing
-                // the fragment.
-//                (activity as FragmentActivity).supportFragmentManager.
-//                beginTransaction().remove(frag!!).commit()
-//                result.error(reason.code.toString(), reason.name, null)
+
             }
 
             override fun onSuccess(bitmap: Bitmap?) {
@@ -68,6 +74,7 @@ class PoseEstimation: Module {
                     (activity as FragmentActivity).supportFragmentManager.
                     beginTransaction().remove(frag!!).commit()
 
+                    frag = null
                 }
             }
 
@@ -126,6 +133,7 @@ class PoseEstimation: Module {
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            frag = null
         })
 
         activity.supportFragmentManager.beginTransaction()
