@@ -66,10 +66,7 @@ class DocumentCapture: Module {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 result.success(stream.toByteArray())
 
-                // Result returned close the view!
-                activity.supportFragmentManager.beginTransaction()
-                    .remove(frag!!)
-                    .commit()
+                activity.removeFragment(frag)
 
                 activity.runOnUiThread {
                     closeButton!!.visibility = View.GONE
@@ -80,13 +77,14 @@ class DocumentCapture: Module {
         })
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
-        activity.supportFragmentManager.beginTransaction()
-            .replace(id, frag!!)
-            .commit()
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {

@@ -71,13 +71,11 @@ class PoseEstimation: Module {
                         closeButton!!.visibility = View.GONE
                     }
 
-                    (activity as FragmentActivity).supportFragmentManager.
-                    beginTransaction().remove(frag!!).commit()
+                    (activity as FragmentActivity).removeFragment(frag)
 
                     frag = null
                 }
             }
-
         }
 
         frag = poseEstimationModule
@@ -132,13 +130,14 @@ class PoseEstimation: Module {
         activity.addContentView(container, viewParams)
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
-        activity.supportFragmentManager.beginTransaction()
-                .replace(id, frag!!)
-                .commit()
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {

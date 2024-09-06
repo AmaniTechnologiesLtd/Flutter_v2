@@ -62,13 +62,13 @@ class IdCapture : Module {
                 }
 
                 result.success(stream.toByteArray())
-                activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+                activity.removeFragment(frag)
                 frag = null
             }
         }
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
@@ -77,13 +77,10 @@ class IdCapture : Module {
             return
         }
 
-        val fragmentManager = activity.supportFragmentManager
-        frag?.let {
-            fragmentManager.beginTransaction()
-                    .addToBackStack(it.javaClass.name)
-                    .add(id, it)
-                    .commit()
-        }
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun setWithNFC(usesNFC: Boolean = false) {
