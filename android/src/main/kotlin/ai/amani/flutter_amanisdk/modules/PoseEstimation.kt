@@ -33,6 +33,16 @@ class PoseEstimation: Module {
 
         if (settings == null) {
             result.error("30003", "Settings not set", null)
+            return
+        }
+
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
         }
 
         val observer: PoseEstimationObserver = object : PoseEstimationObserver {
@@ -48,11 +58,7 @@ class PoseEstimation: Module {
             }
 
             override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                // TODO: Add androidPoseEstimation#onFailure to method channel instead of removing
-                // the fragment.
-//                (activity as FragmentActivity).supportFragmentManager.
-//                beginTransaction().remove(frag!!).commit()
-//                result.error(reason.code.toString(), reason.name, null)
+
             }
 
             override fun onSuccess(bitmap: Bitmap?) {
@@ -65,12 +71,11 @@ class PoseEstimation: Module {
                         closeButton!!.visibility = View.GONE
                     }
 
-                    (activity as FragmentActivity).supportFragmentManager.
-                    beginTransaction().remove(frag!!).commit()
+                    (activity as FragmentActivity).removeFragment(frag)
 
+                    frag = null
                 }
             }
-
         }
 
         frag = poseEstimationModule
@@ -125,12 +130,14 @@ class PoseEstimation: Module {
         activity.addContentView(container, viewParams)
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
+            frag = null
         })
 
-        activity.supportFragmentManager.beginTransaction()
-                .replace(id, frag!!)
-                .commit()
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {

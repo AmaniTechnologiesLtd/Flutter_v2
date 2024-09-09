@@ -34,8 +34,6 @@ class BioLogin {
         val instance = BioLogin()
     }
 
-
-
     fun initBioLogin(server: String, sharedSecret: String?, token: String, customerId: Int, comparisonAdapter: Int?, source: Int?, attemptID: String, activity: Activity, result: MethodChannel.Result) {
         Amani.initBio(activity, server, sharedSecret)
         this.token = token
@@ -56,6 +54,16 @@ class BioLogin {
         if (customerId == null && attemptID == null) {
             result.error("30003", "You must call initBioLogin before you use this function", null)
         }
+
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
+
         (activity as FragmentActivity)
         val id = 0x123456
         val context = activity.applicationContext
@@ -87,19 +95,21 @@ class BioLogin {
                         }
 
                         closeButton!!.visibility = View.GONE
-                        activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
+
+                        activity.removeFragment(frag)
                         frag = null
                     }
                 }).build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
-        activity.supportFragmentManager.beginTransaction()
-                .replace(id, frag!!)
-                .commitAllowingStateLoss()
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
@@ -178,13 +188,14 @@ class BioLogin {
                 }).build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
-        activity.supportFragmentManager.beginTransaction()
-                .replace(id, frag!!)
-                .commitAllowingStateLoss()
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun startWithManualSelfie(selfieDescriptionText: String, activity: Activity, result: MethodChannel.Result) {
@@ -218,7 +229,7 @@ class BioLogin {
                             val stream = ByteArrayOutputStream()
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                             result.success(stream.toByteArray())
-                            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+                            activity.removeFragment(frag)
                             frag = null
                             activity.runOnUiThread {
                                 closeButton!!.visibility = View.GONE
@@ -229,13 +240,14 @@ class BioLogin {
                 }).build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
-        activity.supportFragmentManager.beginTransaction()
-                .replace(id, frag!!)
-                .commit()
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
 

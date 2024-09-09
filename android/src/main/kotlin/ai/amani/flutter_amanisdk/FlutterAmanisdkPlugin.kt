@@ -379,7 +379,9 @@ class FlutterAmanisdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
                   "missingRules" to missingRules,
           )
 
-          result.success(customerInfoDict)
+          try {
+            result.success(customerInfoDict)
+          } catch (_: IllegalStateException) { }
         }
       }
     })
