@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream
 
 class Selfie: Module {
     private val selfieModule = Amani.sharedInstance().Selfie()
-    private var docType: String? = "XXX_SE_0"
+    private var docType: String = "XXX_SE_0"
     private var frag: Fragment? = null
     private var closeButton: Button? = null
     companion object {
@@ -98,7 +98,7 @@ class Selfie: Module {
     }
 
     override fun setType(type: String?, result: MethodChannel.Result) {
-        this.docType = type
+        this.docType = type!!
         result.success(null)
     }
 

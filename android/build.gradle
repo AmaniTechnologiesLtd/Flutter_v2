@@ -26,17 +26,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
+    namespace = 'ai.amani.flutter_amanisdk_v2'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     dataBinding { enabled true }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets {
@@ -44,7 +44,10 @@ android {
     }
 
     defaultConfig {
+        compileSdk 34
         minSdkVersion 21
+        targetSdkVersion 34
+        ndkVersion = "23.1.7779620"
     }
 }
 
