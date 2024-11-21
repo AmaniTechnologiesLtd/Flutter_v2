@@ -46,7 +46,7 @@ rootProject.allprojects {
 On the same file add our SDK to dependencies
 ```groovy
 dependencies {
-    implementation 'ai.amani.android:AmaniAi:2.2.21' // add this line
+    implementation 'ai.amani.android:AmaniAi:2.6.2'
 }
 ```
 
