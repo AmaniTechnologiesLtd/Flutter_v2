@@ -7,18 +7,19 @@ buildscript {
         google()
         mavenCentral()
         maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
+        maven { url 'https://www.jitpack.io' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.2.0'  // Güncellenmiş sürüm
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0" 
+        // classpath 'com.android.tools.build:gradle:7.2.0'
+        // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 rootProject.allprojects {
     repositories {
-        google()
-        mavenCentral()
     }
 }
 
@@ -26,7 +27,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     namespace = 'ai.amani.flutter_amanisdk'
 
@@ -46,8 +47,23 @@ android {
     }
 
     defaultConfig {
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 21
     }
+
+    packagingOptions {
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    }
+    dataBinding { enabled true  }
+
+    aaptOptions {
+       noCompress "tflite"
+    }
+    
 }
 
 dependencies {
