@@ -16,7 +16,10 @@ import 'package:flutter_amanisdk/modules/selfie.dart';
 class AmaniSDK {
   final MethodChannelAmaniSDK _methodChannel = MethodChannelAmaniSDK();
   // final delegateChannel = const MethodChannel("amanisdk_delegate_channel");
-  final delegateEventChannel = const EventChannel("amanisdk_delegate_channel");
+  // final delegateEventChannel = const EventChannel("amanisdk_delegate_channel");
+  static const EventChannel _delegateEventChannel = EventChannel("amanisdk_delegate_channel");
+
+  static Stream<dynamic>? _cachedDelegateStream;
 
   /// returns [IdCapture] module
   IdCapture getIDCapture() {
@@ -107,7 +110,8 @@ class AmaniSDK {
   }
 
   Stream<dynamic> getDelegateStream() {
-    return delegateEventChannel.receiveBroadcastStream().map((event) => event);
+    _cachedDelegateStream ??= _delegateEventChannel.receiveBroadcastStream().asBroadcastStream();
+    return _cachedDelegateStream!;
   }
 
   Future<CustomerInfoModel> getCustomerInfo() async {

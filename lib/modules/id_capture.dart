@@ -30,14 +30,10 @@ class IdCapture {
     }
   }
 
-  Future<bool> iosStartNFC(String? mrzDocumentId, Map<String, dynamic> mrzResult) async {
-    print("IDCAPTURE MODULU MRZ DOCUMENT ID: $mrzDocumentId, IDCAPTURE MRZ DATA $mrzResult");
-   
-
+  Future<bool> iosStartNFC(Map<String, dynamic> mrzResult) async {
     if (!Platform.isIOS) return false;
-    if (mrzDocumentId != null && mrzResult.isEmpty != true) {
-    
-      print("DART IDCAPTURE TARAFINDA MRZRESULT DEGERI $mrzResult");
+    if (mrzResult.isEmpty != true) {
+ 
      try {
       final bool isDone = await _methodChannel.iOSStartIDCaptureNFC(mrzResult);
       return isDone;

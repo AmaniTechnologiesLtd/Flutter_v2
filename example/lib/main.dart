@@ -9,6 +9,7 @@ import 'package:flutter_amanisdk_example/screens/nfc_android.dart';
 import 'package:flutter_amanisdk_example/screens/nfc_confirm.dart';
 import 'package:flutter_amanisdk_example/screens/nfc_home.dart';
 import 'package:flutter_amanisdk_example/screens/nfc_ios.dart';
+import 'package:flutter_amanisdk_example/screens/nfc_scan_screen.dart';
 import 'package:flutter_amanisdk_example/screens/pose_estimation.dart';
 import 'package:flutter_amanisdk_example/screens/selfie.dart';
 
@@ -28,6 +29,7 @@ void main() {
       '/bio-login': (ctx) => const BioLogin(),
       '/confirm-nfc': (ctx) => const NFCConfrimScreen(),
       '/document-capture': (ctx) => const DocumentCaputureScreen(),
+      '/nfc-scan-screen': (ctx) => const NFCScanScreen(),
     },
   ));
 }

@@ -74,11 +74,11 @@ class IdCapture {
   }
   //Get mrz fonk buraya
   public func getMrz(result: @escaping FlutterResult) {
-    print("IDCapture tarafında getMRz fonksiyonun içerisine girdi sdk tarafına isteğe çıkacak.")
-        self.module.getMrz { mrzData in 
-            print("MRZ DATA PRINT EDILDIGI YER: \(mrzData)")
-                result(mrzData)
-        }
+  
+    self.module.getMrz { mrzData in 
+        print("MRZ DATA PRINT EDILDIGI YER: \(mrzData)")
+            result(mrzData)
+    }
     }
   }
 

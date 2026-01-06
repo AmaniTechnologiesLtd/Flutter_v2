@@ -5,7 +5,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
   var methodChannel: FlutterMethodChannel!
   var delegateChannel: FlutterEventChannel!
   static var eventHandler = DelegateEventHandler()
-    
+ 
   public static func register(with registrar: FlutterPluginRegistrar) {
     let methodChannel = FlutterMethodChannel(name: "amanisdk_method_channel", binaryMessenger: registrar.messenger())
     let delegateChannel = FlutterEventChannel(name: "amanisdk_delegate_channel", binaryMessenger: registrar.messenger())
@@ -88,7 +88,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
       idCapture.upload(result: result)
       // get Mrz Data
     case "getMrz":
-     let idCapture = IdCapture()
+    let idCapture = IdCapture()
      idCapture.getMrz(result: result)
     // Selfie
     case "setSelfieType":
@@ -182,32 +182,37 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
         let nfc = NFC()
         nfc.upload(result: result)
     case "initBioLogin":
-        let bioLogin = BioLogin.shared
-        bioLogin.initBioLogin(server: arguments!["server"] as! String,
-                              token: arguments!["token"] as! String,
-                              customerId: arguments!["customerId"] as! String,
-                              attemptId: arguments!["attemptId"] as! String,
-                              source: arguments!["source"] as? Int,
-                              comparisonAdapter: arguments!["comparisonAdapter"] as? Int,
-                              result: result)
+      print("initBioLogin")
+        // let bioLogin = BioLogin.shared
+        // bioLogin.initBioLogin(server: arguments!["server"] as! String,
+        //                       token: arguments!["token"] as! String,
+        //                       customerId: arguments!["customerId"] as! String,
+        //                       attemptId: arguments!["attemptId"] as! String,
+        //                       source: arguments!["source"] as? Int,
+        //                       comparisonAdapter: arguments!["comparisonAdapter"] as? Int,
+        //                       result: result)
     case "startBioLoginWithAutoSelfie":
-        let bioLogin = BioLogin.shared
-        let decoder = JSONDecoder()
-        let iosArgs = arguments?["iosSettings"] as! String
-        let autoSelfieSettings = try! decoder.decode(AutoSelfieSettings.self, from: Data(iosArgs.utf8))
-        bioLogin.startWithAutoSelfie(settings: autoSelfieSettings, result: result)
+      print("startBioLoginWithAutoSelfie")
+        // let bioLogin = BioLogin.shared
+        // let decoder = JSONDecoder()
+        // let iosArgs = arguments?["iosSettings"] as! String
+        // let autoSelfieSettings = try! decoder.decode(AutoSelfieSettings.self, from: Data(iosArgs.utf8))
+        // bioLogin.startWithAutoSelfie(settings: autoSelfieSettings, result: result)
     case "startBioLoginWithPoseEstimation":
-        let bioLogin = BioLogin.shared
-        let decoder = JSONDecoder()
-        let iosArgs = arguments!["iosSettings"] as! String
-        let poseEstimationSettings = try! decoder.decode(PoseEstimationSettings.self, from: Data(iosArgs.utf8))
-        bioLogin.startWithPoseEstimation(settings: poseEstimationSettings, result: result)
+      print("startBioLoginWithPoseEstimation")
+        // let bioLogin = BioLogin.shared
+        // let decoder = JSONDecoder()
+        // let iosArgs = arguments!["iosSettings"] as! String
+        // let poseEstimationSettings = try! decoder.decode(PoseEstimationSettings.self, from: Data(iosArgs.utf8))
+        // bioLogin.startWithPoseEstimation(settings: poseEstimationSettings, result: result)
     case "startBioLoginWithManualSelfie":
-        let bioLogin = BioLogin.shared
-        bioLogin.startWithManualSelfie(result: result)
+      print("startBioLoginWithManualSelfie")
+        // let bioLogin = BioLogin.shared
+        // bioLogin.startWithManualSelfie(result: result)
     case "uploadBioLogin":
-        let bioLogin = BioLogin.shared
-        bioLogin.upload(result: result)
+      print("uploadBioLogin")
+        // let bioLogin = BioLogin.shared
+        // bioLogin.upload(result: result)
     case "getCustomerInfo":
         getCustomerInfo(result: result)
     // MARK: Document Capture
