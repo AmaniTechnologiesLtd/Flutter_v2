@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/common/models/api_version.dart';
+import 'package:flutter_amanisdk/amaniAndroidConfigure.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
+import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,26 +14,50 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final _amanisdkPlugin = AmaniSDK();
   Future<void> initAmani() async {
-    AmaniSDK()
-        .initAmani(
-            server: "https://demo2.amani.ai",
-            customerToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIxOTkzNjMwLCJpYXQiOjE3MjE5OTAwMzAsImp0aSI6ImI1YWY5ZjE5OTNkYzRlODhiYTIyM2EyYzk0ODY0NGFlIiwidXNlcl9pZCI6Ijg4Y2E1ZGIzLTJiMWEtNDdiMC04ZDRiLWMzYjk5ZWJiY2M1YSIsImFwaV91c2VyIjpmYWxzZSwiY29tcGFueV9pZCI6ImZjNGIyN2M2LTk3NzctNGYzMC1hNDc1LWE4MDFlNzFmZWY4MiIsInByb2ZpbGVfaWQiOiIyMDMwOTAyMC1hMjlhLTQzMjMtYjYwNi0xOWRkYWFjNDQzNWQifQ.89Wc8x_5dwLk2BgGMHADJQHAN9BmZGqK3BM6BGpDEPs",
-            customerIdCardNumber: "22180378472",
-            useLocation: true,
-            apiVersion: AmaniApiVersion.v2,
-            lang: "tr")
-        .then((_) {
-      AmaniSDK().getCustomerInfo().then((value) {
-        // get customer id
-        print(value.id);
-      });
-    }).catchError((err) {
-      throw Exception(err);
-    });
+        if(Platform.isAndroid) {
+                  await _amanisdkPlugin.setConfigure(
+                  server: "",
+                  enabledFeatures: const [
+                    AmaniAndroidDynamicFeature.idCapture,
+                    AmaniAndroidDynamicFeature.idHologramDetection,
+                    AmaniAndroidDynamicFeature.nfcScan,
+                    AmaniAndroidDynamicFeature.selfieAuto,
+                    AmaniAndroidDynamicFeature.selfiePoseEstimation,
+                  ],
+                );
+
+                final result = await _amanisdkPlugin.startAmaniSDKWithConfigure(
+                  token: "",
+                  id: "",
+            
+                );
+
+                print(result.isTokenExpired);
+        } else {
+          AmaniSDK()
+              .initAmani(
+                  server: "",
+                  customerToken: "",
+                  customerIdCardNumber: "",
+                  useLocation: true,
+                  apiVersion: AmaniApiVersion.v2,
+                  lang: "tr")
+              .then((_) {
+            AmaniSDK().getCustomerInfo().then((value) {
+              // get customer id
+              print(value.id);
+            });
+          }).catchError((err) {
+            throw Exception(err);
+          });
+        }
+  
 
     await for (final delegateEvent in AmaniSDK().getDelegateStream()) {
-      print("delegate event recievedDDDD");
+      print("delegate event recieved");
       print(delegateEvent);
     }
   }

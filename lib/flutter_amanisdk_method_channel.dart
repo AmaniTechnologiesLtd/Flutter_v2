@@ -17,6 +17,53 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   /// The method channel used to interact with the native platform.
   final methodChannel = const MethodChannel('amanisdk_method_channel');
 
+
+    @override
+  Future<void> setConfigure({
+    required String server,
+    required List<String> enabledFeatures,
+    String? sharedSecret,
+    String uploadSource = "KYC"
+  }) async {
+    await methodChannel.invokeMethod('setConfigure', <String, dynamic>{
+      'server': server,
+      'enabledFeatures': enabledFeatures,
+      'sharedSecret': sharedSecret,
+      'uploadSource': uploadSource,
+    });
+  }
+
+  @override
+  Future<bool?> startAmaniSDKWithConfigure(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) async {
+    final result = await methodChannel.invokeMethod(
+      'startAmaniSDKWithConfigure',
+      <String, dynamic>{
+        'token': token,
+        'id': id,
+        'birthDate': birthDate,
+        'expireDate': expireDate,
+        'documentNo': documentNo,
+        'geoLocation': geoLocation,
+        'lang': language,
+        'email': email,
+        'phone': phone,
+        'name': name,
+      },
+    );
+    return result;
+  }
+
   @override
   Future<dynamic> startIDCapture(int stepID) async {
     try {

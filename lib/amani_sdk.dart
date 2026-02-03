@@ -1,4 +1,7 @@
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk/common/models/api_version.dart';
@@ -12,8 +15,21 @@ import 'package:flutter_amanisdk/modules/nfc_capture_android.dart';
 import 'package:flutter_amanisdk/modules/nfc_capture_ios.dart';
 import 'package:flutter_amanisdk/modules/pose_estimation.dart';
 import 'package:flutter_amanisdk/modules/selfie.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'amaniAndroidConfigure.dart';
+import 'amanisdk_platform_interface.dart';
+import 'sdkresult.dart';
 
 class AmaniSDK {
+  Completer<SdkResult>? _completer;
+
+  // ignore: non_constant_identifier_names
+  Amanisdk() {
+    AmaniSDKPlatform.instance.methodChannel
+        .setMethodCallHandler(_handleInverseChannel);
+  }
+
   final MethodChannelAmaniSDK _methodChannel = MethodChannelAmaniSDK();
   // final delegateChannel = const MethodChannel("amanisdk_delegate_channel");
   // final delegateEventChannel = const EventChannel("amanisdk_delegate_channel");
@@ -108,6 +124,85 @@ class AmaniSDK {
       rethrow;
     }
   }
+  
+    Future<void> setConfigure({
+    required String server,
+    List<AmaniAndroidDynamicFeature> enabledFeatures = const [],
+    String? sharedSecret,
+    AmaniUploadSource uploadSource = AmaniUploadSource.kyc,
+  }) async {
+    await AmaniSDKPlatform.instance.setConfigure(
+      server: server,
+      enabledFeatures: enabledFeatures.map((e) => e.name).toList(),
+      sharedSecret: sharedSecret,
+      uploadSource: uploadSource.getUploadSourceString,
+    );
+  }
+
+  Future<SdkResult> startAmaniSDKWithConfigure({
+    required String token,
+    required String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation = false,
+    String? lang,
+    String? email,
+    String? phone,
+    String? name,
+  }) async {
+    
+    if (token.isEmpty) {
+      throw Exception("You can't use an empty string as token");
+    }
+
+    if (!token.contains(".")) {
+      throw Exception("The token must be in JWT format");
+    }
+
+    
+    final tokenParts = token.split('.');
+    if (tokenParts.length < 2) {
+      throw Exception("Invalid JWT token format");
+    }
+
+    final payloadBytes = base64Decode(base64.normalize(tokenParts[1]));
+    final payloadJson = jsonDecode(utf8.decode(payloadBytes));
+
+    
+    if (payloadJson['profile_id'] == null && payloadJson['customer_id'] == null) {
+      throw Exception("You can't use admin token with this SDK.");
+    }
+
+    
+    AmaniSDKPlatform.instance.startAmaniSDKWithConfigure(
+      token,
+      id,
+      birthDate,
+      expireDate,
+      documentNo,
+      geoLocation,
+      lang,
+      email,
+      phone,
+      name,
+    );
+
+    _completer = Completer<SdkResult>();
+    return _completer!.future;
+  }
+
+  Future<void> _handleInverseChannel(MethodCall call) async {
+    switch (call.method) {
+      case 'onSuccess':
+        final result = SdkResult.fromJson(jsonDecode(call.arguments));
+        _completer?.complete(result);
+        break;
+      case 'onError':
+        _completer?.completeError(call.arguments);
+    }
+  }
+  
 
   Stream<dynamic> getDelegateStream() {
     _cachedDelegateStream ??= _delegateEventChannel.receiveBroadcastStream().asBroadcastStream();
@@ -181,4 +276,5 @@ class AmaniSDK {
       rethrow;
     }
   }
+  
 }
