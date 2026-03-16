@@ -13,11 +13,10 @@ class NFC {
   private let module = Amani.sharedInstance.scanNFC()
   private var moduleView: UIView!
 
-  func start(nviData: NviModel, result: @escaping FlutterResult) async {
+  func start(nviData: NviModel, enablePACE: Bool? = nil, result: @escaping FlutterResult) async {
     do {
-      let nfcRequest = try await module.start(nviData: nviData)
-       
-       result(nfcRequest)
+     let nfcRequest = try await module.start(nviData: nviData, enablePACE: enablePACE)
+     result(nfcRequest)
         
     } catch let err {
         result(FlutterError(code: "30007", message: err.localizedDescription, details: nil))

@@ -33,10 +33,10 @@ class IdCapture {
   }
   
   @available(iOS 13, *)
- public func startNFC(nvi: AmaniSDK.NviModel?) async -> Bool {
+ public func startNFC(nvi: AmaniSDK.NviModel?, enablePACE: Bool? = nil) async -> Bool {
   if let nvi = nvi {
     do {
-      var result = try await module.startNFC(nvi: nvi)
+       let result = await module.startNFC(nvi: nvi, enablePACE: enablePACE)
       print("IDCAPTURE SWIFT TARAFINDA STARTNFC BASARIYLA TAMAMLANDI: \(result)")
       return result
     } catch(let error) {
