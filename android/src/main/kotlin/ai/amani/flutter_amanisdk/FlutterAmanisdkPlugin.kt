@@ -587,43 +587,65 @@ class FlutterAmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Ac
 
   private fun startAmaniSDKWithConfigure(call: MethodCall, result: MethodChannel.Result) {
     if (!isConfigured) {
-      result.error("NOT_CONFIGURED", "AmaniSDK is not configured. Call 'setConfigure' first.", null)
-      return
+        result.error(
+            "NOT_CONFIGURED",
+            "AmaniSDK is not configured. Call 'setConfigure' first.",
+            null
+        )
+        return
     }
 
     val idNumber = call.argument<String>("id")
     val token = call.argument<String>("token")
-    val lang = call.argument<String>("lang") ?: "tr"
-    val geoLocation = call.argument<Boolean>("geoLocation") ?: false
 
     if (idNumber.isNullOrBlank() || token.isNullOrBlank()) {
-      result.error("INVALID_ARGUMENT", "Arguments 'id' and 'token' must not be null or empty.", null)
-      return
+        result.error(
+            "INVALID_ARGUMENT",
+            "Arguments 'id' and 'token' must not be null or empty.",
+            null
+        )
+        return
     }
 
     val birthDate = call.argument<String>("birthDate")
     val expireDate = call.argument<String>("expireDate")
     val documentNo = call.argument<String>("documentNo")
+    val geoLocation = call.argument<Boolean>("geoLocation") ?: false
+
+    val lang = call.argument<String>("lang")
+        ?: call.argument<String>("language")
+        ?: "tr"
+
     val email = call.argument<String>("email")
     val phone = call.argument<String>("phone")
     val name = call.argument<String>("name")
 
-    // Dokümana uygun startSession çağrısı
-    Amani.sharedInstance().startSession(
-      id = idNumber,
-      token = token,
-      lang = lang,
-      birthDate = birthDate,
-      expireDate = expireDate,
-      documentNo = documentNo,
-      geoLocation = geoLocation,
-      userFullName = name,
-      userPhoneNumber = phone,
-      userEmail = email,
-      callback = { isSuccess ->
-        result.success(isSuccess)
-      }
-    )
+    try {
+        Amani.sharedInstance().startSession(
+            id = idNumber,
+            token = token,
+            lang = lang,
+            birthDate = birthDate,
+            expireDate = expireDate,
+            documentNo = documentNo,
+            geoLocation = geoLocation,
+            userFullName = name,
+            userPhoneNumber = phone,
+            userEmail = email,
+            callback = { isSuccess ->
+                Log.d("AmaniFlutterBridge", "startSession completed: $isSuccess, language: $lang")
+                result.success(isSuccess)
+            }
+        )
+    } catch (e: Exception) {
+        Log.e("AmaniFlutterBridge", "startSession failed", e)
+
+        result.error(
+            "START_SESSION_FAILED",
+            "Amani.startSession failed: ${e.message}",
+            null
+        )
+    }
   }
 
   private fun initAmani(
