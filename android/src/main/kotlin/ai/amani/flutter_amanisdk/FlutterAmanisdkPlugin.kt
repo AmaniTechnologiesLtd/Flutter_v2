@@ -762,12 +762,9 @@ class FlutterAmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Ac
           )
         }
 
-        val missingRules: List<Map<String, Any?>>? = customerDetail.missingRules?.map {
-          mapOf<String, Any?>(
-            "id" to it?.id,
-            "title" to it?.title,
-            "documentClasses" to it?.documentClasses
-          )
+          try {
+            result.success(customerInfoDict)
+          } catch (_: IllegalStateException) { }
         }
 
         val customerInfoDict: Map<String, Any?> = mapOf(

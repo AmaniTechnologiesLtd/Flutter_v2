@@ -104,11 +104,9 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) flutterVersionName = '1.0'
 
 
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
+
+android {
+    compileSdkVersion 35
 
 android {
     namespace "ai.amani.flutter_amanisdk_example"
@@ -156,8 +154,11 @@ android {
         }
     }
 
-    buildFeatures {
-        dataBinding true
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jfrog.amani.ai/artifactory/amani-sdk" }
     }
 
     packaging {
@@ -175,6 +176,6 @@ android {
     }
 }
 
-flutter {
-    source "../.."
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

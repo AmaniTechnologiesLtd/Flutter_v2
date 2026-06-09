@@ -28,12 +28,16 @@ class Selfie: Module {
     }
 
     override fun start(stepID: Int, activity: Activity, result: MethodChannel.Result) {
-        val fa = activity as? FragmentActivity
-            ?: run {
-                result.error("30020", "Activity must be FragmentActivity", null)
-                return
-            }
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
 
+        (activity as FragmentActivity)
         val id = 0x123456
         val viewParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -51,27 +55,25 @@ class Selfie: Module {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                 result.success(stream.toByteArray())
 
-                fa.supportFragmentManager.beginTransaction()
-                    .remove(frag!!)
-                    .commitAllowingStateLoss()
+                activity.removeFragment(frag)
 
-                fa.runOnUiThread { closeButton?.visibility = View.GONE }
+                activity.runOnUiThread {
+                    closeButton!!.visibility = View.GONE
+                }
+
                 frag = null
             }
         }
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            frag?.let {
-                fa.supportFragmentManager.beginTransaction().remove(it).commitAllowingStateLoss()
-                frag = null
-            }
+            activity.removeFragment(frag)
+            frag = null
         })
 
-        frag?.let {
-            fa.supportFragmentManager.beginTransaction()
-                .replace(id, it)
-                .commitAllowingStateLoss()
-        }
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {

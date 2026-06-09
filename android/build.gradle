@@ -59,22 +59,20 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
+        maven { url 'https://www.jitpack.io' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.0'
+        classpath 'com.android.tools.build:gradle:8.2.0'  // Güncellenmiş sürüm
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0" 
+        // classpath 'com.android.tools.build:gradle:7.2.0'
+        // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 rootProject.allprojects {
     repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://www.jitpack.io' }
-        maven {
-            url = "https://jfrog.amani.ai/artifactory/amani-sdk"
-        }
     }
 }
 
@@ -82,8 +80,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace "ai.amani.flutter_amanisdk"
-    compileSdk 35
+    compileSdkVersion 35
+
+    namespace = 'ai.amani.flutter_amanisdk'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -102,6 +101,8 @@ android {
     }
 
     defaultConfig {
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 21
         ndkVersion = "27.1.12297006"
         packagingOptions {
@@ -130,9 +131,22 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    }
+    dataBinding { enabled true  }
+
+    aaptOptions {
+       noCompress "tflite"
+    }
+    
 }
 
 dependencies {
-    // implementation 'ai.amani:Android.SDK.UI:1.3.0'
-    implementation 'ai.amani.android:AmaniAi:3.9.3'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'ai.amani.android:AmaniAi:3.4.4'
 }

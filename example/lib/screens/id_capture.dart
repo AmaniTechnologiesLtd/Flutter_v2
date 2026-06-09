@@ -21,34 +21,9 @@ class _IdCaptureScreenState extends State<IdCaptureScreen> {
   get onWillPop => null;
 
   Future<void> initSDK() async {
-    try {
-      await _idCaptureModule.setType("TUR_ID_1");
-      debugPrint("setType ok");
-
-      await _idCaptureModule.setHologramDetection(true);
-      debugPrint("setHologramDetection ok");
-
-      await _idCaptureModule.setVideoRecording(true);
-      debugPrint("setVideoRecording ok");
-
-      await _idCaptureModule.setManualButtonTimeout(15);
-      debugPrint("setManualButtonTimeout ok");
-
-      if (mounted) {
-        setState(() {
-          _sdkReady = true;
-        });
-      }
-    } catch (e, st) {
-      debugPrint("initSDK error: $e");
-      debugPrintStack(stackTrace: st);
-      if (mounted) {
-        setState(() {
-          _initError = e.toString();
-          _sdkReady = false;
-        });
-      }
-    }
+    await _idCaptureModule.setType("TUR_ID_1");
+    await _idCaptureModule.setHologramDetection(false);
+    await _idCaptureModule.setVideoRecording(false);
   }
 
  @override

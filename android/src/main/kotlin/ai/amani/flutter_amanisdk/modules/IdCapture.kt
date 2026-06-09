@@ -34,6 +34,15 @@ class IdCapture : Module {
             return
         }
 
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
+
         val side: Boolean = stepID == 0
 
         (activity as FragmentActivity)
@@ -53,13 +62,13 @@ class IdCapture : Module {
                 }
 
                 result.success(stream.toByteArray())
-                activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+                activity.removeFragment(frag)
                 frag = null
             }
         }
 
         closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            activity.supportFragmentManager.beginTransaction().remove(frag!!).commit()
+            activity.removeFragment(frag)
             frag = null
         })
 
@@ -68,13 +77,10 @@ class IdCapture : Module {
             return
         }
 
-        val fragmentManager = activity.supportFragmentManager
-        frag?.let {
-            fragmentManager.beginTransaction()
-                    .addToBackStack(it.javaClass.name)
-                    .add(id, it)
-                    .commit()
-        }
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun setWithNFC(usesNFC: Boolean = false) {

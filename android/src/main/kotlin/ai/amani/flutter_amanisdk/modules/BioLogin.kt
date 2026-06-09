@@ -38,18 +38,7 @@ class BioLogin {
         val instance = BioLogin()
     }
 
-    fun initBioLogin(
-        server: String,
-        sharedSecret: String?,
-        token: String,
-        customerId: Int,
-        comparisonAdapter: Int?,
-        source: Int?,
-        attemptID: String,
-        activity: Activity,
-        result: MethodChannel.Result
-    ) {
-       
+    fun initBioLogin(server: String, sharedSecret: String?, token: String, customerId: Int, comparisonAdapter: Int?, source: Int?, attemptID: String, activity: Activity, result: MethodChannel.Result) {
         Amani.initBio(activity, server, sharedSecret)
 
         this.appContext = activity.applicationContext
@@ -62,14 +51,20 @@ class BioLogin {
     }
 
     fun startWithAutoSelfie(settings: AutoSelfieSettings, activity: Activity, result: MethodChannel.Result) {
-        val fa = activity as? FragmentActivity
-            ?: run {
-                result.error("30020", "Activity must be FragmentActivity", null)
-                return
-            }
+        if (customerId == null && attemptID == null) {
+            result.error("30003", "You must call initBioLogin before you use this function", null)
+        }
 
-        appContext = fa.applicationContext
+        if (frag != null) {
+            result.error(
+                "30021",
+                "Start function is already triggered before",
+                "You cannot call start function before previous session is end up."
+            )
+            return
+        }
 
+        (activity as FragmentActivity)
         val id = 0x123456
         val viewParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -80,48 +75,47 @@ class BioLogin {
         fa.addContentView(container, viewParams)
 
         frag = Amani.sharedInstance().BioLogin().AutoSelfieCapture()
-            .timeOutManualButton(settings.manualCaptureTimeout)
-            .userInterfaceColors(
-                ovalViewStartColor = R.color.auto_selfie_oval_view,
-                ovalViewSuccessColor = R.color.auto_selfie_success_anim,
-                appFontColor = R.color.auto_selfie_text,
-                manualButtonColor = R.color.auto_selfie_counter_text,
-            )
-            .userInterfaceTexts(
-                faceIsTooFarText = settings.distanceText,
-                holdStableText = settings.stableText,
-                faceNotFoundText = settings.faceNotFoundText,
-            )
-            //  FIX: configuration() removed 
-            .observer(object : AutoSelfieCaptureObserver {
-                override fun cb(bitmap: Bitmap?) {
-                    bitmap?.let {
-                        val stream = ByteArrayOutputStream()
-                        it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                        result.success(stream.toByteArray())
-                    }
+                .timeOutManualButton(settings.manualCaptureTimeout)
+                .userInterfaceColors(
+                        ovalViewStartColor = R.color.auto_selfie_oval_view,
+                        ovalViewSuccessColor = R.color.auto_selfie_success_anim,
+                        appFontColor = R.color.auto_selfie_text,
+                        manualButtonColor = R.color.auto_selfie_counter_text,
+                ).userInterfaceTexts(
+                        faceIsTooFarText = settings.distanceText,
+                        holdStableText = settings.stableText,
+                        faceNotFoundText = settings.faceNotFoundText,
+                ).configuration(
+                        comparisonAdapter = this.comparisonAdapter,
+                        source = this.source,
+                        attemptId = this.attemptID!!
+                ).observer(object : AutoSelfieCaptureObserver {
+                    override fun cb(bitmap: Bitmap?) {
+                        if(bitmap != null) {
+                            val stream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            result.success(stream.toByteArray())
+                        }
 
-                    closeButton?.visibility = View.GONE
-                    frag?.let { f ->
-                        fa.supportFragmentManager.beginTransaction().remove(f).commitAllowingStateLoss()
+                        closeButton!!.visibility = View.GONE
+
+                        activity.removeFragment(frag)
+                        frag = null
                     }
                     frag = null
                 }
             })
             .build()
 
-        closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            frag?.let { f ->
-                fa.supportFragmentManager.beginTransaction().remove(f).commitAllowingStateLoss()
-            }
+        this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.removeFragment(frag)
             frag = null
         })
 
-        frag?.let {
-            fa.supportFragmentManager.beginTransaction()
-                .replace(id, it)
-                .commitAllowingStateLoss()
-        }
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
@@ -211,18 +205,15 @@ class BioLogin {
             })
             .build()
 
-        closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            frag?.let { f ->
-                fa.supportFragmentManager.beginTransaction().remove(f).commitAllowingStateLoss()
-            }
+        this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.removeFragment(frag)
             frag = null
         })
 
-        frag?.let {
-            fa.supportFragmentManager.beginTransaction()
-                .replace(id, it)
-                .commitAllowingStateLoss()
-        }
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun startWithManualSelfie(selfieDescriptionText: String, activity: Activity, result: MethodChannel.Result) {
@@ -244,43 +235,42 @@ class BioLogin {
         fa.addContentView(container, viewParams)
 
         frag = Amani.sharedInstance().BioLogin().ManualSelfieCapture()
-            .userInterfaceColors(
-                appFontColor = R.color.biologin_manual_selfie_font,
-                manualButtonColor = R.color.biologin_manual_selfie_button,
-                ovalViewColor = R.color.biologin_manual_selfie_oval_view,
-                appBackgroundColor = R.color.biologin_manual_selfie_background
-            )
-            .userInterfaceTexts(selfieDescriptionText = selfieDescriptionText)
-            //   FIX: configuration() removed
-            .observer(object : ManualSelfieCaptureObserver {
-                override fun cb(bitmap: Bitmap?) {
-                    bitmap?.let {
-                        val stream = ByteArrayOutputStream()
-                        it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                        result.success(stream.toByteArray())
+                .userInterfaceColors(
+                   appFontColor = R.color.biologin_manual_selfie_font,
+                   manualButtonColor = R.color.biologin_manual_selfie_button,
+                   ovalViewColor = R.color.biologin_manual_selfie_oval_view,
+                   appBackgroundColor = R.color.biologin_manual_selfie_background
+                ).userInterfaceTexts(
+                        selfieDescriptionText = selfieDescriptionText
+                ).configuration(
+                        comparisonAdapter = this.comparisonAdapter,
+                        source = this.source,
+                        attemptId = this.attemptID!!
+                )
+                .observer(object : ManualSelfieCaptureObserver {
+                    override fun cb(bitmap: Bitmap?) {
+                        if(bitmap != null) {
+                            val stream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            result.success(stream.toByteArray())
+                            activity.removeFragment(frag)
+                            frag = null
+                            activity.runOnUiThread {
+                                closeButton!!.visibility = View.GONE
+                            }
+
+                        }
                     }
 
-                    fa.runOnUiThread { closeButton?.visibility = View.GONE }
-                    frag?.let { f ->
-                        fa.supportFragmentManager.beginTransaction().remove(f).commitAllowingStateLoss()
-                    }
-                    frag = null
-                }
-            })
-            .build()
-
-        closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
-            frag?.let { f ->
-                fa.supportFragmentManager.beginTransaction().remove(f).commitAllowingStateLoss()
-            }
+        this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
+            activity.removeFragment(frag)
             frag = null
         })
 
-        frag?.let {
-            fa.supportFragmentManager.beginTransaction()
-                .replace(id, it)
-                .commitAllowingStateLoss()
-        }
+        activity.replaceFragment(
+            containerViewId = id,
+            fragment = frag
+        )
     }
 
     fun upload(completion: MethodChannel.Result) {
