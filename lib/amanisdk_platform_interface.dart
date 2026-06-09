@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
 import 'package:flutter_amanisdk/common/models/android/pose_estimation_settings.dart';
 import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
@@ -27,6 +27,34 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   static set instance(AmaniSDKPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
+  }
+
+  final methodChannel = const MethodChannel('amanisdk');
+
+   Future<void> setConfigure({
+    required String server,
+    required List<String> enabledFeatures,
+    String? sharedSecret,
+    String uploadSource = "KYC"
+  }) {
+    throw UnimplementedError('configure() has not been implemented.');
+  }
+
+  Future<bool?> startAmaniSDKWithConfigure(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) {
+    throw UnimplementedError(
+      'startAmaniSDKConfigurable() has not been implemented.',
+    );
   }
 
   Future<bool> initAmani({
@@ -60,10 +88,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
     throw UnimplementedError('startIDCapture() has not been implemented.');
   }
 
-  Future<bool> iOSStartIDCaptureNFC() {
+  Future<bool> iOSStartIDCaptureNFC(Map<String, dynamic> mrzResult) async {
     throw UnimplementedError(
         'iOSStartIDCaptureNFC() has not been implemented.');
   }
+  
 
   Future<void> androidSetUsesNFC(bool usesNFC) {
     throw UnimplementedError('androidSetUsesNFC() has not been implemented.');

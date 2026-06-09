@@ -120,7 +120,7 @@ class _PoseEstimationScreenState extends State<PoseEstimationScreen> {
                       androidSettings: _androidPoseEstimationSettings,
                       iosSettings: _iosPoseEstimationSettings)
                   .then((imageData) {
-                Navigator.pushNamed(context, ConfirmScreen.routeName,
+                Navigator.pushNamed(context, ConfirmScreenState.routeName,
                     arguments: ConfirmArguments(
                         source: "poseEstimation", imageData: imageData));
               }).catchError((err) {

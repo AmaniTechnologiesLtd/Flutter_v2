@@ -12,7 +12,19 @@ import AmaniSDK
 class DelegateEventHandler: NSObject, FlutterStreamHandler {
   private var eventSink: FlutterEventSink?
   
+   private func emit(_ event: [String: Any]) {
+    guard let sink = eventSink else {
+      print("⚠️ eventSink is NIL, dropping event: \(event["type"] ?? "unknown")")
+      return
+    }
+    DispatchQueue.main.async {
+      sink(event)
+    }
+  }
+
   func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+    
+    print(events);
     self.eventSink = events
     return nil
   }
@@ -27,18 +39,20 @@ extension DelegateEventHandler: AmaniDelegate {
   public func onProfileStatus(customerId: String, profile: AmaniSDK.wsProfileStatusModel) {
     do {
       let jsonData = try JSONEncoder().encode(profile)
-      eventSink?(["type": "profileStatus", "data": String(data: jsonData, encoding: .utf8)])
+      print("onProfileStatus kısmına girdi jsonData \(jsonData)")
+      emit(["type": "profileStatus", "data": String(data: jsonData, encoding: .utf8)])
     } catch {
-      eventSink?(["type": "error", "data": ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any]])
+      emit(["type": "error", "data": ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any]])
     }
   }
   
   public func onStepModel(customerId: String, rules: [AmaniSDK.KYCRuleModel]?) {
     do {
       let jsonData = try JSONEncoder().encode(["rules": rules])
-      eventSink?(["type": "stepModel", "data": String(data: jsonData, encoding: .utf8)])
+      print("OnStepModel kısmına girdi jsonData \(jsonData)")
+      emit(["type": "stepModel", "data": String(data: jsonData, encoding: .utf8)])
     } catch {
-      eventSink?(["type": "error", "data": ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any]])
+      emit(["type": "error", "data": ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any]])
     }
   }
   
@@ -47,10 +61,28 @@ extension DelegateEventHandler: AmaniDelegate {
       let jsonData = try JSONEncoder().encode(error)
       let jsonString = String(data: jsonData, encoding: .utf8)
       let returnJsonString = try JSONEncoder().encode(["errorType": type, "errors": jsonString])
-      eventSink?(["type": "error", "data": String(data: returnJsonString, encoding: .utf8)])
+      emit(["type": "error", "data": String(data: returnJsonString, encoding: .utf8)])
     } catch {
-      eventSink?(["type": "error", "data": ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any]])
+      emit(["type": "error", "data": ["type": "JSONConversation", "errors": ["error_code": "30011", "error_message": "\(error.localizedDescription)"]] as [String: Any]])
     }
     
+  }
+}
+extension DelegateEventHandler: mrzInfoDelegate {
+   func mrzInfo(_ mrz: AmaniSDK.MrzModel?, documentId: String?) {
+    print("MrzInfoDelegate value: \(mrz)")
+    guard let mrz = mrz else {
+     
+      emit(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30022", "error_message": "mrz model is nil"]] as [String: Any]])
+      return
+    }
+
+    let nviData = AmaniSDK.NviModel(mrzModel: mrz)
+    if nviData != nil {
+      
+      emit(["type": "mrzInfoDelegate", "data": String(describing: mrz)])
+    } else {
+      emit(["type": "error", "data": ["type": "JSONConversion", "errors": ["error_code": "30021", "error_message": "Nvi model parsing error"]] as [String: Any]])
+    }
   }
 }

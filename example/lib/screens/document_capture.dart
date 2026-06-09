@@ -74,7 +74,7 @@ class _DocumentCaputureScreenState extends State<DocumentCaputureScreen> {
               OutlinedButton(
                   onPressed: () {
                     _documentCaptureModule.start().then((image) {
-                      Navigator.pushNamed(context, ConfirmScreen.routeName,
+                      Navigator.pushNamed(context, ConfirmScreenState.routeName,
                           arguments: ConfirmArguments(
                               source: "documentCapture",
                               imageData: image,

@@ -1,25 +1,80 @@
-group 'ai.amani.flutter_amanisdk_v2'
-version '1.0-SNAPSHOT'
+// group 'ai.amani.flutter_amanisdk_v2'
+// version '1.0-SNAPSHOT'
+
+// buildscript {
+//     ext.kotlin_version = '1.8.20'
+//     repositories {
+//         google()
+//         mavenCentral()
+//         maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
+//     }
+
+//     dependencies {
+//         classpath 'com.android.tools.build:gradle:7.2.0'
+//         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//     }
+// }
+
+// rootProject.allprojects {
+//     repositories {
+//         google()
+//         mavenCentral()
+//     }
+// }
+
+// apply plugin: 'com.android.library'
+// apply plugin: 'kotlin-android'
+
+// android {
+//     compileSdkVersion 35
+
+//     namespace = 'ai.amani.flutter_amanisdk'
+
+//     compileOptions {
+//         sourceCompatibility JavaVersion.VERSION_17
+//         targetCompatibility JavaVersion.VERSION_17
+//     }
+
+//     dataBinding { enabled true }
+
+//     kotlinOptions {
+//         jvmTarget = '17'
+//     }
+
+//     sourceSets {
+//         main.java.srcDirs += 'src/main/kotlin'
+//     }
+
+//     defaultConfig {
+//         minSdkVersion 21
+//     }
+// }
+
+// dependencies {
+//     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//     implementation 'ai.amani.android:AmaniAi:3.7.11'
+// }
 
 buildscript {
-    ext.kotlin_version = '1.8.20'
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
-        maven { url 'https://www.jitpack.io' }
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.0'  // Güncellenmiş sürüm
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0" 
-        // classpath 'com.android.tools.build:gradle:7.2.0'
-        // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.6.0'
     }
 }
 
 rootProject.allprojects {
     repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+        maven {
+            url = "https://jfrog.amani.ai/artifactory/amani-sdk"
+        }
     }
 }
 
@@ -27,29 +82,55 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 35
-
-    namespace = 'ai.amani.flutter_amanisdk'
+    namespace "ai.amani.flutter_amanisdk"
+    compileSdk 35
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
-    dataBinding { enabled true }
-
-    kotlinOptions {
-        jvmTarget = '17'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 21
+        ndkVersion = "27.1.12297006"
+        packagingOptions {
+            pickFirst 'lib/x86/libc++_shared.so'
+            pickFirst 'lib/x86_64/libc++_shared.so'
+            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+            pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        }
+        kotlinOptions {
+            jvmTarget = '17'
+        }
+        dataBinding { enabled true  } 
+    }
+    subprojects {
+        afterEvaluate { project ->
+            // check only for "com.android.library" to not modify
+            // your "app" subproject. All plugins will have "com.android.library" plugin, and only your app "com.android.application"
+            // Change your application's namespace in main build.gradle and in main android block.
+
+            if (project.plugins.hasPlugin("com.android.library")) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
     }
 
     packagingOptions {
@@ -67,6 +148,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'ai.amani.android:AmaniAi:3.4.4'
+    // implementation 'ai.amani:Android.SDK.UI:1.3.0'
+    implementation 'ai.amani.android:AmaniAi:3.9.3'
 }

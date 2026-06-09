@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_amanisdk/common/models/android/auto_selfie_settings.dart';
@@ -15,6 +16,53 @@ import 'common/models/nvi_data.dart';
 class MethodChannelAmaniSDK extends AmaniSDKPlatform {
   /// The method channel used to interact with the native platform.
   final methodChannel = const MethodChannel('amanisdk_method_channel');
+
+
+    @override
+  Future<void> setConfigure({
+    required String server,
+    required List<String> enabledFeatures,
+    String? sharedSecret,
+    String uploadSource = "KYC"
+  }) async {
+    await methodChannel.invokeMethod('setConfigure', <String, dynamic>{
+      'server': server,
+      'enabledFeatures': enabledFeatures,
+      'sharedSecret': sharedSecret,
+      'uploadSource': uploadSource,
+    });
+  }
+
+  @override
+  Future<bool?> startAmaniSDKWithConfigure(
+    String token,
+    String id,
+    String? birthDate,
+    String? expireDate,
+    String? documentNo,
+    bool geoLocation,
+    String? language,
+    String? email,
+    String? phone,
+    String? name,
+  ) async {
+    final result = await methodChannel.invokeMethod(
+      'startAmaniSDKWithConfigure',
+      <String, dynamic>{
+        'token': token,
+        'id': id,
+        'birthDate': birthDate,
+        'expireDate': expireDate,
+        'documentNo': documentNo,
+        'geoLocation': geoLocation,
+        'lang': language,
+        'email': email,
+        'phone': phone,
+        'name': name,
+      },
+    );
+    return result;
+  }
 
   @override
   Future<dynamic> startIDCapture(int stepID) async {
@@ -32,6 +80,32 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
     try {
       final bool isDone = await methodChannel.invokeMethod('uploadIDCapture');
       return isDone;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+@override
+    Future<String?> getMrzRequest() async {
+    try {
+
+     final String? result = await methodChannel.invokeMethod<String>('getMrz');
+      print("gelen result değeri: $result");
+      if (result != null) {
+        
+        print("Gelen JSON verisi: $result");
+      try {
+        var resultMap = await json.decode(json.encode(result));
+        print("Method Channel tarafında result map değeri return edildi:  $resultMap");
+        return resultMap;
+      } catch (e) {
+        print("JSON decoding failed: $e");
+        return null;
+      }
+
+    } else {
+      print("Result nil geldi");
+    }
     } catch (err) {
       rethrow;
     }
@@ -67,11 +141,32 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       rethrow;
     }
   }
+  
 
   @override
-  Future<bool> iOSStartIDCaptureNFC() async {
+  Future<bool> iOSStartIDCaptureNFC(Map<String, dynamic> mrzResult) async {
+    String _mrzDocumentNo = "";
+    String _mrzDateOfBirth = "";
+    String _mrzDateOfExpire = "";
     try {
-      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC');
+       if (mrzResult.isNotEmpty) {
+        mrzResult.forEach((key, value) {
+          if (key == "mrzDocumentNumber") {
+            _mrzDocumentNo = value;
+          } else if (key == "mrzExpiryDate") {
+            _mrzDateOfExpire = value;
+          } else if (key == "mrzBirthDate") {
+            _mrzDateOfBirth = value;
+          }
+        });
+        
+      }
+      print("Sending arguments to iOS DateOfBirth: $_mrzDateOfBirth");
+      final bool isDone = await methodChannel.invokeMethod('iosIDCaptureNFC', {
+        "birthDate": _mrzDateOfBirth,
+        "expireDate": _mrzDateOfExpire,
+        "documentNo": _mrzDocumentNo
+    });
       return isDone;
     } catch (err) {
       rethrow;
