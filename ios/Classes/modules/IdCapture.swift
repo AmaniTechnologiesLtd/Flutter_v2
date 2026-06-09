@@ -12,7 +12,7 @@ import UIKit
 class IdCapture {
   private let module = Amani.sharedInstance.IdCapture()
   private var sdkView: SDKView!
-  
+
   public func start(stepID: Int, result: @escaping FlutterResult) {
     let vc = UIApplication.shared.windows.last?.rootViewController
     do {
@@ -33,10 +33,18 @@ class IdCapture {
   }
   
   @available(iOS 13, *)
-  public func startNFC(result: @escaping FlutterResult) {
-    module.startNFC { done in
-      result(done)
+ public func startNFC(nvi: AmaniSDK.NviModel?, enablePACE: Bool? = nil) async -> Bool {
+  if let nvi = nvi {
+    do {
+       let result = await module.startNFC(nvi: nvi, enablePACE: enablePACE)
+      print("IDCAPTURE SWIFT TARAFINDA STARTNFC BASARIYLA TAMAMLANDI: \(result)")
+      return result
+    } catch(let error) {
+     return false
     }
+  }
+  return false
+
   }
   
   public func setType(type: String, result: @escaping FlutterResult) {
@@ -64,6 +72,14 @@ class IdCapture {
     module.setIdHologramDetection(enabled: enabled)
     result(nil)
   }
+  //Get mrz fonk buraya
+  public func getMrz(result: @escaping FlutterResult) {
   
-}
+    self.module.getMrz { mrzData in 
+        print("MRZ DATA PRINT EDILDIGI YER: \(mrzData)")
+            result(mrzData)
+    }
+    }
+  }
+
 

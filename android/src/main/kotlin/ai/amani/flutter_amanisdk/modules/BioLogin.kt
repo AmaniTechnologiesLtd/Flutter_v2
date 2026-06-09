@@ -1,3 +1,4 @@
+
 package ai.amani.flutter_amanisdk.modules
 
 import ai.amani.flutter_amanisdk.R
@@ -10,6 +11,7 @@ import ai.amani.sdk.interfaces.ManualSelfieCaptureObserver
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.OnFailurePoseEstimation
 import ai.amani.sdk.modules.selfie.pose_estimation.observable.PoseEstimationObserver
 import android.app.Activity
+import android.content.Context //  FIX: Context import
 import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +25,10 @@ import java.io.ByteArrayOutputStream
 class BioLogin {
     private var docType: String = "XXX_SE_0"
     private var frag: Fragment? = null
-    private var token: String? = null
-    private var customerId: Int? = null
+
+    // keep context for upload
+    private var appContext: Context? = null
+
     private var comparisonAdapter: Int = 2
     private var source: Int = 3
     private var attemptID: String? = null
@@ -36,15 +40,11 @@ class BioLogin {
 
     fun initBioLogin(server: String, sharedSecret: String?, token: String, customerId: Int, comparisonAdapter: Int?, source: Int?, attemptID: String, activity: Activity, result: MethodChannel.Result) {
         Amani.initBio(activity, server, sharedSecret)
-        this.token = token
-        this.customerId = customerId
-        if (comparisonAdapter != null) {
-            this.comparisonAdapter = comparisonAdapter
-        }
 
-        if (source != null) {
-            this.source = source
-        }
+        this.appContext = activity.applicationContext
+
+        if (comparisonAdapter != null) this.comparisonAdapter = comparisonAdapter
+        if (source != null) this.source = source
         this.attemptID = attemptID
 
         result.success(null)
@@ -66,11 +66,14 @@ class BioLogin {
 
         (activity as FragmentActivity)
         val id = 0x123456
-        val context = activity.applicationContext
-        val viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        val container = FrameLayout(context)
+        val viewParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        val container = FrameLayout(fa)
         container.id = id
-        activity.addContentView(container, viewParams)
+        fa.addContentView(container, viewParams)
+
         frag = Amani.sharedInstance().BioLogin().AutoSelfieCapture()
                 .timeOutManualButton(settings.manualCaptureTimeout)
                 .userInterfaceColors(
@@ -99,7 +102,10 @@ class BioLogin {
                         activity.removeFragment(frag)
                         frag = null
                     }
-                }).build()
+                    frag = null
+                }
+            })
+            .build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.removeFragment(frag)
@@ -113,79 +119,91 @@ class BioLogin {
     }
 
     fun startWithPoseEstimation(settings: PoseEstimationSettings, activity: Activity, result: MethodChannel.Result, channel: MethodChannel) {
-        if (customerId == null && attemptID == null) {
-            result.error("30003", "You must call initBioLogin before you use this function", null)
-        }
-        (activity as FragmentActivity)
+        val fa = activity as? FragmentActivity
+            ?: run {
+                result.error("30020", "Activity must be FragmentActivity", null)
+                return
+            }
+
+        appContext = fa.applicationContext
+
         val id = 0x123456
-        val context = activity.applicationContext
-        val viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        val container = FrameLayout(context)
+        val viewParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        val container = FrameLayout(fa)
         container.id = id
-        activity.addContentView(container, viewParams)
-        
+        fa.addContentView(container, viewParams)
+
         frag = Amani.sharedInstance().BioLogin().PoseEstimation()
-                .requestedPoseNumber(settings.poseCount)
-                .ovalViewAnimationDurationMilSec(settings.animationDuration)
-                .configuration(
-                        comparisonAdapter = this.comparisonAdapter,
-                        source = this.source,
-                        attemptId = this.attemptID!!
-                )
-                .userInterfaceColors(
-                        ovalViewStartColor = R.color.pose_estimation_oval_view_start,
-                        ovalViewSuccessColor = R.color.pose_estimation_oval_view_success,
-                        ovalViewErrorColor =  R.color.pose_estimation_oval_view_error,
-                        alertTitleFontColor = R.color.pose_estimation_alert_title,
-                        alertDescriptionFontColor = R.color.pose_estimation_alert_description,
-                        alertTryAgainFontColor = R.color.pose_estimation_alert_try_again,
-                        alertBackgroundFontColor = R.color.pose_estimation_alert_background,
-                        appFontColor =  R.color.pose_estimation_font,
-                ).userInterfaceVisibilities(
-                        settings.mainGuideVisibility,
-                        settings.secondaryGuideVisibility
-                ).userInterfaceDrawables(
-                        R.drawable.pose_esitmation_main_guide_left,
-                        R.drawable.pose_estimation_main_guide_right,
-                        R.drawable.pose_estimation_main_guide_up,
-                        R.drawable.pose_estimation_main_guide_down,
-                        R.drawable.pose_estimation_main_guide_straight,
-                        R.drawable.pose_estimation_secondary_guide_left,
-                        R.drawable.pose_estimation_secondary_guide_right,
-                        R.drawable.pose_estimation_secondary_guide_up,
-                        R.drawable.pose_estimation_secondary_guide_down,
-                ).userInterfaceTexts(
-                        settings.faceNotInside,
-                        settings.faceNotStraight,
-                        settings.faceIsTooFar,
-                        settings.holdPhoneVertically,
-                        settings.alertTitle,
-                        settings.alertDescription,
-                        settings.alertTryAgain
-                ).observer(object: PoseEstimationObserver {
-                    override fun onError(error: Error) {
-                        channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to error.message))
+            .requestedPoseNumber(settings.poseCount)
+            .ovalViewAnimationDurationMilSec(settings.animationDuration)
+            //   FIX: configuration() removed
+            .userInterfaceColors(
+                ovalViewStartColor = R.color.pose_estimation_oval_view_start,
+                ovalViewSuccessColor = R.color.pose_estimation_oval_view_success,
+                ovalViewErrorColor =  R.color.pose_estimation_oval_view_error,
+                alertTitleFontColor = R.color.pose_estimation_alert_title,
+                alertDescriptionFontColor = R.color.pose_estimation_alert_description,
+                alertTryAgainFontColor = R.color.pose_estimation_alert_try_again,
+                alertBackgroundFontColor = R.color.pose_estimation_alert_background,
+                appFontColor =  R.color.pose_estimation_font,
+            )
+            .userInterfaceVisibilities(
+                settings.mainGuideVisibility,
+                settings.secondaryGuideVisibility
+            )
+            .userInterfaceDrawables(
+                R.drawable.pose_esitmation_main_guide_left,
+                R.drawable.pose_estimation_main_guide_right,
+                R.drawable.pose_estimation_main_guide_up,
+                R.drawable.pose_estimation_main_guide_down,
+                R.drawable.pose_estimation_main_guide_straight,
+                R.drawable.pose_estimation_secondary_guide_left,
+                R.drawable.pose_estimation_secondary_guide_right,
+                R.drawable.pose_estimation_secondary_guide_up,
+                R.drawable.pose_estimation_secondary_guide_down,
+            )
+            .userInterfaceTexts(
+                settings.faceNotInside,
+                settings.faceNotStraight,
+                settings.faceIsTooFar,
+                settings.holdPhoneVertically,
+                settings.alertTitle,
+                settings.alertDescription,
+                settings.alertTryAgain
+            )
+            .observer(object: PoseEstimationObserver {
+                override fun onError(error: Error) {
+                    channel.invokeMethod("androidBioLoginPoseEstimation#onError", mapOf("message" to error.message))
+                }
+
+                override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
+                    channel.invokeMethod(
+                        "androidBioLoginPoseEstimation#onFailure",
+                        mapOf("reason" to reason.name, "currentAttempt" to currentAttempt)
+                    )
+                }
+
+                override fun onSuccess(bitmap: Bitmap?) {
+                    bitmap?.let {
+                        val stream = ByteArrayOutputStream()
+                        it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                        channel.invokeMethod(
+                            "androidBioLoginPoseEstimation#onSuccess",
+                            mapOf("image" to stream.toByteArray())
+                        )
                     }
 
-                    override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                        channel.invokeMethod("androidBioLoginPoseEstimation#onFailure", mapOf("reason" to reason.name, "currentAttempt" to currentAttempt))
+                    fa.runOnUiThread { closeButton?.visibility = View.GONE }
+                    frag?.let { f ->
+                        fa.supportFragmentManager.beginTransaction().remove(f).commitAllowingStateLoss()
                     }
-
-                    override fun onSuccess(bitmap: Bitmap?) {
-                        if(bitmap != null) {
-                            val stream = ByteArrayOutputStream()
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                            channel.invokeMethod("androidBioLoginPoseEstimation#onSuccess", mapOf("image" to stream.toByteArray()))
-
-                            activity.runOnUiThread {
-                                closeButton!!.visibility = View.GONE
-                            }
-
-                            activity.supportFragmentManager.beginTransaction().remove(frag!!).commitAllowingStateLoss()
-                            frag = null
-                        }
-                    }
-                }).build()
+                    frag = null
+                }
+            })
+            .build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.removeFragment(frag)
@@ -199,16 +217,22 @@ class BioLogin {
     }
 
     fun startWithManualSelfie(selfieDescriptionText: String, activity: Activity, result: MethodChannel.Result) {
-        if (customerId == null && attemptID == null) {
-            result.error("30003", "You must call initBioLogin before you do this operation", null)
-        }
-        (activity as FragmentActivity)
+        val fa = activity as? FragmentActivity
+            ?: run {
+                result.error("30020", "Activity must be FragmentActivity", null)
+                return
+            }
+
+        appContext = fa.applicationContext
+
         val id = 0x123456
-        val context = activity.applicationContext
-        val viewParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        val container = FrameLayout(context)
+        val viewParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        val container = FrameLayout(fa)
         container.id = id
-        activity.addContentView(container, viewParams)
+        fa.addContentView(container, viewParams)
 
         frag = Amani.sharedInstance().BioLogin().ManualSelfieCapture()
                 .userInterfaceColors(
@@ -237,7 +261,6 @@ class BioLogin {
 
                         }
                     }
-                }).build()
 
         this.closeButton = container.setupBackButton(R.drawable.baseline_close_24, onClick = {
             activity.removeFragment(frag)
@@ -250,38 +273,46 @@ class BioLogin {
         )
     }
 
-
     fun upload(completion: MethodChannel.Result) {
-        if (customerId == null) {
-            completion.error("30003", "You must call initBioLogin before you do this operation", null)
+        val ctx = appContext
+        if (ctx == null) {
+            completion.error("30003", "Context is null. Start a BioLogin capture before upload.", null)
+            return
         }
-        Amani.sharedInstance().BioLogin().upload(docType, token!!, customerId!!, object : BioLoginUploadCallBack {
+
+        // Compatible Upload func with doc
+        Amani.sharedInstance().BioLogin().upload(ctx, object : BioLoginUploadCallBack {
             override fun cb(result: Boolean?) {
-                result?.let {
-                    completion.success(it);
-                } ?: run{
-                    completion.error("30012", "Upload exception", null)
-                }
+                if (result == true) completion.success(true)
+                else completion.success(false)
             }
         })
     }
 
     fun backPressHandle(activity: Activity, result: MethodChannel.Result) {
-        if (frag == null){
-            result.error("30001",
-                    "You must call this function while the" +
-                            "module is running", "You can ignore this message and return true" +
-                    "from onWillPop()")
-        } else {
-            activity.runOnUiThread {
-                frag?.let {
-                    closeButton!!.visibility = View.GONE
-                    it.parentFragmentManager.beginTransaction().remove(frag!!).commit()
-                    frag = null
-                    // This blocks the flutters back press action.
-                    result.success(false)
-                }
+        val fa = activity as? FragmentActivity
+            ?: run {
+                result.error("30020", "Activity must be FragmentActivity", null)
+                return
             }
+
+        val currentFrag = frag
+        if (currentFrag == null) {
+            result.error(
+                "30001",
+                "You must call this function while the module is running",
+                "You can ignore this message and return true from onWillPop()"
+            )
+            return
         }
-   }
+
+        fa.runOnUiThread {
+            closeButton?.visibility = View.GONE
+            currentFrag.parentFragmentManager.beginTransaction()
+                .remove(currentFrag)
+                .commitAllowingStateLoss()
+            frag = null
+            result.success(false)
+        }
+    }
 }

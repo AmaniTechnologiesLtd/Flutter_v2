@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_amanisdk/amani_sdk.dart';
 import 'package:flutter_amanisdk/common/models/api_version.dart';
+import 'package:flutter_amanisdk/amaniAndroidConfigure.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'dart:convert';
+import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,23 +14,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final _amanisdkPlugin = AmaniSDK();
   Future<void> initAmani() async {
-    AmaniSDK()
-        .initAmani(
-            server: "https://server.example",
-            customerToken: "customer_token",
-            customerIdCardNumber: "",
-            useLocation: true,
-            apiVersion: AmaniApiVersion.v1,
-            lang: "tr")
-        .then((_) {
-      AmaniSDK().getCustomerInfo().then((value) {
-        // get customer id
-        print(value.id);
-      });
-    }).catchError((err) {
-      throw Exception(err);
-    });
+        if(Platform.isAndroid) {
+                  await _amanisdkPlugin.setConfigure(
+                  server: "",
+                  enabledFeatures: const [
+                    AmaniAndroidDynamicFeature.idCapture,
+                    AmaniAndroidDynamicFeature.idHologramDetection,
+                    AmaniAndroidDynamicFeature.nfcScan,
+                    AmaniAndroidDynamicFeature.selfieAuto,
+                    AmaniAndroidDynamicFeature.selfiePoseEstimation,
+                  ],
+                );
+
+                final result = await _amanisdkPlugin.startAmaniSDKWithConfigure(
+                  token: "",
+                  id: "",
+            
+                );
+
+                print(result.isTokenExpired);
+        } else {
+          AmaniSDK()
+              .initAmani(
+                  server: "",
+                  customerToken: "",
+                  customerIdCardNumber: "",
+                  useLocation: true,
+                  apiVersion: AmaniApiVersion.v2,
+                  lang: "tr")
+              .then((_) {
+            AmaniSDK().getCustomerInfo().then((value) {
+              // get customer id
+              print(value.id);
+            });
+          }).catchError((err) {
+            throw Exception(err);
+          });
+        }
+  
 
     await for (final delegateEvent in AmaniSDK().getDelegateStream()) {
       print("delegate event recieved");

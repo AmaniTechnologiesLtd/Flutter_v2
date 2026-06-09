@@ -7,10 +7,10 @@
 import AmaniSDK
 import UIKit
 import Flutter
-
+/*
 class BioLogin {
     private let vc = UIApplication.shared.windows.last?.rootViewController!
-    private let module = Amani.sharedInstance.bioLogin()
+    private let module = Amani.sharedInstance.BioLogin()
     private var sdkView: SDKView!
     private var customerId: String!
     private var attemptId: String!
@@ -124,3 +124,4 @@ class BioLogin {
     }
     
 }
+*/
