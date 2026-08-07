@@ -6,6 +6,7 @@ import 'package:flutter_amanisdk/common/models/ios/auto_selfie_settings.dart';
 import 'package:flutter_amanisdk/common/models/ios/pose_estimation_settings.dart';
 import 'package:flutter_amanisdk/common/models/nvi_data.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:flutter_amanisdk/common/models/speech_verifier_settings.dart';
 import 'flutter_amanisdk_method_channel.dart';
 
 abstract class AmaniSDKPlatform extends PlatformInterface {
@@ -191,6 +192,21 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   Future<bool> androidPoseEstimationBackPressHandle() {
     throw UnimplementedError(
         'androidPoseEstimationBackPressHandle() has not been implemented.');
+  }
+
+  // Speech Verifier
+  Future<dynamic> startSpeechVerifier(String settingsJson) {
+    throw UnimplementedError('startSpeechVerifier() has not been implemented.');
+  }
+
+  Future<bool> uploadSpeechVerifier() {
+    throw UnimplementedError(
+        'uploadSpeechVerifier() has not been implemented.');
+  }
+
+  Future<bool> androidSpeechVerifierBackPressHandle() {
+    throw UnimplementedError(
+        'androidSpeechVerifierBackPressHandle() has not been implemented.');
   }
 
   // IOS NFC Capture

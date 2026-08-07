@@ -15,6 +15,7 @@ import 'package:flutter_amanisdk/modules/nfc_capture_android.dart';
 import 'package:flutter_amanisdk/modules/nfc_capture_ios.dart';
 import 'package:flutter_amanisdk/modules/pose_estimation.dart';
 import 'package:flutter_amanisdk/modules/selfie.dart';
+import 'package:flutter_amanisdk/modules/speech_verifier.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'amaniAndroidConfigure.dart';
@@ -55,6 +56,11 @@ class AmaniSDK {
   /// Returns [PoseEstimation] module
   PoseEstimation getPoseEstimation() {
     return PoseEstimation(_methodChannel);
+  }
+
+   /// Returns [SpeechVerifier] module
+  SpeechVerifier getSpeechVerifier() {
+    return SpeechVerifier(_methodChannel);
   }
 
   /// Returns [IOSNFCCapture] module

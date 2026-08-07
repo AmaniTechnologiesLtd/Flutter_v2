@@ -10,7 +10,8 @@ import Flutter
 import UIKit
 
 class PoseEstimation {
-  private let module = Amani.sharedInstance.poseEstimation()
+  private let poseEstimation = Amani.sharedInstance.poseEstimation()
+  private lazy var module = poseEstimation.v1
   private var sdkView: SDKView!
 
   public func start(settings: PoseEstimationSettings, result: @escaping FlutterResult) {
@@ -79,7 +80,7 @@ class PoseEstimation {
       ])
     }
 
-    module.setManualCropTimeout(Timeout: settings.manualCropTimeout)
+    module.setManualCropTimeout(timeout: settings.manualCropTimeout)
 
     do {
       let moduleView = try module.start { image in
@@ -105,7 +106,7 @@ class PoseEstimation {
   }
 
   public func upload(result: @escaping FlutterResult) {
-    module.upload { isSuccess in
+    poseEstimation.upload { isSuccess in
       result(isSuccess)
     }
   }

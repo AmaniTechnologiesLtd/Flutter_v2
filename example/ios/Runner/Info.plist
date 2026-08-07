@@ -38,6 +38,10 @@
 	<string>This application requires access to your location to upload the document.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This application requires access to your location to upload the document.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to microphone</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app needs access to speech</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

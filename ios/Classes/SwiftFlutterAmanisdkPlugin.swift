@@ -4,6 +4,7 @@ import Flutter
 public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
   var methodChannel: FlutterMethodChannel!
   var delegateChannel: FlutterEventChannel!
+  private var speechVerifierInstance: SpeechVerifier?
   static var eventHandler = DelegateEventHandler()
  
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -66,7 +67,7 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
             Task {
                 let nviModel = NviModel(documentNo: documentNo, dateOfBirth: birthDate, dateOfExpire: expireDate)
                 let isDone = await idCapture.startNFC(nvi: nviModel)
-                print("PLUGİN TARAFINDA startNFC fonksiyonundan dönen BOOLEAN DEGERI: \(isDone)")
+                
                 result(isDone)
             }
         } else {
@@ -133,6 +134,18 @@ public class SwiftFlutterAmanisdkPlugin: NSObject, FlutterPlugin {
     case "uploadPoseEstimation":
         let poseEstimation = PoseEstimation()
         poseEstimation.upload(result: result)
+
+    // Speech Verifier
+    case "startSpeechVerifier":
+      let speechVerifier = SpeechVerifier()
+      self.speechVerifierInstance = speechVerifier   // ← EKSİK OLAN SATIR
+      let iosArgs = arguments?["iosSettings"] as! String
+      speechVerifier.start(settingsJSON: iosArgs, result: result)
+    case "uploadSpeechVerifier":
+        speechVerifierInstance?.upload { [weak self] isSuccess in
+          result(isSuccess)
+          self?.speechVerifierInstance = nil
+        }
     // NFC
     /*
     case "iOSstartNFCWithImageData":
