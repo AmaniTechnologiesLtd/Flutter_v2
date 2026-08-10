@@ -112,7 +112,6 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "ai.amani.flutter_amanisdk_example"
-
     compileSdk 35
     ndkVersion "27.1.12297006"
 
@@ -126,7 +125,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 23
         targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

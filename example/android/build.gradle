@@ -38,6 +38,7 @@ allprojects {
         google()
         mavenCentral()
         maven { url "https://jfrog.amani.ai/artifactory/amani-sdk" }
+        maven { url "https://jfrog.amani.ai/artifactory/amani-speech-verifier" }
         maven { url "https://jitpack.io" }
         // jcenter()  // gerekiyorsa aç, mümkünse kullanma
     }

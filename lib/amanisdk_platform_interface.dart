@@ -195,7 +195,11 @@ abstract class AmaniSDKPlatform extends PlatformInterface {
   }
 
   // Speech Verifier
-  Future<dynamic> startSpeechVerifier(String settingsJson) {
+
+  Future<dynamic> startSpeechVerifier({
+    String? iosSettings,
+    String? androidSettings,
+  }) {
     throw UnimplementedError('startSpeechVerifier() has not been implemented.');
   }
 

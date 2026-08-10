@@ -11,11 +11,16 @@ class SpeechVerifier {
   /// Starts the speech verifier flow. Returns the captured evidence image
   /// (black frame) as bytes when the flow completes successfully, mirroring
   /// the other capture modules.
-  Future<Uint8List?> start(SpeechVerifierSettings settings) async {
+  Future<Uint8List?> start({
+    SpeechVerifierSettings? iosSettings,
+    AndroidSpeechVerifierSettings? androidSettings,
+  }) async {
     try {
-      final dynamic imageData =
-          await _methodChannel.startSpeechVerifier(settings.toJson());
-      return imageData as Uint8List?;
+      final dynamic result = await _methodChannel.startSpeechVerifier(
+        iosSettings: iosSettings?.toJson(),
+        androidSettings: androidSettings?.toJson(),
+      );
+      return result as Uint8List?;
     } catch (err) {
       rethrow;
     }

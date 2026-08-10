@@ -376,13 +376,20 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
         .invokeMethod("setPoseEstimationVideoRecording", {"enabled": enabled});
   }
 
-  // Speech Verifier
+
+ // Speech Verifier
   @override
-  Future<dynamic> startSpeechVerifier(String settingsJson) async {
+  Future<dynamic> startSpeechVerifier({
+    String? iosSettings,
+    String? androidSettings,
+  }) async {
     try {
       final dynamic imgData = await methodChannel.invokeMethod(
         'startSpeechVerifier',
-        {"iosSettings": settingsJson},
+        {
+          "iosSettings": iosSettings,
+          "androidSettings": androidSettings,
+        },
       );
       return imgData;
     } catch (err) {
@@ -415,7 +422,6 @@ class MethodChannelAmaniSDK extends AmaniSDKPlatform {
       return true;
     }
   }
-
   // NFC Capture For IOS
   @override
   Future<bool> iosNFCCaptureWithMRZCapture() async {

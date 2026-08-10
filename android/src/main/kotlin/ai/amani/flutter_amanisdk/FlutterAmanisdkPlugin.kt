@@ -6,6 +6,7 @@ import ai.amani.base.utility.AmaniVersion
 import ai.amani.flutter_amanisdk.modules.*
 import ai.amani.flutter_amanisdk.modules.config_models.AutoSelfieSettings
 import ai.amani.flutter_amanisdk.modules.config_models.PoseEstimationSettings
+import ai.amani.flutter_amanisdk.modules.SpeechVerifierModule
 import ai.amani.sdk.Amani
 import ai.amani.sdk.DynamicFeature
 import ai.amani.sdk.UploadSource
@@ -31,6 +32,7 @@ class FlutterAmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Ac
   private var activity: Activity? = null
   private var appContext: Context? = null
   private var isConfigured: Boolean = false
+  private var speechVerifierModule: SpeechVerifierModule? = null
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     appContext = binding.applicationContext
@@ -343,6 +345,32 @@ class FlutterAmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Ac
       "setPoseEstimationVideoRecording" -> {
         val isEnabled = call.argument<Boolean>("enabled") ?: false
         PoseEstimation.instance.setVideoRecording(isEnabled, result)
+      }
+
+      // -------------------------
+      // Speech Verifier
+      // -------------------------
+      "startSpeechVerifier" -> {
+        val act = activity ?: run {
+          result.error("NO_ACTIVITY", "Activity is null", null)
+          return
+        }
+        val androidSettings = call.argument<String>("androidSettings")
+        if (androidSettings.isNullOrBlank()) {
+          result.error("Missing Settings", "androidSettings is required", null)
+          return
+        }
+        val module = SpeechVerifierModule(act)
+        speechVerifierModule = module
+        module.start(androidSettings, result)
+      }
+
+      "uploadSpeechVerifier" -> {
+        speechVerifierModule?.upload(result) ?: result.success(false)
+      }
+
+      "speechVerifierAndroidBackPressHandle" -> {
+        result.success(speechVerifierModule?.handleBackPress() ?: true)
       }
 
       // -------------------------
