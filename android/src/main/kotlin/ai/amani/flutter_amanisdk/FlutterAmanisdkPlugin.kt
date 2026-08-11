@@ -350,20 +350,29 @@ class FlutterAmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Ac
       // -------------------------
       // Speech Verifier
       // -------------------------
-      "startSpeechVerifier" -> {
-        val act = activity ?: run {
-          result.error("NO_ACTIVITY", "Activity is null", null)
-          return
-        }
-        val androidSettings = call.argument<String>("androidSettings")
-        if (androidSettings.isNullOrBlank()) {
+    "startSpeechVerifier" -> {
+      val act = activity ?: run {
+        result.error("NO_ACTIVITY", "Activity is null", null)
+        return
+     }
+    
+      if (!isSpeechVerifierAvailable()) {
+        result.error(
+            "SPEECH_VERIFIER_UNAVAILABLE",
+            "Speech Verifier module is not included. Add 'ai.amani.android:amani-speech-verifier' to your app dependencies.",
+            null
+        )
+        return
+      }
+      val androidSettings = call.argument<String>("androidSettings")
+      if (androidSettings.isNullOrBlank()) {
           result.error("Missing Settings", "androidSettings is required", null)
           return
-        }
-        val module = SpeechVerifierModule(act)
-        speechVerifierModule = module
-        module.start(androidSettings, result)
       }
+      val module = SpeechVerifierModule(act)
+      speechVerifierModule = module
+      module.start(androidSettings, result)
+    }
 
       "uploadSpeechVerifier" -> {
         speechVerifierModule?.upload(result) ?: result.success(false)
@@ -816,5 +825,14 @@ class FlutterAmanisdkPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Ac
         result.success(customerInfoDict)
       }
     })
+  }
+
+  private fun isSpeechVerifierAvailable(): Boolean {
+    return try {
+        Class.forName("ai.amani.speechverifier.SpeechVerifier")
+        true
+    } catch (e: ClassNotFoundException) {
+        false
+    }
   }
 }
